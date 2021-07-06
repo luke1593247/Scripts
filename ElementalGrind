@@ -27,6 +27,14 @@ main.values = {}
 
 main.functions = {}
 
+main.WantedElements = {}
+
+print("---------------Wanted Elements-----------------")
+for i, v in pairs(getgenv().WantedElements) do
+    table.insert(main.WantedElements, v)
+    print(v)
+end
+print("------------------------------------------------")
 function main.functions.Click()
     local VS = game:GetService("VirtualUser")
     VS:CaptureController()
@@ -74,7 +82,7 @@ function main.functions.Spin()
     wait()
     main.currentElement = tostring(main.Events.GetElement:InvokeServer())
     print("New Element: "..main.currentElement..", Spins Remaining: "..tostring(main.Events.GetSpins:InvokeServer()).."  ||||  Spinned: "..tostring(main.ServerSpins).." Times, Total Spins: "..tostring(main.TotalSpins))
-    if table.find(getgenv().WantedElements, main.currentElement) ~= nil then
+    if table.find(main.WantedElements, main.currentElement) ~= nil then
         print("Wanted Element Obtained.")
         main.values.ElementFarm = "Done"
     end
@@ -118,18 +126,18 @@ end)
 
 
 while wait() do
-    if main.values.ElementFarm == true and not table.find(getgenv().WantedElements, main.currentElement) then
+    if main.values.ElementFarm == true and not table.find(main.WantedElements, main.currentElement) then
         pcall(function()
-            if table.find(getgenv().WantedElements, main.currentElement) then
+            if table.find(main.WantedElements, main.currentElement) then
                 main.values.ElementFarm = "Done"
                 print("-------------------------------Wanted element obtained--------------------------------------------------------------------------------------------------------------------------")
             end
 
-            if main.Events.GetSpins:InvokeServer() >= 1 and not table.find(getgenv().WantedElements, main.currentElement) then
+            if main.Events.GetSpins:InvokeServer() >= 1 and not table.find(main.WantedElements, main.currentElement) then
                 if not game:GetService("Players").LocalPlayer:FindFirstChild("SpinCooldown") then
                     main.functions.Spin()
                 end
-                if table.find(getgenv().WantedElements, main.currentElement) ~= nil then
+                if table.find(main.WantedElements, main.currentElement) ~= nil then
                     print("-----------------------------------Wanted Element Obtained.-------------------------------------------------------------------------------------------------------------------------")
                     main.values.ElementFarm = "Done"
                 end
@@ -138,9 +146,9 @@ while wait() do
                 local a = game:GetService("Players").LocalPlayer.PlayerGui.StatsGui.BarsFrame.Level
                 local str = a.Text:gsub("Level ", "")
                 local level = tonumber(str)
-                if level >= 2 and not table.find(getgenv().WantedElements, main.currentElement) then
+                if level >= 2 and not table.find(main.WantedElements, main.currentElement) then
                     main.functions.Spin()
-                    if table.find(getgenv().WantedElements, main.currentElement) ~= nil then
+                    if table.find(main.WantedElements, main.currentElement) ~= nil then
                         print("-----------------------------------------------Wanted Element Obtained.------------------------------------------------------------------------------------------------------------------")
                         main.values.ElementFarm = "Done"
                     end
@@ -163,7 +171,7 @@ while wait() do
             end
         end)
     else
-        if table.find(getgenv().WantedElements, main.currentElement) and main.values.ElementFarm ~= "Done" then
+        if table.find(main.WantedElements, main.currentElement) and main.values.ElementFarm ~= "Done" then
             main.values.ElementFarm = "Done"
             print("---------------Wanted Element is alrdy equipped.-------------------")
         end
