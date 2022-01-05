@@ -647,9 +647,9 @@ UIS.InputChanged:Connect(function(input)
  end
 end)
 
-main.Version = "2.1.1"
+main.Version = "2.1.2"
 warn("----------------------------------------------------------")
-print("Script Version "..main.Version.."\n\n           + Fixed all known bugs\n           + Teleports where its safe\n           + Puffshroom farm upgrade\n           + TODO list: Making script better and safer for starting players - in future!\n")
+print("Script Version "..main.Version)
 warn("-----------------------------------------------------------")
 
 localplayer = game.Players.LocalPlayer
@@ -735,6 +735,7 @@ function main.Teleport(location, build)
         main.SpawnSplinker()
     end
     head.Anchored = false
+    wait(0.1)
 end
 
 for i, v in pairs(workspace.FieldDecos:GetChildren()) do
@@ -781,6 +782,19 @@ function main.CheckForRareToken()
     end
 end
 
+local ballPart = Instance.new("Part")
+ballPart.Shape = Enum.PartType.Block
+ballPart.Parent = workspace
+ballPart.Anchored = true
+ballPart.Transparency = 0.5
+ballPart.CanCollide = false
+
+spawn(function()
+    while wait() do
+        ballPart.CFrame = localplayer.Character:WaitForChild("HumanoidRootPart").CFrame
+    end
+end)
+
 main.FieldsCFrame = {
     DandelionField = CFrame.new(-29.2758255, 4.47434139, 223.193176, 0.99559617, 4.55320247e-07, -0.0937441587, -3.64502284e-07, 1, 9.85908741e-07, 0.0937441587, -9.47397041e-07, 0.99559617),
     StrawberryField = CFrame.new(-179.579514, 20.4743423, -15.6190891, 0.991131902, 3.31358674e-09, 0.132881865, 3.4143337e-09, 1, -5.04029778e-08, -0.132881865, 5.04097031e-08, 0.991131902),
@@ -819,7 +833,7 @@ function main.DodgeMobsfce()
         main2.PartB = nil
 
         for i, v in pairs(game:GetService("Workspace").Monsters:GetChildren()) do
-            if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - v.PrimaryPart.Position).magnitude <= 80 and not v.Name:find("Mondo") and not v.Name:find("Vicious") and not v.Name:find("Snail") and not v.Name:find("King") and not v.Name:find("Coconut") and not v.Name:find("Windy") then
+            if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - v.PrimaryPart.Position).magnitude <= main.ConvertToStuds(15) and not v.Name:find("Mondo") and not v.Name:find("Vicious") and not v.Name:find("Snail") and not v.Name:find("King") and not v.Name:find("Coconut") and not v.Name:find("Windy") then
                 main2.PartB = v.PrimaryPart
                 if main2.biggestRadius == nil then
                     main2.biggestRadius = v:WaitForChild("Config").AttackRadius.Value
@@ -848,7 +862,7 @@ function main.DodgeMobsfce()
         if main2.PartB ~= nil then           
             local function Update()
                 for i, v in pairs(game:GetService("Workspace").Monsters:GetChildren()) do
-                    if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - v.PrimaryPart.Position).magnitude <= 80 and not v.Name:find("Mondo") and not v.Name:find("Vicious") and not v.Name:find("Snail") and not v.Name:find("King") and not v.Name:find("Coconut") and not v.Name:find("Windy") then
+                    if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - v.PrimaryPart.Position).magnitude <= main.ConvertToStuds(15) and not v.Name:find("Mondo") and not v.Name:find("Vicious") and not v.Name:find("Snail") and not v.Name:find("King") and not v.Name:find("Coconut") and not v.Name:find("Windy") then
                         main2.PartB = v.PrimaryPart
                         if main2.biggestRadius == nil then
                             main2.biggestRadius = v:WaitForChild("Config").AttackRadius.Value
@@ -875,7 +889,7 @@ function main.DodgeMobsfce()
             end
             Update()
 
-            if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - main2.PartB.Position).magnitude <= 80 then
+            if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - main2.PartB.Position).magnitude <= main.ConvertToStuds(15) then
                 main.CreateVelocity()
                 repeat
                     local tm = os.clock()
@@ -945,6 +959,11 @@ function main.Collect(tk, fast)
         until os.clock() >= endTime or finished == true
         main2.MoveToActive = false
     end)   
+end
+
+function main.ConvertToStuds(meters)
+    local calc = meters * (25/7)
+    return calc
 end
 
 function main.Announce(title, text)
@@ -1052,7 +1071,7 @@ end
 spawn(function()
     while wait(1) do
         local e, s = pcall(function()
-            main.pollenTool = localplayer.Character:FindFirstChildOfClass("Tool") or localplayer.Backpack:FindFirstChildOfClass("Tool")
+            main2.pollenTool = localplayer.Character:FindFirstChildOfClass("Tool") or localplayer.Backpack:FindFirstChildOfClass("Tool")
         end)
     end
 end)
@@ -1069,7 +1088,7 @@ main.Announce("WARNING", "SET FIELD TO FARM FIRST!!!\nWATCH FOR CONSOLE - F9!")
 repeat wait() until main2.FieldToFarmCFrame
 main.Announce("WARNING", "TO USE MYTHIC SPINNER YOU NEED TO SET UNTIL LEGENDARY IN JELLY OPTIONS!\nWATCH FOR CONSOLE - F9!")
 print("TO USE MYTHIC SPINNER YOU NEED TO SET UNTIL LEGENDARY IN JELLY OPTIONS!")
-main.pollenTool = localplayer.Character:FindFirstChildOfClass("Tool") or localplayer.Backpack:FindFirstChildOfClass("Tool")
+main2.pollenTool = localplayer.Character:FindFirstChildOfClass("Tool") or localplayer.Backpack:FindFirstChildOfClass("Tool")
 
 folder1:Toggle("Autofarm", function(state)
     main2.Autofarm = state
@@ -1122,7 +1141,10 @@ end)
 folder5:Toggle("No convert during puff", function(state)
     main2.NoConvertWhilePuffs = state
 end)
-
+folder5:Box("Area Size", "number", function(value)
+    local size = main.ConvertToStuds(value)
+    ballPart.Size = Vector3.new(size*2, 10, size*2)
+end)
 folder4:Label("SET UNTIL LEGENDARY AND CHOOSE BEE CELL!", {
     TextSize = 11;
     TextColor = Color3.fromRGB(58, 250, 0);
@@ -1313,7 +1335,7 @@ function main.CheckForUnfinishedAction()
     for i, v in pairs(main.NPCFolder:GetChildren()) do
         if v.Platform.AlertPos.AlertGui.ImageLabel.ImageTransparency == 0 and v.Name ~= "Gummy Bear" then
             if v:FindFirstChild("Circle") then
-                if (v.Circle.Position - localplayer.Character:WaitForChild("HumanoidRootPart").Position).magnitude > 10 then
+                if (v.Circle.Position - localplayer.Character:WaitForChild("HumanoidRootPart").Position).magnitude > main.ConvertToStuds(2.5) then
                     main.Teleport(v.Circle.CFrame + Vector3.new(0,10,0), false)
                 end
                 wait(0.3)
@@ -1535,7 +1557,7 @@ spawn(function()
                 else
                     tpPart = main2.FieldToFarmCFrame
                 end
-                if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - tpPart.Position).magnitude > 70 then
+                if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - tpPart.Position).magnitude > main.ConvertToStuds(15) then
                     insideField = false
                 end
                 if workspace.Particles:FindFirstChild("Crosshair") then
@@ -1569,7 +1591,7 @@ spawn(function()
                                 end
                             end
                         else 
-                            if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - d.Position).magnitude < 30 then
+                            if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - d.Position).magnitude < main.ConvertToStuds(10) then
                                 if not main2.MoveToActive then
                                     main.Collect(d)
                                 end
@@ -1587,7 +1609,7 @@ spawn(function()
                                 end
                             end
                         else 
-                            if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - d.Position).magnitude < 30 then
+                            if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - d.Position).magnitude < main.ConvertToStuds(8) then
                                 if not main2.MoveToActive then
                                     main.Collect(d)
                                 end
@@ -1616,8 +1638,8 @@ function main.FarmSprout()
         end
 
         if main2.FarmSprouts == true then
-            main["pollenTool"].ClickEvent:FireServer(CFrame.new())
-            if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - main2.FieldToFarmCFrame.Position).magnitude > 70 then
+            main2["pollenTool"].ClickEvent:FireServer(CFrame.new())
+            if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - main2.FieldToFarmCFrame.Position).magnitude > main.ConvertToStuds(15) then
                 main.Tween(main2.FieldToFarmCFrame, true)
             end
             if main2.Speed then
@@ -1644,12 +1666,12 @@ function main.FarmSprout()
             for i, v in pairs(main.RareCollectTokensTable) do
                 for c, d in pairs(workspace.Collectibles:GetChildren()) do
                     if d:FindFirstChild("FrontDecal") and not d:GetAttribute("Farmed") and tostring(d.FrontDecal.Texture) == v then
-                        if (main2.FieldToFarmCFrame.Position - d.Position).magnitude < 70 then
+                        if (main2.FieldToFarmCFrame.Position - d.Position).magnitude < main.ConvertToStuds(15) then
                             if main2.MoveToActive then
                                 repeat wait() until not main2.MoveToActive
                             end
                             main.Collect(d, true)
-                            break            
+                            break
                         end
                     end
                 end
@@ -1680,13 +1702,13 @@ end
 function main.HuntMondo()
     local s, e = pcall(function()
         local targetCFrame = main.FieldsCFrame.MountainTopField
-        main.Tweem(targetCFrame, false)
+        main.Tween(targetCFrame, false)
         for i, v in pairs(game:GetService("Workspace").Monsters:GetChildren()) do
             if v.Name:find("Mondo") then
                 main.CreateVelocity()
                 repeat
                     for a, b in pairs(workspace.Collectibles:GetChildren()) do
-                        if not b:GetAttribute("Collected") and b:FindFirstChild("FrontDecal") and b.FrontDecal.Texture == "rbxassetid://1629547638" and (b.Position - v.Torso.Position).magnitude >= 25 then
+                        if not b:GetAttribute("Collected") and b:FindFirstChild("FrontDecal") and b.FrontDecal.Texture == "rbxassetid://1629547638" and (b.Position - v.Torso.Position).magnitude >= main.ConvertToStuds(4.5) then
                             main.DestroyVelocity()
                             localplayer.Character:WaitForChild("HumanoidRootPart").CFrame = b.CFrame
                             b:SetAttribute("Collected", 1)
@@ -1722,11 +1744,10 @@ function main.HuntMondo()
                             for oi, ov in pairs(main.RareCollectTokensTable) do
                                 for oc, od in pairs(workspace.Collectibles:GetChildren()) do
                                     if od:FindFirstChild("FrontDecal") and not od:GetAttribute("Farmed") and (tostring(od.FrontDecal.Texture) == ov or tostring(od.FrontDecal.Texture) == "4520739302") then
-                                        if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - od.Position).magnitude < 90 then
-                                            if main2.MoveToActive then
-                                                repeat wait() until not main2.MoveToActive
+                                        if (targetCFrame.Position - od.Position).magnitude < main.ConvertToStuds(15) then
+                                            if not main2.MoveToActive then
+                                                main.Collect(od, true)
                                             end
-                                            main.Collect(od, true)
                                         end
                                     end
                                 end
@@ -1749,7 +1770,7 @@ function main.HuntMondo()
         main.HuntMondo()
     end
 end
-main.FieldDistance = 70
+main.FieldDistance = main.ConvertToStuds(15)
 main.DistanceNeeded = main.FieldDistance
 main.MushroomsRarities = {"Mythic", "Legendary", "Epic"}
 main.puffshrooming = false
@@ -1855,11 +1876,11 @@ while wait() and main2.ExecState == getgenv().Exected do
                         if main2.CollectorEnabled == true then
                             main.CheckForRareToken()
                         end
-                        main["pollenTool"].ClickEvent:FireServer(CFrame.new())
-                        if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - puffShroomCFrame.Position).magnitude > 30 then
+                        main2["pollenTool"].ClickEvent:FireServer(CFrame.new())
+                        if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - puffShroomCFrame.Position).magnitude > main.ConvertToStuds(6.5) then
                             main.Tween(puffShroomCFrame, true)
                         end
-                        main.DistanceNeeded = 30
+                        main.DistanceNeeded = main.ConvertToStuds(6.5)
                         if main2.Speed then
                             if main2.CustomSpeed then
                                 localplayer.Character:WaitForChild("Humanoid").WalkSpeed = main2.CustomSpeed   
@@ -1871,7 +1892,12 @@ while wait() and main2.ExecState == getgenv().Exected do
                             main.ConvertHoney()    
                         end
                         if not workspace.Happenings.Puffshrooms:FindFirstChild("Current") then
-                            wait(6)
+                            local s = os.clock()
+                            local e = s + 6
+                            repeat 
+                                wait()
+                                localplayer.Character:WaitForChild("Humanoid").WalkSpeed = math.random(80, 90)
+                            until os.clock() >= e
                             break
                         end
                     end
@@ -1982,8 +2008,8 @@ while wait() and main2.ExecState == getgenv().Exected do
         if not skip then
             if main2.Autofarm == true then
                 local yes, no = pcall(function()
-                    main["pollenTool"].ClickEvent:FireServer(CFrame.new())
-                    if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - main2.FieldToFarmCFrame.Position).magnitude > 70 then
+                    main2["pollenTool"].ClickEvent:FireServer(CFrame.new())
+                    if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - main2.FieldToFarmCFrame.Position).magnitude > main.ConvertToStuds(15) then
                         main.Tween(main2.FieldToFarmCFrame, true)
                     end
                 end)
