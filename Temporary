@@ -647,7 +647,7 @@ UIS.InputChanged:Connect(function(input)
  end
 end)
 
-main.Version = "2.1.3"
+main.Version = "2.1.4"
 warn("----------------------------------------------------------")
 print("Script Version "..main.Version)
 warn("-----------------------------------------------------------")
@@ -1379,38 +1379,41 @@ function main.AutoQuestFce()
         end
     end
 
+    local theLeast = 100000000000000000000000000000000000
+    local theLeastQuest
+
     for i, v in pairs(questFolder.Frame:GetDescendants()) do
         if v.Name == "TaskBar" and not string.find(v.Description.Text, "Complete!") then
             if not main2.farming and v.Description.Text:find("Collect") and (v.Description.Text:find("Pollen") or v.Description.Text:find("Goo")) then
                 if v.Description.Text:find("Field") or v.Description.Text:find("Patch") or v.Description.Text:find("Forest") then
-                    for a, b in pairs(main.FieldsByString) do
-                        if v.Description.Text:find(a) then
-                            main2.FieldSaved = main2.FieldToFarmCFrame
-                            main2.FieldToFarmCFrame = b
-                            main2.farming = true
-                            main2.QuestFieldFarming = v
-                            print("Farming: "..v.Description.Text)
-                        end
+                    local str1 = string.gsub(v.Description.Text, ",", "")
+                    local lvl = main.GetLevel(str1)
+                    if lvl < theLeast then
+                        theLeast = lvl
+                        theLeastQuest = v
                     end
                 else
                     if v.Description.Text:find("Red") then
-                        main2.FieldSaved = main2.FieldToFarmCFrame
-                        main2.FieldToFarmCFrame = main.FieldsCFrame.StrawberryField
-                        main2.farming = true
-                        main2.QuestFieldFarming = v
-                        print("Farming: "..v.Description.Text)
+                        local str1 = string.gsub(v.Description.Text, ",", "")
+                        local lvl = main.GetLevel(str1)
+                        if lvl < theLeast then
+                            theLeast = lvl
+                            theLeastQuest = v
+                        end
                     elseif v.Description.Text:find("Blue") then
-                        main2.FieldSaved = main2.FieldToFarmCFrame
-                        main2.FieldToFarmCFrame = main.FieldsCFrame.PineTreeField
-                        main2.farming = true
-                        main2.QuestFieldFarming = v
-                        print("Farming: "..v.Description.Text)
+                        local str1 = string.gsub(v.Description.Text, ",", "")
+                        local lvl = main.GetLevel(str1)
+                        if lvl < theLeast then
+                            theLeast = lvl
+                            theLeastQuest = v
+                        end
                     elseif v.Description.Text:find("White") then
-                        main2.FieldSaved = main2.FieldToFarmCFrame
-                        main2.FieldToFarmCFrame = main.FieldsCFrame.SpiderField
-                        main2.farming = true
-                        main2.QuestFieldFarming = v
-                        print("Farming: "..v.Description.Text)
+                        local str1 = string.gsub(v.Description.Text, ",", "")
+                        local lvl = main.GetLevel(str1)
+                        if lvl < theLeast then
+                            theLeast = lvl
+                            theLeastQuest = v
+                        end
                     end
                 end
             elseif v.Description.Text:find("Defeat") then
@@ -1418,7 +1421,18 @@ function main.AutoQuestFce()
             end
         end
     end
-    
+
+    if not main2.farming then
+        for a, b in pairs(main.FieldsByString) do
+            if theLeastQuest.Description.Text:find(a) then
+                main2.FieldSaved = main2.FieldToFarmCFrame
+                main2.FieldToFarmCFrame = b
+                main2.farming = true
+                main2.QuestFieldFarming = theLeastQuest
+                print("Farming: "..theLeastQuest.Description.Text)
+            end
+        end
+    end 
 end
 
 local window2 = library:CreateWindow("Token Collector")
@@ -1567,7 +1581,7 @@ spawn(function()
                 else
                     tpPart = main2.FieldToFarmCFrame
                 end
-                if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - tpPart.Position).magnitude > main.ConvertToStuds(15) then
+                if not main.puffshrooming and not main.KeepTokensActive and (localplayer.Character:WaitForChild("HumanoidRootPart").Position - tpPart.Position).magnitude > main.ConvertToStuds(15) then
                     insideField = false
                 end
                 if workspace.Particles:FindFirstChild("Crosshair") then
@@ -1702,7 +1716,7 @@ function main.GetLevelP(shroom)
     for i, v in pairs(shroom:GetChildren()) do
         if v.Name:find("Top") and v:FindFirstChild("Attachment") and v.Attachment.Gui:FindFirstChild("NameRow") then
             local lvlHolder = v.Attachment.Gui.NameRow.TextLabel
-            local lvlStr = string.match(lvlHolder.Text, "%d+")
+            local lvlStr = string.match(lvlHolder.Text, "[%d]+")
             local lvl = tonumber(lvlStr)
             return lvl
         end
@@ -1710,7 +1724,7 @@ function main.GetLevelP(shroom)
 end
 
 function main.GetLevel(text)
-    local lvlstr = string.match(text, "%d+")
+    local lvlstr = string.match(text, "[%d]+")
     local lvl = tonumber(lvlstr)
     return lvl
 end
@@ -1790,6 +1804,7 @@ main.FieldDistance = main.ConvertToStuds(15)
 main.DistanceNeeded = main.FieldDistance
 main.MushroomsRarities = {"Mythic", "Legendary", "Epic"}
 main.puffshrooming = false
+main.KeepTokensActive = false
 
 main.Announce("VERSION "..main.Version, "Updates in console - press f9")
 
@@ -1837,7 +1852,7 @@ while wait() and main2.ExecState == getgenv().Exected do
                             if d.Name:find(b) then
                                 puffShroom = d
                                 found = true
-                                print("Found "..b.." mushroom, setting target.")
+                                print("Farming "..b.." puffshroom!!!")
                                 break
                             end
                         end
@@ -1851,7 +1866,6 @@ while wait() and main2.ExecState == getgenv().Exected do
                             if main.GetLevelP(p) >= 10 then
                                 found = true
                                 puffShroom = p
-                                print("Found puffshroom lvl 10, setting target.")
                                 break
                             end
                         end
@@ -1862,7 +1876,6 @@ while wait() and main2.ExecState == getgenv().Exected do
                             if p.Name:find("Rare") then
                                 found = true
                                 puffShroom = p
-                                print("Found rare puffshroom, setting target.")
                                 break
                             end
                         end
@@ -1874,11 +1887,9 @@ while wait() and main2.ExecState == getgenv().Exected do
                                 local lvl = main.GetLevelP(p)
                                 highestLVL = lvl
                                 main2.BiggestLvlMushroom = p
-                                print("Found new highest puffshroom lvl "..tostring(lvl))
                             end
                         end
                         puffShroom = main2.BiggestLvlMushroom
-                        print("Puffshroom with biggest lvl is now targeted.")
                     end
                     local puffShroomCFrame
                     for i, v in pairs(puffShroom:GetChildren()) do
@@ -1953,6 +1964,7 @@ while wait() and main2.ExecState == getgenv().Exected do
                         end
                     end
                     local lastlvl = GetWindyLevel()
+                    local criticalTime = os.clock() + 20
                     repeat
                         local breakY = false
                         for a, b in pairs(workspace.Collectibles:GetChildren()) do
@@ -1967,7 +1979,10 @@ while wait() and main2.ExecState == getgenv().Exected do
                         if not main.CheckVelocity() then
                             main.CreateVelocity()
                         end
-                        localplayer.Character:WaitForChild("HumanoidRootPart").CFrame = trueWindy.CFrame + (trueWindy.CFrame.rightVector*10) + Vector3.new(0,20,0)
+                        if not windyFolder:FindFirstChild("Windy") or os.clock() > criticalTime then
+                            break
+                        end
+                        localplayer.Character:WaitForChild("HumanoidRootPart").CFrame = trueWindy.CFrame + Vector3.new(0,22,0)
                         wait()
                         if main2.HuntWindy == false then
                             break
@@ -1979,12 +1994,13 @@ while wait() and main2.ExecState == getgenv().Exected do
                     until breakY
                     main.DestroyVelocity()
                     local sTime = os.clock()
-                    local eTime = sTime + 8.5
+                    local eTime = sTime + 10
                     repeat
+                        main.KeepTokensActive = true
                         localplayer.Character:WaitForChild("Humanoid").WalkSpeed = math.random(80, 90)
                         wait()
                     until os.clock() >= eTime
-                    repeat wait() until not windyFolder:FindFirstChild("Windy") or trueWindy:FindFirstChild("Sound")
+                    main.KeepTokensActive = false
                 end
             end
         end
