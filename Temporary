@@ -647,7 +647,7 @@ UIS.InputChanged:Connect(function(input)
  end
 end)
 
-main.Version = "2.1.2"
+main.Version = "2.1.3"
 warn("----------------------------------------------------------")
 print("Script Version "..main.Version)
 warn("-----------------------------------------------------------")
@@ -794,6 +794,16 @@ spawn(function()
         ballPart.CFrame = localplayer.Character:WaitForChild("HumanoidRootPart").CFrame
     end
 end)
+
+main.FieldsFromGame = {}
+local fieldPartsFolder = workspace.FlowerZones
+
+for i, v in pairs(fieldPartsFolder:GetChildren()) do
+    main.FieldsFromGame[v.Name] = {}
+    main.FieldsFromGame[v.Name].Position = v.Position
+    main.FieldsFromGame[v.Name].CFrame = v.CFrame
+    main.FieldsFromGame[v.Name].Size = v.Size
+end
 
 main.FieldsCFrame = {
     DandelionField = CFrame.new(-29.2758255, 4.47434139, 223.193176, 0.99559617, 4.55320247e-07, -0.0937441587, -3.64502284e-07, 1, 9.85908741e-07, 0.0937441587, -9.47397041e-07, 0.99559617),
@@ -1117,7 +1127,7 @@ end)
 folder1:Toggle("Hunt Vicious Bee", function(state)
     main2.AutoVicious = state
 end)
-folder1:Toggle("Hunt Windy Bee (Beta)", function(state)
+folder1:Toggle("Hunt Windy Bee (Alpha)", function(state)
     main2.HuntWindy = state
 end)
 folder1:Toggle("Hunt Mondo Chick", function(state)
@@ -1175,7 +1185,7 @@ spawn(function()
             while wait() and main2.SpinMythic do
                 local cell = main2.OurHive.Cells["C"..tostring(main2.LeftToRightJ)..","..tostring(main2.BottomToTopJ)]
                 local cellBee = cell.CellType
-                if table.find(main.MythicBees, cellBee.Value) ~= nil then
+                if table.find(main.MythicBees, cellBee.Value) ~= nil or cell:FindFirstChild("GiftedCell") then
                     break
                 end
                 local Event = game:GetService("ReplicatedStorage").Events.ConstructHiveCellFromEgg
@@ -1561,7 +1571,7 @@ spawn(function()
                     insideField = false
                 end
                 if workspace.Particles:FindFirstChild("Crosshair") then
-                    if (main.Counter % 3) ~= 0 then
+                    if (main.Counter % 2) ~= 0 then
                         for i, v in pairs(workspace.Particles:GetChildren()) do
                             if v.Name == "Crosshair" then
                                 v.Name = "Current"
@@ -1697,6 +1707,12 @@ function main.GetLevelP(shroom)
             return lvl
         end
     end
+end
+
+function main.GetLevel(text)
+    local lvlstr = string.match(text, "%d+")
+    local lvl = tonumber(lvlstr)
+    return lvl
 end
 
 function main.HuntMondo()
@@ -1877,10 +1893,10 @@ while wait() and main2.ExecState == getgenv().Exected do
                             main.CheckForRareToken()
                         end
                         main2["pollenTool"].ClickEvent:FireServer(CFrame.new())
-                        if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - puffShroomCFrame.Position).magnitude > main.ConvertToStuds(6.5) then
+                        if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - puffShroomCFrame.Position).magnitude > main.ConvertToStuds(7) then
                             main.Tween(puffShroomCFrame, true)
                         end
-                        main.DistanceNeeded = main.ConvertToStuds(6.5)
+                        main.DistanceNeeded = main.ConvertToStuds(7)
                         if main2.Speed then
                             if main2.CustomSpeed then
                                 localplayer.Character:WaitForChild("Humanoid").WalkSpeed = main2.CustomSpeed   
@@ -1919,7 +1935,7 @@ while wait() and main2.ExecState == getgenv().Exected do
                         wait(0.8)
                     end
                 end
-                wait(5)
+                wait(3)
                 local trueWindy
                 for i, v in pairs(windyFolder:GetChildren()) do
                     if v.Name == "Windy" and v:FindFirstChild("Sound") then
@@ -1928,7 +1944,17 @@ while wait() and main2.ExecState == getgenv().Exected do
                 end
                 while wait() and main2.HuntWindy and windyFolder:FindFirstChild("Windy") do
                     main.CreateVelocity()
+                    local function GetWindyLevel()
+                        for i, v in pairs(workspace.Monsters:GetChildren()) do
+                            if v.Name:find("Windy") then
+                                local lvl = main.GetLevel(v.Name)
+                                return lvl
+                            end
+                        end
+                    end
+                    local lastlvl = GetWindyLevel()
                     repeat
+                        local breakY = false
                         for a, b in pairs(workspace.Collectibles:GetChildren()) do
                             if not b:GetAttribute("Collected") and b:FindFirstChild("FrontDecal") and b.FrontDecal.Texture == "rbxassetid://1629547638" then
                                 main.DestroyVelocity()
@@ -1946,8 +1972,18 @@ while wait() and main2.ExecState == getgenv().Exected do
                         if main2.HuntWindy == false then
                             break
                         end
-                    until not trueWindy:FindFirstChild("Sound")
+                        local newlvl = GetWindyLevel()
+                        if newlvl and newlvl > lastlvl then
+                            breakY = true
+                        end
+                    until breakY
                     main.DestroyVelocity()
+                    local sTime = os.clock()
+                    local eTime = sTime + 8.5
+                    repeat
+                        localplayer.Character:WaitForChild("Humanoid").WalkSpeed = math.random(80, 90)
+                        wait()
+                    until os.clock() >= eTime
                     repeat wait() until not windyFolder:FindFirstChild("Windy") or trueWindy:FindFirstChild("Sound")
                 end
             end
