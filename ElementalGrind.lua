@@ -1,30 +1,3 @@
-
-getgenv().WantedElements = {
-    "Dragon";
-    "Destruction";
-    "Heaven's Wrath";
-    "Acceleration";
-    "Arc of the Elements";
-    "Time";
-    "Hydra";
-    "Illusion";
-    "Cosmic";
-    "Phoenix";
-    "Solar";
-    "Necromancer";
-    "Telekinesis";
-    "Sound"; 
-    "Armament";
-    "Plasma";
-    "Radiation";
-    "Chaos";
-    "Lava";
-    "Prism";
-    "Illusion";
-    "Lunar";
-
-}
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 local localplayer = game.Players.LocalPlayer
 main = {
     windows = {};
