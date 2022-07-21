@@ -2,747 +2,189 @@ local library = loadstring(game:HttpGet(('https://raw.githubusercontent.com/bloo
 local window1 = library:CreateWindow("Autofarm")
 local folder1 = window1:CreateFolder("Options")
 
-local main = {}
-local main2 = {}
+local createdVelocities = {}
+local errorTable = {}
+local scriptFunctions = {
+    ["Main"] = {},
+    ["Side"] = {}
+}
+local playerData = {}
 
-main.UI = {}
 
-main.MyScreenGui = Instance.new("ScreenGui")
-main.MyFrame = Instance.new("Frame")
-local Name = Instance.new("Frame")
-local TextLabel = Instance.new("TextLabel")
-local Scrollingframe = Instance.new("ScrollingFrame")
-main.UI.SproutsFarmedInst = Instance.new("TextLabel")
-local UIListLayout = Instance.new("UIListLayout")
-main.UI.HoneyGainedInst = Instance.new("TextLabel")
-main.UI.ViciousKilledInst = Instance.new("TextLabel")
-main.UI.MondoKilledInst = Instance.new("TextLabel")
-local TextLabel_8 = Instance.new("TextLabel")
-main.UI.Mythic = Instance.new("TextLabel")
-main.UI.Star = Instance.new("TextLabel")
-main.UI.StarTreat = Instance.new("TextLabel")
-main.UI.ColourEggs = Instance.new("TextLabel")
-main.UI.SuperSmoothie = Instance.new("TextLabel")
-main.UI.PurplePotion = Instance.new("TextLabel")
-main.UI.StarJelly = Instance.new("TextLabel")
-main.UI.MagicBean = Instance.new("TextLabel")
-main.UI["Micro-Converter"] = Instance.new("TextLabel")
-main.UI.TropicalDrink = Instance.new("TextLabel")
-main.UI.Neonberry = Instance.new("TextLabel")
-main.UI.Bitterberry = Instance.new("TextLabel")
-main.UI.CloudVial = Instance.new("TextLabel")
-main.UI.MarshmallowBee = Instance.new("TextLabel")
-main.UI.FieldDice = Instance.new("TextLabel")
-main.UI.Glitter = Instance.new("TextLabel")
-main.UI.Enzymes = Instance.new("TextLabel")
-main.UI.Oil = Instance.new("TextLabel")
-main.UI.Glue = Instance.new("TextLabel")
-main.UI.RedExtract = Instance.new("TextLabel")
-main.UI.BlueExtract = Instance.new("TextLabel")
-main.UI.MoonCharm = Instance.new("TextLabel")
-main.UI.Ticket = Instance.new("TextLabel")
-main.UI.Coconut = Instance.new("TextLabel")
-main.UI.RoyalJelly = Instance.new("TextLabel")
-main.UI.Gumdrops = Instance.new("TextLabel")
-main.UI.Strawberry = Instance.new("TextLabel")
-main.UI.Pineapple = Instance.new("TextLabel")
-local TextLabel_37 = Instance.new("TextLabel")
-main.UI.SunflowerSeed = Instance.new("TextLabel")
-main.UI.Blueberry = Instance.new("TextLabel")
-main.MyScreenGui.Name = "main.MyScreenGui"
-main.MyScreenGui.Parent = game.CoreGui
-main.MyScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-main.MyFrame.Parent = main.MyScreenGui
-main.MyFrame.BackgroundColor3 = Color3.fromRGB(74, 74, 74)
-main.MyFrame.BorderSizePixel = 0
-main.MyFrame.Position = UDim2.new(0.552, 0, 0.049, 0)
-main.MyFrame.Size = UDim2.new(0, 216, 0, 563)
-Name.Name = "Name"
-Name.Parent = main.MyFrame
-Name.BackgroundColor3 = Color3.fromRGB(44, 44, 44)
-Name.BorderSizePixel = 0
-Name.Size = UDim2.new(0, 216, 0, 44)
-TextLabel.Parent = Name
-TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-TextLabel.BackgroundTransparency = 1.000
-TextLabel.ClipsDescendants = true
-TextLabel.Size = UDim2.new(0, 216, 0, 44)
-TextLabel.Font = Enum.Font.FredokaOne
-TextLabel.Text = "Script achievements"
-TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-TextLabel.TextSize = 20.000
-Scrollingframe.Name = "Scrolling frame"
-Scrollingframe.Parent = main.MyFrame
-Scrollingframe.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Scrollingframe.BackgroundTransparency = 1.000
-Scrollingframe.BorderSizePixel = 0
-Scrollingframe.Position = UDim2.new(0, 0, 0.0781527534, 0)
-Scrollingframe.Selectable = false
-Scrollingframe.Size = UDim2.new(0, 216, 0, 519)
-Scrollingframe.CanvasPosition = Vector2.new(0, 0)
-main.UI.SproutsFarmedInst.Parent = Scrollingframe
-main.UI.SproutsFarmedInst.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.SproutsFarmedInst.BackgroundTransparency = 1.000
-main.UI.SproutsFarmedInst.BorderSizePixel = 0
-main.UI.SproutsFarmedInst.ClipsDescendants = true
-main.UI.SproutsFarmedInst.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.SproutsFarmedInst.Size = UDim2.new(0, 197, 0, 25)
-main.UI.SproutsFarmedInst.Font = Enum.Font.Gotham
-main.UI.SproutsFarmedInst.Text = "Sprouts farmed:"
-main.UI.SproutsFarmedInst.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.SproutsFarmedInst.TextSize = 15.000
-main.UI.SproutsFarmedInst.TextWrapped = true
-main.UI.SproutsFarmedInst.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.SproutsFarmedInst.TextYAlignment = Enum.TextYAlignment.Bottom
-
-UIListLayout.Parent = Scrollingframe
-UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-UIListLayout.Padding = UDim.new(0, 4)
-
-main.UI.HoneyGainedInst.Parent = Scrollingframe
-main.UI.HoneyGainedInst.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.HoneyGainedInst.BackgroundTransparency = 1.000
-main.UI.HoneyGainedInst.BorderSizePixel = 0
-main.UI.HoneyGainedInst.ClipsDescendants = true
-main.UI.HoneyGainedInst.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.HoneyGainedInst.Size = UDim2.new(0, 197, 0, 25)
-main.UI.HoneyGainedInst.Font = Enum.Font.Gotham
-main.UI.HoneyGainedInst.Text = "Honey gained:"
-main.UI.HoneyGainedInst.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.HoneyGainedInst.TextSize = 15.000
-main.UI.HoneyGainedInst.TextWrapped = true
-main.UI.HoneyGainedInst.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.HoneyGainedInst.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.ViciousKilledInst.Parent = Scrollingframe
-main.UI.ViciousKilledInst.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.ViciousKilledInst.BackgroundTransparency = 1.000
-main.UI.ViciousKilledInst.BorderSizePixel = 0
-main.UI.ViciousKilledInst.ClipsDescendants = true
-main.UI.ViciousKilledInst.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.ViciousKilledInst.Size = UDim2.new(0, 197, 0, 25)
-main.UI.ViciousKilledInst.Font = Enum.Font.Gotham
-main.UI.ViciousKilledInst.Text = "Vicious killed:"
-main.UI.ViciousKilledInst.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.ViciousKilledInst.TextSize = 15.000
-main.UI.ViciousKilledInst.TextWrapped = true
-main.UI.ViciousKilledInst.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.ViciousKilledInst.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.MondoKilledInst.Parent = Scrollingframe
-main.UI.MondoKilledInst.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.MondoKilledInst.BackgroundTransparency = 1.000
-main.UI.MondoKilledInst.BorderSizePixel = 0
-main.UI.MondoKilledInst.ClipsDescendants = true
-main.UI.MondoKilledInst.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.MondoKilledInst.Size = UDim2.new(0, 197, 0, 25)
-main.UI.MondoKilledInst.Font = Enum.Font.Gotham
-main.UI.MondoKilledInst.Text = "Mondo killed:"
-main.UI.MondoKilledInst.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.MondoKilledInst.TextSize = 15.000
-main.UI.MondoKilledInst.TextWrapped = true
-main.UI.MondoKilledInst.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.MondoKilledInst.TextYAlignment = Enum.TextYAlignment.Bottom
-
-TextLabel_8.Parent = Scrollingframe
-TextLabel_8.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-TextLabel_8.BackgroundTransparency = 1.000
-TextLabel_8.BorderSizePixel = 0
-TextLabel_8.ClipsDescendants = true
-TextLabel_8.Position = UDim2.new(0.055555556, 0, 0, 0)
-TextLabel_8.Size = UDim2.new(0, 197, 0, 25)
-TextLabel_8.Font = Enum.Font.Gotham
-TextLabel_8.Text = "-----Tokens Recieved-----"
-TextLabel_8.TextColor3 = Color3.fromRGB(0, 255, 0)
-TextLabel_8.TextSize = 15.000
-TextLabel_8.TextWrapped = true
-TextLabel_8.TextXAlignment = Enum.TextXAlignment.Left
-TextLabel_8.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.Mythic.Parent = Scrollingframe
-main.UI.Mythic.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Mythic.BackgroundTransparency = 1.000
-main.UI.Mythic.BorderSizePixel = 0
-main.UI.Mythic.ClipsDescendants = true
-main.UI.Mythic.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.Mythic.Size = UDim2.new(0, 197, 0, 25)
-main.UI.Mythic.Font = Enum.Font.Gotham
-main.UI.Mythic.Text = "Mythic Eggs:"
-main.UI.Mythic.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Mythic.TextSize = 15.000
-main.UI.Mythic.TextWrapped = true
-main.UI.Mythic.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.Mythic.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.Star.Parent = Scrollingframe
-main.UI.Star.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Star.BackgroundTransparency = 1.000
-main.UI.Star.BorderSizePixel = 0
-main.UI.Star.ClipsDescendants = true
-main.UI.Star.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.Star.Size = UDim2.new(0, 197, 0, 25)
-main.UI.Star.Font = Enum.Font.Gotham
-main.UI.Star.Text = "Star Eggs:"
-main.UI.Star.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Star.TextSize = 15.000
-main.UI.Star.TextWrapped = true
-main.UI.Star.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.Star.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.StarTreat.Parent = Scrollingframe
-main.UI.StarTreat.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.StarTreat.BackgroundTransparency = 1.000
-main.UI.StarTreat.BorderSizePixel = 0
-main.UI.StarTreat.ClipsDescendants = true
-main.UI.StarTreat.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.StarTreat.Size = UDim2.new(0, 197, 0, 25)
-main.UI.StarTreat.Font = Enum.Font.Gotham
-main.UI.StarTreat.Text = "Star Treats :"
-main.UI.StarTreat.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.StarTreat.TextSize = 15.000
-main.UI.StarTreat.TextWrapped = true
-main.UI.StarTreat.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.StarTreat.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.ColourEggs.Parent = Scrollingframe
-main.UI.ColourEggs.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.ColourEggs.BackgroundTransparency = 1.000
-main.UI.ColourEggs.BorderSizePixel = 0
-main.UI.ColourEggs.ClipsDescendants = true
-main.UI.ColourEggs.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.ColourEggs.Size = UDim2.new(0, 197, 0, 25)
-main.UI.ColourEggs.Font = Enum.Font.Gotham
-main.UI.ColourEggs.Text = "Colour Eggs:"
-main.UI.ColourEggs.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.ColourEggs.TextSize = 15.000
-main.UI.ColourEggs.TextWrapped = true
-main.UI.ColourEggs.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.ColourEggs.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.SuperSmoothie.Parent = Scrollingframe
-main.UI.SuperSmoothie.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.SuperSmoothie.BackgroundTransparency = 1.000
-main.UI.SuperSmoothie.BorderSizePixel = 0
-main.UI.SuperSmoothie.ClipsDescendants = true
-main.UI.SuperSmoothie.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.SuperSmoothie.Size = UDim2.new(0, 197, 0, 25)
-main.UI.SuperSmoothie.Font = Enum.Font.Gotham
-main.UI.SuperSmoothie.Text = "Super Smoothies:"
-main.UI.SuperSmoothie.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.SuperSmoothie.TextSize = 15.000
-main.UI.SuperSmoothie.TextWrapped = true
-main.UI.SuperSmoothie.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.SuperSmoothie.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.PurplePotion.Parent = Scrollingframe
-main.UI.PurplePotion.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.PurplePotion.BackgroundTransparency = 1.000
-main.UI.PurplePotion.BorderSizePixel = 0
-main.UI.PurplePotion.ClipsDescendants = true
-main.UI.PurplePotion.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.PurplePotion.Size = UDim2.new(0, 197, 0, 25)
-main.UI.PurplePotion.Font = Enum.Font.Gotham
-main.UI.PurplePotion.Text = "Purple Potions:"
-main.UI.PurplePotion.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.PurplePotion.TextSize = 15.000
-main.UI.PurplePotion.TextWrapped = true
-main.UI.PurplePotion.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.PurplePotion.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.StarJelly.Parent = Scrollingframe
-main.UI.StarJelly.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.StarJelly.BackgroundTransparency = 1.000
-main.UI.StarJelly.BorderSizePixel = 0
-main.UI.StarJelly.ClipsDescendants = true
-main.UI.StarJelly.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.StarJelly.Size = UDim2.new(0, 197, 0, 25)
-main.UI.StarJelly.Font = Enum.Font.Gotham
-main.UI.StarJelly.Text = "Star Jellies:"
-main.UI.StarJelly.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.StarJelly.TextSize = 15.000
-main.UI.StarJelly.TextWrapped = true
-main.UI.StarJelly.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.StarJelly.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.MagicBean.Parent = Scrollingframe
-main.UI.MagicBean.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.MagicBean.BackgroundTransparency = 1.000
-main.UI.MagicBean.BorderSizePixel = 0
-main.UI.MagicBean.ClipsDescendants = true
-main.UI.MagicBean.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.MagicBean.Size = UDim2.new(0, 197, 0, 25)
-main.UI.MagicBean.Font = Enum.Font.Gotham
-main.UI.MagicBean.Text = "Magic Beans:"
-main.UI.MagicBean.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.MagicBean.TextSize = 15.000
-main.UI.MagicBean.TextWrapped = true
-main.UI.MagicBean.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.MagicBean.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI["Micro-Converter"].Parent = Scrollingframe
-main.UI["Micro-Converter"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI["Micro-Converter"].BackgroundTransparency = 1.000
-main.UI["Micro-Converter"].BorderSizePixel = 0
-main.UI["Micro-Converter"].ClipsDescendants = true
-main.UI["Micro-Converter"].Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI["Micro-Converter"].Size = UDim2.new(0, 197, 0, 25)
-main.UI["Micro-Converter"].Font = Enum.Font.Gotham
-main.UI["Micro-Converter"].Text = "Micro Converters:"
-main.UI["Micro-Converter"].TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI["Micro-Converter"].TextSize = 15.000
-main.UI["Micro-Converter"].TextWrapped = true
-main.UI["Micro-Converter"].TextXAlignment = Enum.TextXAlignment.Left
-main.UI["Micro-Converter"].TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.TropicalDrink.Parent = Scrollingframe
-main.UI.TropicalDrink.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.TropicalDrink.BackgroundTransparency = 1.000
-main.UI.TropicalDrink.BorderSizePixel = 0
-main.UI.TropicalDrink.ClipsDescendants = true
-main.UI.TropicalDrink.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.TropicalDrink.Size = UDim2.new(0, 197, 0, 25)
-main.UI.TropicalDrink.Font = Enum.Font.Gotham
-main.UI.TropicalDrink.Text = "Tropical drinks:"
-main.UI.TropicalDrink.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.TropicalDrink.TextSize = 15.000
-main.UI.TropicalDrink.TextWrapped = true
-main.UI.TropicalDrink.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.TropicalDrink.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.Neonberry.Parent = Scrollingframe
-main.UI.Neonberry.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Neonberry.BackgroundTransparency = 1.000
-main.UI.Neonberry.BorderSizePixel = 0
-main.UI.Neonberry.ClipsDescendants = true
-main.UI.Neonberry.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.Neonberry.Size = UDim2.new(0, 197, 0, 25)
-main.UI.Neonberry.Font = Enum.Font.Gotham
-main.UI.Neonberry.Text = "Neonberries:"
-main.UI.Neonberry.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Neonberry.TextSize = 15.000
-main.UI.Neonberry.TextWrapped = true
-main.UI.Neonberry.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.Neonberry.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.Bitterberry.Parent = Scrollingframe
-main.UI.Bitterberry.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Bitterberry.BackgroundTransparency = 1.000
-main.UI.Bitterberry.BorderSizePixel = 0
-main.UI.Bitterberry.ClipsDescendants = true
-main.UI.Bitterberry.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.Bitterberry.Size = UDim2.new(0, 197, 0, 25)
-main.UI.Bitterberry.Font = Enum.Font.Gotham
-main.UI.Bitterberry.Text = "Bitterberries:"
-main.UI.Bitterberry.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Bitterberry.TextSize = 15.000
-main.UI.Bitterberry.TextWrapped = true
-main.UI.Bitterberry.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.Bitterberry.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.CloudVial.Parent = Scrollingframe
-main.UI.CloudVial.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.CloudVial.BackgroundTransparency = 1.000
-main.UI.CloudVial.BorderSizePixel = 0
-main.UI.CloudVial.ClipsDescendants = true
-main.UI.CloudVial.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.CloudVial.Size = UDim2.new(0, 197, 0, 25)
-main.UI.CloudVial.Font = Enum.Font.Gotham
-main.UI.CloudVial.Text = "Cloud Vials:"
-main.UI.CloudVial.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.CloudVial.TextSize = 15.000
-main.UI.CloudVial.TextWrapped = true
-main.UI.CloudVial.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.CloudVial.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.MarshmallowBee.Parent = Scrollingframe
-main.UI.MarshmallowBee.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.MarshmallowBee.BackgroundTransparency = 1.000
-main.UI.MarshmallowBee.BorderSizePixel = 0
-main.UI.MarshmallowBee.ClipsDescendants = true
-main.UI.MarshmallowBee.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.MarshmallowBee.Size = UDim2.new(0, 197, 0, 25)
-main.UI.MarshmallowBee.Font = Enum.Font.Gotham
-main.UI.MarshmallowBee.Text = "Marshmellow bees:"
-main.UI.MarshmallowBee.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.MarshmallowBee.TextSize = 15.000
-main.UI.MarshmallowBee.TextWrapped = true
-main.UI.MarshmallowBee.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.MarshmallowBee.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.FieldDice.Parent = Scrollingframe
-main.UI.FieldDice.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.FieldDice.BackgroundTransparency = 1.000
-main.UI.FieldDice.BorderSizePixel = 0
-main.UI.FieldDice.ClipsDescendants = true
-main.UI.FieldDice.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.FieldDice.Size = UDim2.new(0, 197, 0, 25)
-main.UI.FieldDice.Font = Enum.Font.Gotham
-main.UI.FieldDice.Text = "Field Dices:"
-main.UI.FieldDice.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.FieldDice.TextSize = 15.000
-main.UI.FieldDice.TextWrapped = true
-main.UI.FieldDice.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.FieldDice.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.Glitter.Parent = Scrollingframe
-main.UI.Glitter.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Glitter.BackgroundTransparency = 1.000
-main.UI.Glitter.BorderSizePixel = 0
-main.UI.Glitter.ClipsDescendants = true
-main.UI.Glitter.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.Glitter.Size = UDim2.new(0, 197, 0, 25)
-main.UI.Glitter.Font = Enum.Font.Gotham
-main.UI.Glitter.Text = "Glitters:"
-main.UI.Glitter.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Glitter.TextSize = 15.000
-main.UI.Glitter.TextWrapped = true
-main.UI.Glitter.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.Glitter.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.Enzymes.Parent = Scrollingframe
-main.UI.Enzymes.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Enzymes.BackgroundTransparency = 1.000
-main.UI.Enzymes.BorderSizePixel = 0
-main.UI.Enzymes.ClipsDescendants = true
-main.UI.Enzymes.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.Enzymes.Size = UDim2.new(0, 197, 0, 25)
-main.UI.Enzymes.Font = Enum.Font.Gotham
-main.UI.Enzymes.Text = "Enzymes:"
-main.UI.Enzymes.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Enzymes.TextSize = 15.000
-main.UI.Enzymes.TextWrapped = true
-main.UI.Enzymes.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.Enzymes.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.Oil.Parent = Scrollingframe
-main.UI.Oil.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Oil.BackgroundTransparency = 1.000
-main.UI.Oil.BorderSizePixel = 0
-main.UI.Oil.ClipsDescendants = true
-main.UI.Oil.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.Oil.Size = UDim2.new(0, 197, 0, 25)
-main.UI.Oil.Font = Enum.Font.Gotham
-main.UI.Oil.Text = "Oils:"
-main.UI.Oil.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Oil.TextSize = 15.000
-main.UI.Oil.TextWrapped = true
-main.UI.Oil.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.Oil.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.Glue.Parent = Scrollingframe
-main.UI.Glue.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Glue.BackgroundTransparency = 1.000
-main.UI.Glue.BorderSizePixel = 0
-main.UI.Glue.ClipsDescendants = true
-main.UI.Glue.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.Glue.Size = UDim2.new(0, 197, 0, 25)
-main.UI.Glue.Font = Enum.Font.Gotham
-main.UI.Glue.Text = "Glues:"
-main.UI.Glue.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Glue.TextSize = 15.000
-main.UI.Glue.TextWrapped = true
-main.UI.Glue.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.Glue.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.RedExtract.Parent = Scrollingframe
-main.UI.RedExtract.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.RedExtract.BackgroundTransparency = 1.000
-main.UI.RedExtract.BorderSizePixel = 0
-main.UI.RedExtract.ClipsDescendants = true
-main.UI.RedExtract.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.RedExtract.Size = UDim2.new(0, 197, 0, 25)
-main.UI.RedExtract.Font = Enum.Font.Gotham
-main.UI.RedExtract.Text = "Red Extracts:"
-main.UI.RedExtract.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.RedExtract.TextSize = 15.000
-main.UI.RedExtract.TextWrapped = true
-main.UI.RedExtract.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.RedExtract.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.BlueExtract.Parent = Scrollingframe
-main.UI.BlueExtract.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.BlueExtract.BackgroundTransparency = 1.000
-main.UI.BlueExtract.BorderSizePixel = 0
-main.UI.BlueExtract.ClipsDescendants = true
-main.UI.BlueExtract.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.BlueExtract.Size = UDim2.new(0, 197, 0, 25)
-main.UI.BlueExtract.Font = Enum.Font.Gotham
-main.UI.BlueExtract.Text = "Blue Extracts:"
-main.UI.BlueExtract.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.BlueExtract.TextSize = 15.000
-main.UI.BlueExtract.TextWrapped = true
-main.UI.BlueExtract.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.BlueExtract.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.MoonCharm.Parent = Scrollingframe
-main.UI.MoonCharm.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.MoonCharm.BackgroundTransparency = 1.000
-main.UI.MoonCharm.BorderSizePixel = 0
-main.UI.MoonCharm.ClipsDescendants = true
-main.UI.MoonCharm.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.MoonCharm.Size = UDim2.new(0, 197, 0, 25)
-main.UI.MoonCharm.Font = Enum.Font.Gotham
-main.UI.MoonCharm.Text = "Moon Charms:"
-main.UI.MoonCharm.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.MoonCharm.TextSize = 15.000
-main.UI.MoonCharm.TextWrapped = true
-main.UI.MoonCharm.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.MoonCharm.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.Ticket.Parent = Scrollingframe
-main.UI.Ticket.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Ticket.BackgroundTransparency = 1.000
-main.UI.Ticket.BorderSizePixel = 0
-main.UI.Ticket.ClipsDescendants = true
-main.UI.Ticket.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.Ticket.Size = UDim2.new(0, 197, 0, 25)
-main.UI.Ticket.Font = Enum.Font.Gotham
-main.UI.Ticket.Text = "Tickets:"
-main.UI.Ticket.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Ticket.TextSize = 15.000
-main.UI.Ticket.TextWrapped = true
-main.UI.Ticket.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.Ticket.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.Coconut.Parent = Scrollingframe
-main.UI.Coconut.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Coconut.BackgroundTransparency = 1.000
-main.UI.Coconut.BorderSizePixel = 0
-main.UI.Coconut.ClipsDescendants = true
-main.UI.Coconut.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.Coconut.Size = UDim2.new(0, 197, 0, 25)
-main.UI.Coconut.Font = Enum.Font.Gotham
-main.UI.Coconut.Text = "Coconuts:"
-main.UI.Coconut.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Coconut.TextSize = 15.000
-main.UI.Coconut.TextWrapped = true
-main.UI.Coconut.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.Coconut.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.RoyalJelly.Parent = Scrollingframe
-main.UI.RoyalJelly.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.RoyalJelly.BackgroundTransparency = 1.000
-main.UI.RoyalJelly.BorderSizePixel = 0
-main.UI.RoyalJelly.ClipsDescendants = true
-main.UI.RoyalJelly.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.RoyalJelly.Size = UDim2.new(0, 197, 0, 25)
-main.UI.RoyalJelly.Font = Enum.Font.Gotham
-main.UI.RoyalJelly.Text = "Royal Jellies:"
-main.UI.RoyalJelly.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.RoyalJelly.TextSize = 15.000
-main.UI.RoyalJelly.TextWrapped = true
-main.UI.RoyalJelly.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.RoyalJelly.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.Gumdrops.Parent = Scrollingframe
-main.UI.Gumdrops.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Gumdrops.BackgroundTransparency = 1.000
-main.UI.Gumdrops.BorderSizePixel = 0
-main.UI.Gumdrops.ClipsDescendants = true
-main.UI.Gumdrops.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.Gumdrops.Size = UDim2.new(0, 197, 0, 25)
-main.UI.Gumdrops.Font = Enum.Font.Gotham
-main.UI.Gumdrops.Text = "Gumdrops:"
-main.UI.Gumdrops.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Gumdrops.TextSize = 15.000
-main.UI.Gumdrops.TextWrapped = true
-main.UI.Gumdrops.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.Gumdrops.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.Strawberry.Parent = Scrollingframe
-main.UI.Strawberry.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Strawberry.BackgroundTransparency = 1.000
-main.UI.Strawberry.BorderSizePixel = 0
-main.UI.Strawberry.ClipsDescendants = true
-main.UI.Strawberry.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.Strawberry.Size = UDim2.new(0, 197, 0, 25)
-main.UI.Strawberry.Font = Enum.Font.Gotham
-main.UI.Strawberry.Text = "Strawberries:"
-main.UI.Strawberry.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Strawberry.TextSize = 15.000
-main.UI.Strawberry.TextWrapped = true
-main.UI.Strawberry.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.Strawberry.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.Pineapple.Parent = Scrollingframe
-main.UI.Pineapple.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Pineapple.BackgroundTransparency = 1.000
-main.UI.Pineapple.BorderSizePixel = 0
-main.UI.Pineapple.ClipsDescendants = true
-main.UI.Pineapple.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.Pineapple.Size = UDim2.new(0, 197, 0, 25)
-main.UI.Pineapple.Font = Enum.Font.Gotham
-main.UI.Pineapple.Text = "Pineapples:"
-main.UI.Pineapple.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Pineapple.TextSize = 15.000
-main.UI.Pineapple.TextWrapped = true
-main.UI.Pineapple.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.Pineapple.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.SunflowerSeed.Parent = Scrollingframe
-main.UI.SunflowerSeed.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.SunflowerSeed.BackgroundTransparency = 1.000
-main.UI.SunflowerSeed.BorderSizePixel = 0
-main.UI.SunflowerSeed.ClipsDescendants = true
-main.UI.SunflowerSeed.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.SunflowerSeed.Size = UDim2.new(0, 197, 0, 25)
-main.UI.SunflowerSeed.Font = Enum.Font.Gotham
-main.UI.SunflowerSeed.Text = "Sunflower Seeds:"
-main.UI.SunflowerSeed.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.SunflowerSeed.TextSize = 15.000
-main.UI.SunflowerSeed.TextWrapped = true
-main.UI.SunflowerSeed.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.SunflowerSeed.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.UI.Blueberry.Parent = Scrollingframe
-main.UI.Blueberry.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Blueberry.BackgroundTransparency = 1.000
-main.UI.Blueberry.BorderSizePixel = 0
-main.UI.Blueberry.ClipsDescendants = true
-main.UI.Blueberry.Position = UDim2.new(0.055555556, 0, 0, 0)
-main.UI.Blueberry.Size = UDim2.new(0, 197, 0, 25)
-main.UI.Blueberry.Font = Enum.Font.Gotham
-main.UI.Blueberry.Text = "Blueberries:"
-main.UI.Blueberry.TextColor3 = Color3.fromRGB(255, 255, 255)
-main.UI.Blueberry.TextSize = 15.000
-main.UI.Blueberry.TextWrapped = true
-main.UI.Blueberry.TextXAlignment = Enum.TextXAlignment.Left
-main.UI.Blueberry.TextYAlignment = Enum.TextYAlignment.Bottom
-
-main.MyScreenGui.Enabled = false
-
-local UIS = game:GetService('UserInputService')
-local frame = main.MyFrame
-local dragToggle = nil
-local dragSpeed = 0.25
-local dragStart = nil
-local startPos = nil
-
-local function updateInput(input)
- local delta = input.Position - dragStart
- local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
-  startPos.Y.Scale, startPos.Y.Offset + delta.Y)
- game:GetService('TweenService'):Create(frame, TweenInfo.new(dragSpeed), {Position = position}):Play()
-end
-
-frame.InputBegan:Connect(function(input)
- if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then 
-  dragToggle = true
-  dragStart = input.Position
-  startPos = frame.Position
-  input.Changed:Connect(function()
-   if input.UserInputState == Enum.UserInputState.End then
-    dragToggle = false
-   end
-  end)
- end
-end)
-
-UIS.InputChanged:Connect(function(input)
- if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-  if dragToggle then
-   updateInput(input)
-  end
- end
-end)
-
-main.Version = "2.1.4"
+local Version = "PRE-RELEASE"
 warn("----------------------------------------------------------")
-print("Script Version "..main.Version)
+print("Script Version "..Version)
 warn("-----------------------------------------------------------")
 
-localplayer = game.Players.LocalPlayer
+local localplayer = game.Players.LocalPlayer
+local hrp, hum
 
-getgenv().Exected = not getgenv().Exected
-main2.ExecState = getgenv().Exected
+getgenv().Executed = not getgenv().Executed
+local ExecState = getgenv().Executed
 
-function main.SpawnSplinker()
+local function Announce(title, text)
+    game.StarterGui:SetCore("SendNotification", {
+        Title = tostring(title);
+        Text = tostring(text)
+    })
+end
+
+spawn(function()
+    local done = false
+    repeat
+        for i, v in pairs(workspace.Honeycombs:GetChildren()) do
+            if v:FindFirstChild("Owner") and v.Owner.Value == localplayer then
+                playerData.Hive = v
+                playerData.Bees = 0
+                done = true
+                for a, b in pairs(v.Cells:GetChildren()) do
+                    if b.CellType and b.CellType.Value ~= "Empty" then
+                       playerData.Bees += 1
+                    end
+                end
+            end
+            wait()
+        end
+        wait(1)
+    until done
+end)
+
+local https = game:GetService("HttpService")
+local errorWebhook = "https://hooks.hyra.io/api/webhooks/978695761007091752/yIhzc0EdsHah1LtY7VZ4zcZmsyH6f6e3KSWH-K6ixmG6wr33goU2aI6NoKIJ4D_mBKMy"
+
+local function postSync(webhook, message)
+    local data
+	if type(message) == "string" then
+		data = {
+			["content"] = message
+		}
+	else
+		data = message
+	end
+	local passData = https:JSONEncode(data)
+	local s, e
+	repeat
+		s, e = pcall(function()
+			syn.request({
+                Url = webhook,
+                Method = "POST",
+                Headers = {
+                    ["Content-Type"] = "application/json"
+                },
+                Body = passData
+             })
+		end)
+		if e then
+			print(e)
+			wait(5)
+		end
+	until s
+end
+
+local function reportError(message)
+    print(message)
+	if not table.find(errorTable, message) then
+		table.insert(errorTable, message)
+        
+		local finalMessage = "```lua\n"..message.."```"
+        postSync(errorWebhook, finalMessage)
+	end
+end
+
+local function SpawnSplinker()
     game:GetService("ReplicatedStorage").Events.PlayerActivesCommand:FireServer({["Name"] = "Sprinkler Builder"})
 end
 
-function main.PauseCollectTokens()
-    if main2.CollectTokens then
-        main2.CollectTokens = "paused"
-        repeat wait() until main2.CollectTokensPaused == true
-    end
-end
-
-function main.PlayCollectTokens()
-    if main2.CollectTokens == "paused" then
-        main2.CollectTokens = true
-    end
-end
-
-function main.CreateVelocity()
+local function CreateVelocity()
     local antivelocity = Instance.new("BodyVelocity")
-    antivelocity.Parent = localplayer.Character:WaitForChild("HumanoidRootPart")
+    antivelocity.Parent = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
     antivelocity.Name = "BodyVelocityR"
     antivelocity.Velocity = Vector3.new(0,0,0)
     antivelocity.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+    table.insert(createdVelocities, antivelocity)
 end
 
-function main.DestroyVelocity()
-    for i, v in pairs(localplayer.Character:WaitForChild("HumanoidRootPart"):GetChildren()) do
-        if v.Name == "BodyVelocityR" then
+local function DestroyVelocity()
+    if #createdVelocities >= 1 then
+        for i, v in pairs(createdVelocities) do
             v:Destroy()
+            table.remove(createdVelocities, i)
         end
     end
 end
 
-function main.CheckVelocity()
-    if localplayer.Character:WaitForChild("HumanoidRootPart"):FindFirstChild("BodyVelocityR") then
-        return true
-    else
-        return false
+local monitorDying = coroutine.create(function()
+    local con
+    localplayer.CharacterAdded:Connect(function(char)
+        repeat wait() until char:FindFirstChild("Humanoid")
+        if con then
+            con:Disconnect()
+        end
+        con = char.Humanoid.Died:Connect(function()
+            createdVelocities = {}
+        end)
+    end)
+    if localplayer.Character:FindFirstChild("Humanoid") then
+        con = localplayer.Character.Humanoid.Died:Connect(function()
+            createdVelocities = {}
+        end)
     end
+end)
+coroutine.resume(monitorDying)
+
+local function ConvertToStuds(meters)
+    return meters * (25/7)
 end
 
-function main.Tween(position, build)
-    local rychlost = 180
-    local draha = (localplayer.Character:WaitForChild("HumanoidRootPart").Position - position.Position).magnitude
-    local time = draha / rychlost
-    local s, e = pcall(function()
-        local tweenService = game:GetService("TweenService")
-        local tweenInfo = TweenInfo.new(time, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
-        local newPos = {
+local tweenService = game:GetService("TweenService")
+
+local function Tween(position, build)
+    local tweenInfo, timePeriod, newPos
+    local s, e
+
+    local function TryTween()
+        newPos = {
             CFrame = position
         }
-        local tweenToToken = tweenService:Create(localplayer.Character:WaitForChild("HumanoidRootPart"), tweenInfo, newPos)
-        main.CreateVelocity()
-        tweenToToken:Play()
+        local TweenProcess = tweenService:Create(hrp, tweenInfo, newPos)
+        CreateVelocity()
+        TweenProcess:Play()
         wait(time)
-        main.DestroyVelocity()
-        wait(0.1)
+        DestroyVelocity()
         if build then
-            main.SpawnSplinker()
+            SpawnSplinker()
         end
-    end)
-    if e then
-        main.DestroyVelocity()
-        print("Tween failed: "..e)
     end
+
+    repeat
+        hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
+        timePeriod = (hrp.Position - position.Position).magnitude / 180 -- speed
+        tweenInfo = TweenInfo.new(timePeriod, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
+        s, e = pcall(TryTween)
+        if e then
+            DestroyVelocity()
+            wait()
+            local feedbackMessage = "Tween Failed: "..e
+            reportError(feedbackMessage)
+        end
+    until s
 end
 
-function main.Teleport(location, build)
-    local hrp = localplayer.Character:WaitForChild("HumanoidRootPart")
-    local head = localplayer.Character:WaitForChild("Head")
+local GetDataEvent = game:GetService("ReplicatedStorage").Events.RetrievePlayerStats
+
+local function Teleport(location, build)
+    hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
     hrp.CFrame = location
-    wait()
-    head.Anchored = true
     if build then
-        wait()
-        main.SpawnSplinker()
+        SpawnSplinker()
     end
-    head.Anchored = false
-    wait(0.1)
 end
 
 for i, v in pairs(workspace.FieldDecos:GetChildren()) do
     v:Destroy()
 end
 
-main.MonsterSpawners = {
+local MonsterSpawners = {
     Spider = game:GetService("Workspace").MonsterSpawners["Spider Cave"],
     Rhino = {
         CloverField = game:GetService("Workspace").MonsterSpawners["Rhino Bush"],
@@ -762,275 +204,148 @@ main.MonsterSpawners = {
     };
 }
 
-function main.CheckForRareToken()
-    local s, e = pcall(function()
-        for i, v in pairs(workspace.Collectibles:GetChildren()) do
-            if v:FindFirstChild("FrontDecal") and table.find(main.WantedDecals, tostring(v.FrontDecal.Texture)) then
-                local char = localplayer.Character
-                local hrp = char:WaitForChild("HumanoidRootPart")
-                if char.Head.Anchored then
-                    char.Head.Anchored = false
-                end
-                hrp.CFrame = v.CFrame
-                wait(1.5)
-                warn("VERY RARE COLLECTOR COLLECTED TOKEN!")
-            end
-        end
-    end)
-    if e then
-        print("Check for rare token error: "..e)
-    end
+local Fields = {}
+local FieldsFolder = workspace.FlowerZones
+
+for i, v in pairs(FieldsFolder:GetChildren()) do
+    Fields[v.Name] =  v
 end
 
-local ballPart = Instance.new("Part")
-ballPart.Shape = Enum.PartType.Block
-ballPart.Parent = workspace
-ballPart.Anchored = true
-ballPart.Transparency = 0.5
-ballPart.CanCollide = false
-
-spawn(function()
-    while wait() do
-        ballPart.CFrame = localplayer.Character:WaitForChild("HumanoidRootPart").CFrame
-    end
-end)
-
-main.FieldsFromGame = {}
-local fieldPartsFolder = workspace.FlowerZones
-
-for i, v in pairs(fieldPartsFolder:GetChildren()) do
-    main.FieldsFromGame[v.Name] = {}
-    main.FieldsFromGame[v.Name].Position = v.Position
-    main.FieldsFromGame[v.Name].CFrame = v.CFrame
-    main.FieldsFromGame[v.Name].Size = v.Size
-end
-
-main.FieldsCFrame = {
-    DandelionField = CFrame.new(-29.2758255, 4.47434139, 223.193176, 0.99559617, 4.55320247e-07, -0.0937441587, -3.64502284e-07, 1, 9.85908741e-07, 0.0937441587, -9.47397041e-07, 0.99559617),
-    StrawberryField = CFrame.new(-179.579514, 20.4743423, -15.6190891, 0.991131902, 3.31358674e-09, 0.132881865, 3.4143337e-09, 1, -5.04029778e-08, -0.132881865, 5.04097031e-08, 0.991131902),
-    SunflowerField = CFrame.new(-209.526306, 4.47434139, 172.545761, 0.999995232, -2.75361763e-05, 0.00299389288, 2.71817134e-05, 1, 0.000118445445, -0.00299389288, -0.000118363561, 0.999995232),
-    CloverField = CFrame.new(159.946793, 33.9743385, 197.701874, 0.979202747, 3.05535141e-05, -0.202884331, -1.81147643e-05, 1, 6.31664807e-05, 0.202884331, -5.8177593e-05, 0.979202747),
-    MushroomField = CFrame.new(-92.3079834, 4.47434139, 100.726471, 0.999265134, 7.59286856e-09, -0.0383297503, -7.3443811e-09, 1, 6.62367894e-09, 0.0383297503, -6.33730313e-09, 0.999265134),
-    BlueflowerField = CFrame.new(152.404953, 4.47434139, 98.8800507, -0.349433213, 7.46355298e-08, -0.936961293, -4.59984832e-08, 1, 9.68118243e-08, 0.936961293, 7.69280604e-08, -0.349433213),
-    BambooField = CFrame.new(146.261612, 20.4743423, -28.8527832, 0.991256177, 4.95752461e-09, 0.131951183, -9.88176385e-09, 1, 3.6663824e-08, -0.131951183, -3.76471512e-08, 0.991256177),
-    SpiderField = CFrame.new(-40.871151, 20.4743423, -11.0817919, 0.999660909, 4.44362094e-08, 0.0260362606, -4.39421726e-08, 1, -1.95471976e-08, -0.0260362606, 1.83964808e-08, 0.999660909),
-    PineappleField = CFrame.new(260.2995, 68.4743423, -212.074554, 0.999716222, 1.26461641e-08, 0.0238195788, -1.1256045e-08, 1, -5.84944928e-08, -0.0238195788, 5.82097819e-08, 0.999716222),
-    StumpField = CFrame.new(424.638702, 96.4530945, -180.591034, -0.240895435, 0.00108716323, -0.970550418, -4.20196775e-05, 0.999999344, 0.00113058044, 0.970551014, 0.000313133787, -0.240895137),
-    CactusField = CFrame.new(-177.10025, 68.4743423, -106.503578, 0.988153398, -1.62182925e-08, 0.153469086, 2.96517744e-08, 1, -8.52433573e-08, -0.153469086, 8.87841267e-08, 0.988153398),
-    MountainTopField = CFrame.new(74.9817352, 176.474335, -168.822586, 0.991307795, -1.53894897e-09, -0.131564751, -9.93670568e-09, 1, -8.65677166e-08, 0.131564751, 8.71225581e-08, 0.991307795),
-    PineTreeField = CFrame.new(-326.245239, 68.4743423, -191.689621, 0.190736488, -6.08224653e-08, 0.981641293, 1.90585201e-08, 1, 5.82568305e-08, -0.981641293, 7.59692664e-09, 0.190736488),
-    PumpkinField = CFrame.new(-189.39502, 68.4743423, -187.747314, 0.996335149, -5.92629323e-09, -0.0855375081, 1.60330522e-08, 1, 1.17469192e-07, 0.0855375081, -1.18410071e-07, 0.996335149),
-    CoconutField = CFrame.new(-255.966171, 71.9243469, 462.967896, -0.887088597, 3.49443745e-08, 0.461599231, 8.74586537e-09, 1, -5.88952851e-08, -0.461599231, -4.82082498e-08, -0.887088597),
-    PepperPatch = CFrame.new(-483.694946, 123.675858, 515.096436, 0.329686999, 9.07018984e-05, 0.944090307, 9.45095599e-06, 1, -9.93737121e-05, -0.944090307, 4.16847761e-05, 0.329686999),
-    RoseField = CFrame.new(-327.278229, 20.4243507, 124.169334, 0.99755621, -6.36197761e-09, 0.0698682517, 4.66299044e-09, 1, 2.44801139e-08, -0.0698682517, -2.40944953e-08, 0.99755621)
+local SpawnerFieldTable = {
+    ["Spider Cave"] = "Spider",
+    ["Rhino Bush"] = "Clover",
+    ["Rhino Cave 1"] = "Blueflower",
+    ["Rhino Cave 3"] = "Bamboo",
+    ["WerewolfCave"] = "Cactus",
+    ["RoseBush"] = "Rose",
+    ["Ladubug Bush"] = "Clover",
+    ["MushroomBush"] = "Mushroom",
+    ["Ladybug Bush 2"] = "Strawberry",
+    ["ForestMantis1"] = "Tree",
+    ["PineappleMantis1"] = "Pineapple",
 }
 
-main.RareCollectTokensTable = {}
-
+local RareTokensDecals = {}
 for i, v in pairs(game:GetService("ReplicatedStorage").EggTypes:GetChildren()) do
     if v:IsA("Decal") and v.Name ~= "BasicIcon" and v.Name ~= "TreatIcon" and v.Name ~= "EvictionIcon" and v.Name ~= "RoboPassIcon" and v.Name ~= "SprinklerBuilderIcon" and v.Name ~= "SpiritPetalIcon" and v.Name ~= "BeequipStorageSlotIcon" and v.Name ~= "GummyBounds" and v.Name ~= "BeequipCaseSlotIcon" then
-        main.RareCollectTokensTable[v.Name] = tostring(v.Texture)
+        RareTokensDecals[v.Name] = tostring(v.Texture)
     end
 end
 
-function main.DodgeMobsfce()
-    local s, e = pcall(function()
-        main2.biggestRadius = nil
-        main2.shortestDelay = nil
-        local haha = false
-        main2.nearest = nil
-        main2.shortestMag = nil
-        main2.PartB = nil
+scriptFunctions.Main.DodgeMobs = {
+    ["Active"] = false,
+    ["Paused"] = false
+}
+
+function scriptFunctions.Main.DodgeMobs:Function() -- REWRITE
+    local s, e
+    local biggestRadius, shortestDelay, nearest, shortestMag, PartB
+    local reverse = false
+    local upVec = Vector3.new(0,15,0)
+
+    local function Dodge()
+        hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
 
         for i, v in pairs(game:GetService("Workspace").Monsters:GetChildren()) do
-            if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - v.PrimaryPart.Position).magnitude <= main.ConvertToStuds(15) and not v.Name:find("Mondo") and not v.Name:find("Vicious") and not v.Name:find("Snail") and not v.Name:find("King") and not v.Name:find("Coconut") and not v.Name:find("Windy") then
-                main2.PartB = v.PrimaryPart
-                if main2.biggestRadius == nil then
-                    main2.biggestRadius = v:WaitForChild("Config").AttackRadius.Value
-                elseif main2.biggestRadius < v:WaitForChild("Config").AttackRadius.Value then
-                    main2.biggestRadius = v.Config.AttackRadius.Value
+            if hrp and v.PrimaryPart and (hrp.Position - v.PrimaryPart.Position).magnitude <= ConvertToStuds(15) and not v.Name:find("Mondo") and not v.Name:find("Vicious") and not v.Name:find("Snail") and not v.Name:find("King") and not v.Name:find("Coconut") and not v.Name:find("Windy") then
+                PartB = v.PrimaryPart
+                if not biggestRadius then
+                    biggestRadius = (v:FindFirstChild("Config") or v:WaitForChild("Config")).AttackRadius.Value
+                elseif biggestRadius < (v:FindFirstChild("Config") or v:WaitForChild("Config")).AttackRadius.Value then
+                    biggestRadius = v.Config.AttackRadius.Value
                 end
-                if main2.shortestDelay == nil then
-                    main2.shortestDelay = v:WaitForChild("Config").AttackDelay.Value
-                elseif main2.shortestDelay > v:WaitForChild("Config").AttackDelay.Value then
-                    main2.shortestDelay = v.Config.AttackDelay.Value
+                if not shortestDelay then
+                    shortestDelay = (v:FindFirstChild("Config") or v:WaitForChild("Config")).AttackDelay.Value
+                elseif shortestDelay > (v:FindFirstChild("Config") or v:WaitForChild("Config")).AttackDelay.Value then
+                    shortestDelay = v.Config.AttackDelay.Value
                 end
-                if main2.shortestMag == nil then
-                    main2.shortestMag = (main2.PartB.Position - localplayer.Character:WaitForChild("HumanoidRootPart").Position).magnitude
-                    main2.nearest = v
-                elseif main2.shortestMag > (main2.PartB.Position - localplayer.Character:WaitForChild("HumanoidRootPart").Position).magnitude then
-                    main2.shortestMag = (main2.PartB.Position - localplayer.Character:WaitForChild("HumanoidRootPart").Position).magnitude
-                    main2.nearest = v
+                if not shortestMag then
+                    shortestMag = (PartB.Position - hrp.Position).magnitude
+                    nearest = v
+                elseif shortestMag > (PartB.Position - hrp.Position).magnitude then
+                    shortestMag = (PartB.Position - hrp.Position).magnitude
+                    nearest = v
                 end
-            end
-        end
 
-        if main2.nearest then
-            main2.PartB = main2.nearest.PrimaryPart
-        end
-
-        if main2.PartB ~= nil then           
-            local function Update()
-                for i, v in pairs(game:GetService("Workspace").Monsters:GetChildren()) do
-                    if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - v.PrimaryPart.Position).magnitude <= main.ConvertToStuds(15) and not v.Name:find("Mondo") and not v.Name:find("Vicious") and not v.Name:find("Snail") and not v.Name:find("King") and not v.Name:find("Coconut") and not v.Name:find("Windy") then
-                        main2.PartB = v.PrimaryPart
-                        if main2.biggestRadius == nil then
-                            main2.biggestRadius = v:WaitForChild("Config").AttackRadius.Value
-                        elseif main2.biggestRadius < v:WaitForChild("Config").AttackRadius.Value then
-                            main2.biggestRadius = v.Config.AttackRadius.Value
-                        end
-                        if main2.shortestDelay == nil then
-                            main2.shortestDelay = v:WaitForChild("Config").AttackDelay.Value
-                        elseif main2.shortestDelay > v:WaitForChild("Config").AttackDelay.Value then
-                            main2.shortestDelay = v.Config.AttackDelay.Value
-                        end
-                        if main2.shortestMag == nil then
-                            main2.shortestMag = (main2.PartB.Position - localplayer.Character:WaitForChild("HumanoidRootPart").Position).magnitude
-                            main2.nearest = v
-                        elseif main2.shortestMag > (main2.PartB.Position - localplayer.Character:WaitForChild("HumanoidRootPart").Position).magnitude then
-                            main2.shortestMag = (main2.PartB.Position - localplayer.Character:WaitForChild("HumanoidRootPart").Position).magnitude
-                            main2.nearest = v
-                        end
-                    end
+                if nearest then
+                    PartB = nearest.PrimaryPart
                 end
-                if main2.nearest ~= nil then
-                    main2.PartB = main2.nearest.PrimaryPart
-                end
-            end
-            Update()
 
-            if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - main2.PartB.Position).magnitude <= main.ConvertToStuds(15) then
-                main.CreateVelocity()
-                repeat
-                    local tm = os.clock()
-                    local deadlyTime = false
-                    repeat
-                        wait()
-                        for abrakadabra, cupakabra in pairs(game:GetService("Workspace").Monsters:GetChildren()) do
-                            if cupakabra.LookAt.Value ~= nil then
-                                deadlyTime = true
+                if shortestMag and shortestMag < 50 and PartB then
+                    if (hrp.Position - PartB.Position).magnitude <= ConvertToStuds(15) then
+                        CreateVelocity()
+                        repeat
+                            local tm = os.clock()
+                            local deadlyTime = false
+                            repeat
+                                wait()
+                                for ib, vb in pairs(game:GetService("Workspace").Monsters:GetChildren()) do
+                                    if vb.LookAt.Value ~= nil then
+                                        deadlyTime = true
+                                    end
+                                end
+                            until deadlyTime == true or not game:GetService("Workspace").Monsters:FindFirstChild(nearest.Name)
+                            wait(shortestDelay-0.25-(os.clock() - tm))
+                            if not game:GetService("Workspace").Monsters:FindFirstChild(nearest.Name) then
+                                break
                             end
-                        end
-                    until deadlyTime == true or not game:GetService("Workspace").Monsters:FindFirstChild(main2.nearest.Name)
-                    wait(main2.shortestDelay-0.25-(os.clock() - tm))   
-                    Update()    
-                    if not game:GetService("Workspace").Monsters:FindFirstChild(main2.nearest.Name) then
-                        break
+                            hrp.CFrame += upVec
+                            wait(1.8)
+                            if not game:GetService("Workspace").Monsters:FindFirstChild(nearest.Name) then
+                                break
+                            end
+                            if reverse then
+                                hrp.CFrame = PartB.CFrame + (PartB.CFrame.LookVector*(biggestRadius + 2.5))
+                            else
+                                hrp.CFrame = PartB.CFrame - (PartB.CFrame.LookVector*(biggestRadius + 2.5))
+                            end
+                            hrp.CFrame = CFrame.lookAt(hrp.Position, PartB.Position + Vector3.new(0, localplayer.Character:WaitForChild("HumanoidRootPart").Position.Y - PartB.Position.Y, 0))
+                        until not workspace.Monsters:FindFirstChild(nearest.Name) or not self.Active or self.Paused
+                        DestroyVelocity()
+                        wait()
                     end
-                    localplayer.Character:WaitForChild("HumanoidRootPart").CFrame = localplayer.Character:WaitForChild("HumanoidRootPart").CFrame + Vector3.new(0,15,0)
-                    wait(1.8)
-                    if not game:GetService("Workspace").Monsters:FindFirstChild(main2.nearest.Name) then
-                        break
-                    end
-                    Update()
-                    if haha then
-                        localplayer.Character:WaitForChild("HumanoidRootPart").CFrame = main2.PartB.CFrame + (main2.PartB.CFrame.LookVector*(main2.biggestRadius + 2.5))
-                    else
-                        localplayer.Character:WaitForChild("HumanoidRootPart").CFrame = main2.PartB.CFrame - (main2.PartB.CFrame.LookVector*(main2.biggestRadius + 2.5))
-                    end
-                    localplayer.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.lookAt(localplayer.Character:WaitForChild("HumanoidRootPart").Position, main2.PartB.Position + Vector3.new(0, localplayer.Character:WaitForChild("HumanoidRootPart").Position.Y - main2.PartB.Position.Y, 0))
-                    if main2.DodgeMobs == false then
-                        break
-                    end
-                until not workspace.Monsters:FindFirstChild(main2.nearest.Name)
-                main.DestroyVelocity()
-                wait()
+                end
             end
         end
-    end)
-    if e then
-        print("Dodge mobs error: "..e)
-        main.DestroyVelocity()
+    end
+
+    while wait() and ExecState == getgenv().Executed do
+        if self.Active and not self.Paused then
+            s, e  = pcall(Dodge)
+            if e then
+                DestroyVelocity()
+                reportError("Dodge Mobs Error: "..e)
+            end
+        end
     end
 end
+coroutine.resume(coroutine.create(function()
+    scriptFunctions.Main.DodgeMobs:Function()
+end))
 
-function main.Collect(tk, fast)
+local function Collect(Token, Fast)
     local finished = false
-    if fast then
-        localplayer.Character.Humanoid.WalkSpeed = 85
+    hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
+    if Fast then
+        hum.WalkSpeed = 85
     end
-    localplayer.Character:WaitForChild("HumanoidRootPart").Anchored = true
-    localplayer.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.lookAt(localplayer.Character:WaitForChild("HumanoidRootPart").Position, tk.Position + Vector3.new(0, localplayer.Character:WaitForChild("HumanoidRootPart").Position.Y - tk.Position.Y, 0))
-    localplayer.Character:WaitForChild("HumanoidRootPart").Anchored = false
-    localplayer.Character:WaitForChild("Humanoid"):MoveTo(tk.Position + (localplayer.Character:WaitForChild("HumanoidRootPart").CFrame.LookVector*3))
-    main2.MoveToActive = true
-    tk:SetAttribute("Farmed", 1)
-    local okomad
-    okomad = localplayer.Character:WaitForChild("Humanoid").MoveToFinished:Connect(function()
+    hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
+    hrp.Anchored = true
+    hrp.CFrame = CFrame.lookAt(hrp.Position, Token.Position + Vector3.new(0, hrp.Position.Y - Token.Position.Y, 0))
+    hrp.Anchored = false
+    hum:MoveTo(Token.Position + (hrp.CFrame.LookVector*3))
+    Token:SetAttribute("Farmed", 1)
+    local con
+    con = hum.MoveToFinished:Connect(function()
         finished = true
-        main2.MoveToActive = false
-        okomad:Disconnect()
+        con:Disconnect()
     end)
-    spawn(function()
-        local startTime = os.clock()
-        local endTime = startTime + 2
-        repeat
-            wait()
-        until os.clock() >= endTime or finished == true
-        main2.MoveToActive = false
-    end)   
+    local startTime = os.clock()
+    local endTime = startTime + 2
+    repeat
+        wait()
+    until os.clock() >= endTime or finished
 end
-
-function main.ConvertToStuds(meters)
-    local calc = meters * (25/7)
-    return calc
-end
-
-function main.Announce(title, text)
-    game.StarterGui:SetCore("SendNotification", {
-        Title = tostring(title);
-        Text = tostring(text)
-    })
-end
-
-main.FieldsByString = {
-    Strawberry = main.FieldsCFrame.StrawberryField,
-    Pineapple = main.FieldsCFrame.PineappleField,
-    Sunflower = main.FieldsCFrame.SunflowerField,
-    Dandelion = main.FieldsCFrame.DandelionField,
-    Clover = main.FieldsCFrame.CloverField,
-    Mushroom = main.FieldsCFrame.MushroomField,
-    Flower = main.FieldsCFrame.BlueflowerField,
-    Spider = main.FieldsCFrame.SpiderField,
-    Bamboo = main.FieldsCFrame.BambooField,
-    Cactus = main.FieldsCFrame.CactusField,
-    Pumpkin = main.FieldsCFrame.PumpkinField,
-    Forest = main.FieldsCFrame.PineTreeField,
-    Rose = main.FieldsCFrame.RoseField,
-    Mountain = main.FieldsCFrame.MountainTopField,
-    Coconut = main.FieldsCFrame.CoconutField,
-    Pepper = main.FieldsCFrame.PepperPatch
-}
-
-main.GetDataEvent = game:GetService("ReplicatedStorage").Events.RetrievePlayerStats
-
-main.StartHoneyAmount = main.GetDataEvent:InvokeServer().Totals.Honey
-
-main.StartValues = {}
-for i, v in pairs(main.GetDataEvent:InvokeServer().Totals.EggsReceived) do
-    main.StartValues[i] = v
-end
-
-setmetatable(main.StartValues, {
-    __index = function(table, index)
-        print("Tried to get "..tostring(index).." from table main.StartValues which was nil. Returned 0, metatable 1")
-        return 0
-    end
-})
-
-main.AutoQuestMobsFieldBySpawner = {
-    ["Spider Cave"] = main.FieldsCFrame.SpiderField,
-    ["Rhino Bush"] = main.FieldsCFrame.CloverField,
-    ["Rhino Cave 1"] = main.FieldsCFrame.BlueflowerField,
-    ["Rhino Cave 3"] = main.FieldsCFrame.BambooField,
-    ["WerewolfCave"] = main.FieldsCFrame.CactusField,
-    ["RoseBush"] = main.FieldsCFrame.RoseField,
-    ["Ladubug Bush"] = main.FieldsCFrame.CloverField,
-    ["MushroomBush"] = main.FieldsCFrame.MushroomField,
-    ["Ladybug Bush 2"] = main.FieldsCFrame.StrawberryField,
-    ["ForestMantis1"] = main.FieldsCFrame.PineTreeField,
-    ["PineappleMantis1"] = main.FieldsCFrame.PineappleField,
-}
 
 for i, v in pairs(workspace.Collectibles:GetChildren()) do
     if v.Transparency ~= 0 then
@@ -1038,16 +353,10 @@ for i, v in pairs(workspace.Collectibles:GetChildren()) do
     end
 end
 
-main.sproutsFolder = game:GetService("Workspace").Particles.Folder2
-
-main.Fields = {}
-for i, v in pairs(main.FieldsCFrame) do
-    table.insert(main.Fields, i)
-end
-
+local sproutsFolder = game:GetService("Workspace").Particles.Folder2
 local VS = game:GetService("VirtualUser")
 
-function main.PressKey(key)
+local function PressKey(key)
     VS:CaptureController()
     VS:TypeKey(key)
 end
@@ -1057,87 +366,152 @@ localplayer.Idled:Connect(function()
     VS:ClickButton2(Vector2.new())
 end)
 
-local numbers = {{"k"}, {"Mil"}, {"Bil"}, {"Tril"}, {"Quad"}, {"Quint"}, {"Sext"}, {"Sept"}, {"Oct"}, {"Non"}, {"Dec"}, {"Und"}, {"Duo"}, {"Tred"}, {"Quat"}, {"Quind"}, {"Sexdecillion"}, {"Septen-decillion"}, {"Octodecillion"}, {"Novemdecillion"}, {"Vigintillion"}}
-local last = 1000
-for i, v in pairs(numbers) do
-    table.insert(v, 1, last)
-    last = last*1000
+local function GetCollector()
+    return localplayer.Character:FindFirstChildOfClass("Tool") or localplayer.Backpack:FindFirstChildOfClass("Tool")
 end
- 
-function Calculate(number)
-    local word = {1, ""}
-    for i, v in pairs(numbers) do
-        if number >= v[1] then
-            word = v
+
+local function checkDistance(regionPart, part, sizeY)
+    local pos, size = regionPart.Position, regionPart.Size
+    local minX, maxX, minZ, maxZ, minY, maxY = pos.X - size.X / 2, pos.X + size.X / 2, pos.Z - size.Z / 2, pos.Z + size.Z / 2, pos.Y - (sizeY/3 or size.Y/2), pos.Y + (sizeY/2 or size.Y/2)
+    pos, size = part.Position, part.Size
+    return (pos.X < maxX and pos.X > minX and pos.Z < maxZ and pos.Z > minZ and pos.Y < maxY and pos.Y > minY)
+end
+
+local function getField(part)
+    local pos, size, s, e
+    local minX, maxX, minZ, maxZ, minY, maxY
+
+    local function Try()
+        for i, v in pairs(Fields) do
+            if checkDistance(v, part, 50) then
+                return v
+            end
         end
+        return nil
     end
-    if string.sub((number/word[1]), 3, 3) ~= "." then
-        return string.sub((number/word[1]), 1, 3) .. word[2]
-    else
-        return string.sub((number/word[1]), 1, 2) .. word[2]
-    end
+
+    repeat
+        s, e = pcall(Try)
+        if not s and e then
+            reportError("GetField Error: "..e)
+            wait()
+        end
+    until s
+    return e
 end
 
-spawn(function()
-    while wait(1) do
-        local e, s = pcall(function()
-            main2.pollenTool = localplayer.Character:FindFirstChildOfClass("Tool") or localplayer.Backpack:FindFirstChildOfClass("Tool")
-        end)
-    end
+
+local FieldChosen, FieldToFarm
+local temp = {}
+for i, v in pairs(Fields) do
+    table.insert(temp, i)
+end
+folder1:Dropdown("Choose field", temp, true, function(option)
+    FieldChosen = Fields[option]
+    Announce("Autofarm", "New Target Field: "..FieldChosen.Name)
 end)
 
-folder1:Dropdown("Choose field", main.Fields, true, function(option)
-    main.FieldChosen = main.FieldsCFrame[tostring(option)]
-    main2.FieldToFarmCFrame = main.FieldChosen
-    main.DistanceNeededPart = main2.FieldToFarmCFrame
-    main.Announce("Autofarm", "Now farming "..tostring(option))
-end)
+print("Please choose target field")
+Announce("WARNING", "Please choose target field")
+repeat wait() until FieldChosen
 
-print("SET FIELD TO FARM FIRST, OR WONT WORK!!!!")
-main.Announce("WARNING", "SET FIELD TO FARM FIRST!!!\nWATCH FOR CONSOLE - F9!")
-repeat wait() until main2.FieldToFarmCFrame
-main.Announce("WARNING", "TO USE MYTHIC SPINNER YOU NEED TO SET UNTIL LEGENDARY IN JELLY OPTIONS!\nWATCH FOR CONSOLE - F9!")
-print("TO USE MYTHIC SPINNER YOU NEED TO SET UNTIL LEGENDARY IN JELLY OPTIONS!")
-main2.pollenTool = localplayer.Character:FindFirstChildOfClass("Tool") or localplayer.Backpack:FindFirstChildOfClass("Tool")
+FieldToFarm = FieldChosen
+temp = nil
+
+local Speed, AutoQuest, HuntWindy, AutoMondo, ActivateToys, CustomSpeed, SpinMythics
 
 folder1:Toggle("Autofarm", function(state)
-    main2.Autofarm = state
+    scriptFunctions.Main.Autofarm.Enabled = state
 end)
+
+scriptFunctions.Main.CollectTokens = {
+    ["Active"] = false,
+    ["Paused"] = false,
+    ["Speed"] = false,
+    ["Event"] = false
+}
+function scriptFunctions.Main.CollectTokens:Function()
+    local tokensTable = {}
+    local connection, s ,e
+
+    connection = workspace.Collectibles.ChildAdded:Connect(function(newChild)
+        if checkDistance(FieldToFarm, newChild, 50) then
+            table.insert(tokensTable, newChild)
+        end
+    end)
+
+    local function DoTurn()
+        for i, v in pairs(tokensTable) do
+            if not v or not v.Parent then
+                table.remove(tokensTable, i)
+            end
+        end
+        hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
+        for i, v in pairs(tokensTable) do
+            if not v:GetAttribute("Farmed") and v:FindFirstChild("FrontDecal") and v.FrontDecal.Texture == "rbxassetid://1629547638" and checkDistance(FieldToFarm, v, 50) then
+                Collect(v, self.Speed or Speed)
+            end
+            if not self.Event then
+                if not v:GetAttribute("Farmed") and v:FindFirstChild("FrontDecal") and checkDistance(FieldToFarm, v, 30) then
+                    Collect(v, self.Speed or Speed)
+                else
+                    table.remove(tokensTable, i)
+                end
+            else
+                if not v:GetAttribute("Farmed") and v:FindFirstChild("FrontDecal") and table.find(RareTokensDecals, v.FrontDecal.Texture) and checkDistance(FieldToFarm, v, 50) then
+                    Collect(v, true)
+                else
+                    table.remove(tokensTable, i)
+                end
+            end
+        end
+    end
+
+    while wait() and ExecState == getgenv().Executed do
+        if self.Active and not self.Paused then
+            s, e = pcall(DoTurn)
+            if e then print("Collect tokens error: "..e) end
+        end
+    end
+end
+coroutine.resume(coroutine.create(function()
+    scriptFunctions.Main.CollectTokens:Function()
+end))
 
 folder1:Toggle("Auto-Collect Tokens", function(state)
-    main2.CollectTokens = state
-end)
-
-folder1:Toggle("Speed", function(state)
-    main2.Speed = state
+    scriptFunctions.Main.CollectTokens.Active = state
 end)
 
 folder1:Toggle("Farm Sprouts", function(state)
-    main2.FarmSprouts = state
+    scriptFunctions.Main.FarmSprout.Enabled = state
 end)
-folder1:Toggle("Farm Puffshrooms", function(state)
-    main2.farmPuffshrooms = state
-end)
-folder1:Toggle("Dodge mobs", function(state)
-    main2.DodgeMobs = state
-end)
-folder1:Toggle("Auto Quest", function(state)
-    main2.AutoQuest = state
-end)
+
+--[[folder1:Toggle("Auto Quest", function(state)
+    AutoQuest = state
+end)--]]
+
 folder1:Toggle("Hunt Vicious Bee", function(state)
-    main2.AutoVicious = state
+    scriptFunctions.Main.HuntVicious.Enabled = state
 end)
-folder1:Toggle("Hunt Windy Bee (Alpha)", function(state)
-    main2.HuntWindy = state
-end)
+
+--[[folder1:Toggle("Hunt Windy Bee (Alpha)", function(state)
+    HuntWindy = state
+end)--]]
+
 folder1:Toggle("Hunt Mondo Chick", function(state)
-    main2.AutoMondo = state
+    scriptFunctions.Main.HuntMondo.Enabled = state
 end)
-folder1:Toggle("Activate Toys", function(state)
-    main2.ActivateToys = state
-end)
-folder1:Toggle("Script achievements", function(state)
-    main.MyScreenGui.Enabled = state
+
+--[[folder1:Toggle("Dodge mobs", function(state)
+    scriptFunctions.Main.DodgeMobs.Active = state
+end)--]]
+
+--[[folder1:Toggle("Activate Toys", function(state)
+    ActivateToys = state
+end)--]]
+
+folder1:Toggle("Speed", function(state)
+    Speed = state
 end)
 
 local window4 = library:CreateWindow("Spin Until Mythic")
@@ -1146,129 +520,118 @@ local window5 = library:CreateWindow("Customizations")
 local folder5 = window5:CreateFolder("Settings")
 
 folder5:Box("Custom Speed", "number", function(value)
-    main2.CustomSpeed = value
+    CustomSpeed = value
 end)
-folder5:Toggle("No convert during puff", function(state)
-    main2.NoConvertWhilePuffs = state
-end)
-folder5:Box("Area Size", "number", function(value)
-    local size = main.ConvertToStuds(value)
-    ballPart.Size = Vector3.new(size*2, 10, size*2)
-end)
+
 folder4:Label("SET UNTIL LEGENDARY AND CHOOSE BEE CELL!", {
     TextSize = 11;
     TextColor = Color3.fromRGB(58, 250, 0);
     BgColor = Color3.fromRGB(69,69,69);
-}) 
+})
+
+local MythicBees = {"FuzzyBee", "VectorBee", "SpicyBee", "TadpoleBee", "BuoyantBee", "PreciseBee"}
+
+scriptFunctions.Main.SpinMythics = {
+    ["Active"] = false,
+    ["SpinSettings"] = {}
+}
+
 folder4:Box("LeftToRight", "number", function(value)
-    main2.LeftToRightJ = value
+    scriptFunctions.Main.SpinMythics.SpinSettings.LeftToRightJ = value
 end)
 folder4:Box("BottomToTop", "number", function(value)
-    main2.BottomToTopJ = value
-end)
-main.MythicBees = {"FuzzyBee", "VectorBee", "SpicyBee", "TadpoleBee", "BuoyantBee", "PreciseBee"}
-folder4:Toggle("Enabled", function(state)
-    main2.SpinMythic = state
+    scriptFunctions.Main.SpinMythics.SpinSettings.BottomToTopJ = value
 end)
 
-spawn(function()
-    while wait() and main2.ExecState == getgenv().Exected do
-        if main2.SpinMythic then
-            if not main2.OurHive then
+function scriptFunctions.Main.SpinMythics:Function()
+    local ourHive
+    while wait() and ExecState == getgenv().Executed do
+        if self.Active then
+            if not ourHive then
                 for i, v in pairs(workspace.Honeycombs:GetChildren()) do
                     if v:FindFirstChild("Owner") and v.Owner.Value == localplayer then
-                        main2.OurHive = v
-                        print("Found Hive")
-                    end 
+                        ourHive = v
+                    end
                 end
             end
-            while wait() and main2.SpinMythic do
-                local cell = main2.OurHive.Cells["C"..tostring(main2.LeftToRightJ)..","..tostring(main2.BottomToTopJ)]
-                local cellBee = cell.CellType
-                if table.find(main.MythicBees, cellBee.Value) ~= nil or cell:FindFirstChild("GiftedCell") then
-                    break
-                end
+
+            local cell = ourHive.Cells["C"..tostring(self.SpinSettings.LeftToRightJ)..","..tostring(self.SpinSettings.BottomToTopJ)]
+            local cellBee = cell.CellType
+
+            while self.Active and wait() and not table.find(MythicBees, cellBee.Value) or not cell:FindFirstChild("GiftedCell") do
                 local Event = game:GetService("ReplicatedStorage").Events.ConstructHiveCellFromEgg
-                Event:InvokeServer(tonumber(main2.LeftToRightJ), tonumber(main2.BottomToTopJ), "RoyalJelly")
+                Event:InvokeServer(tonumber(self.SpinSettings.LeftToRightJ), tonumber(self.SpinSettings.BottomToTopJ), "RoyalJelly")
             end
         end
     end
+end
+coroutine.resume(coroutine.create(function()
+    scriptFunctions.Main.SpinMythics:Function()
+end))
+
+folder4:Toggle("Enabled", function(state)
+    scriptFunctions.Main.SpinMythics.Active = state
 end)
 
 folder1:Button("Find Vicious Bee", function()
-    local foundIT = false
     for i, v in pairs(game:GetService("Workspace").Particles:GetChildren()) do
         if v.Name:find("Vicious") then
-            foundIT = true
-            main.Announce("Announcement", v.Name.." Bee found!!!")
-            break
+            Announce("Announcement", v.Name.." Bee found!!!")
+            return
         end
     end
-    if foundIT == false then
-        main.Announce("Announcement", "There is not any vicious bee in the server.")
-    end
+    Announce("Announcement", "There is not any vicious bee in the server.")
 end)
 
-function main.ConvertHoney()
-    main2.Converting = true
-    main.PauseCollectTokens()
-    main.Teleport(localplayer.SpawnPos.Value * CFrame.fromEulerAnglesXYZ(0,math.rad(180),0) + Vector3.new(0,0,8), false)
-    game:GetService("ReplicatedStorage").Events.PlayerHiveCommand:FireServer("ToggleHoneyMaking")
-    localplayer.Character.Head.Anchored = true
+local HiveCommandEvent = game:GetService("ReplicatedStorage").Events.PlayerHiveCommand
+local function ConvertHoney()
+    scriptFunctions.Main.CollectTokens.Paused = true
+    Teleport(localplayer.SpawnPos.Value * CFrame.fromEulerAnglesXYZ(0,math.rad(180),0) + Vector3.new(0,0,8), false)
+    wait(1)
+    HiveCommandEvent:FireServer("ToggleHoneyMaking")
     repeat
         wait(1)
-        if main2.TokenCollector then
-            for i, v in pairs(workspace.Collectibles:GetChildren()) do
-                if v:FindFirstChild("FrontDecal") and table.find(main.WantedDecals, tostring(v.FrontDecal.Texture)) then
-                    local char = localplayer.Character
-                    local hrp = char:WaitForChild("HumanoidRootPart")
-                    if char.Head.Anchored then
-                        char.Head.Anchored = false
-                    end
-                    hrp.CFrame = v.CFrame
-                    wait(1.5)
-                    warn("VERY RARE COLLECTOR COLLECTED TOKEN!")
-                    main.ConvertHoney()
-                end
-            end
-        end
     until localplayer.CoreStats.Pollen.Value <= 0
     wait(8)
-    localplayer.Character.Head.Anchored = false
-    main2.Converting = false
-    main.PlayCollectTokens()
+    Teleport(FieldToFarm.CFrame + Vector3.new(0,5,0), true)
+    scriptFunctions.Main.CollectTokens.Paused = false
 end
 
-main.NPCFolder = workspace.NPCs
-main2.FieldSaved = "no"
+local NPCFolder = workspace.NPCs
 
-function main.KillMob(textos)
-    local af, sf = pcall(function()
-        for b, c in pairs(main.MonsterSpawners) do
+local killMobsData = {}
+
+local function KillMob(textos) -- REWRITE
+    local s, e = pcall(function()
+        for b, c in pairs(MonsterSpawners) do
             if textos:find(tostring(b)) then
                 if type(c) == "table" then
                     for d, e in pairs(c) do
                         for osu, ozu in pairs(game:GetService("ReplicatedStorage").MonsterTypes:GetChildren()) do
                             if string.find(ozu.Name, b) then
-                                main2.LastKilledTime = main.GetDataEvent:InvokeServer().MonsterTimes[e.Name]
-                                main2.MonsterSpawnTime = main2.LastKilledTime + require(ozu).Stats.RespawnCooldown
+                                killMobsData.LastKilledTime = GetDataEvent:InvokeServer().MonsterTimes[e.Name]
+                                killMobsData.MonsterSpawnTime = killMobsData.LastKilledTime + require(ozu).Stats.RespawnCooldown
                             end
                         end
-                        if main2.MonsterSpawnTime < os.time() then
-                                for ab, cd in pairs(main.AutoQuestMobsFieldBySpawner) do
+                        if killMobsData.MonsterSpawnTime < os.time() then
+                                for ab, cd in pairs(SpawnerFieldTable) do
+                                    local spawnerField
+                                    for abcd, efgh in pairs(Fields) do
+                                        if string.find(string.lower(abcd), string.lower(cd)) then
+                                            spawnerField = efgh
+                                        end
+                                    end
+
                                     if e.Name == ab then
-                                        main.Tween(cd, true)
+                                        Tween(spawnerField.CFrame, true)
+                                        hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
                                         repeat
-                                            main.DodgeMobsfce()
-                                            if main2.Speed then
-                                                if main2.CustomSpeed then
-                                                    localplayer.Character:WaitForChild("Humanoid").WalkSpeed = main2.CustomSpeed   
-                                                else
-                                                    localplayer.Character:WaitForChild("Humanoid").WalkSpeed = math.random(70, 80)
-                                                end
+                                            if Speed then
+                                                hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
+                                                hum.WalkSpeed = CustomSpeed or math.random(70, 80)
                                             end
                                             wait()
-                                        until main2.LastKilledTime ~= main.GetDataEvent:InvokeServer().MonsterTimes[e.Name]
+                                        until killMobsData.LastKilledTime ~= GetDataEvent:InvokeServer().MonsterTimes[e.Name]
                                         wait(5)
                                     end
                                 end
@@ -1277,25 +640,28 @@ function main.KillMob(textos)
                 else
                     for osu, ozu in pairs(game:GetService("ReplicatedStorage").MonsterTypes:GetChildren()) do
                         if string.find(ozu.Name, b) then
-                            main2.LastKilledTime = main.GetDataEvent:InvokeServer().MonsterTimes[c.Name]
-                            main2.MonsterSpawnTime = main2.LastKilledTime + require(ozu).Stats.RespawnCooldown
+                            killMobsData.LastKilledTime = GetDataEvent:InvokeServer().MonsterTimes[c.Name]
+                            killMobsData.MonsterSpawnTime = killMobsData.LastKilledTime + require(ozu).Stats.RespawnCooldown
                         end
                     end
-                    if main2.MonsterSpawnTime < os.time() then
-                            for ab, cd in pairs(main.AutoQuestMobsFieldBySpawner) do
+                    if killMobsData.MonsterSpawnTime < os.time() then
+                            for ab, cd in pairs(SpawnerFieldTable) do
+                                local spawnerField
+                                for abcd, efgh in pairs(Fields) do
+                                    if string.find(string.lower(abcd), string.lower(cd)) then
+                                        spawnerField = efgh
+                                    end
+                                end
                                 if c.Name == ab then
-                                    main.Tween(cd, true)
+                                    Tween(spawnerField.CFrame, true)
+                                    hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
                                     repeat
-                                        main.DodgeMobsfce()
-                                        if main2.Speed then
-                                            if main2.CustomSpeed then
-                                                localplayer.Character:WaitForChild("Humanoid").WalkSpeed = main2.CustomSpeed   
-                                            else
-                                                localplayer.Character:WaitForChild("Humanoid").WalkSpeed = math.random(70, 80)
-                                            end
+                                        if Speed then
+                                            hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
+                                            hum.WalkSpeed = CustomSpeed or math.random(70, 80)
                                         end
                                         wait()
-                                    until main.GetDataEvent:InvokeServer().MonsterTimes[c.Name] ~= main2.LastKilledTime
+                                    until GetDataEvent:InvokeServer().MonsterTimes[c.Name] ~= killMobsData.LastKilledTime
                                     wait(5)
                                 end
                             end
@@ -1304,78 +670,94 @@ function main.KillMob(textos)
             end
         end
     end)
-    if sf then
-        print("Kill Mob error: "..sf)
+    if e then
+        reportError("KillMob Error: "..e)
+        wait()
     end
 end
 
-function main.AutoViciousFce()
-    local s, e = pcall(function()  
+scriptFunctions.Main.HuntVicious = {
+    ["Enabled"] = false,
+    ["Paused"] = false
+}
+
+function scriptFunctions.Main.HuntVicious:Activate()
+    local s, e, fieldSave
+    local upVector = Vector3.new(0,20,0)
+    local function TryHunt()
         for i, v in pairs(game:GetService("Workspace").Particles:GetChildren()) do
             if v.Name:find("Vicious") then
-                print(v.Name.." Bee found!!!")
-                localplayer.Character:WaitForChild("HumanoidRootPart").CFrame = v.CFrame + Vector3.new(0,10,0)
-                wait(2)
-                main.CreateVelocity()
-                repeat
-                    if not main.CheckVelocity() then
-                        main.CreateVelocity()
-                    end
-                    localplayer.Character:WaitForChild("HumanoidRootPart").CFrame = v.CFrame + (v.CFrame.rightVector*10) + Vector3.new(0,20,0)
-                    wait()
-                    if main2.AutoVicious == false then
-                        break
-                    end
-                until not workspace.Particles:FindFirstChild("Vicious")
-                main.DestroyVelocity()
-                if main2.AutoVicious ~= false then
-                    main.ViciousKilled = main.ViciousKilled + 1
+                if not fieldSave then
+                    fieldSave = FieldToFarm
                 end
-                wait(1)
+                FieldToFarm = getField(v)
+                print(FieldToFarm.Name)
+                hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
+                hrp.CFrame = v.CFrame + Vector3.new(0,10,0)
+                wait(2)
+                CreateVelocity()
+                repeat
+                    hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
+                    if #createdVelocities == 0 then
+                        CreateVelocity()
+                    end
+                   hrp.CFrame = v.CFrame + (v.CFrame.rightVector*10) + upVector
+                    wait()
+                until not workspace.Particles:FindFirstChild("Vicious") or not self.Enabled or self.Paused
+                FieldToFarm = fieldSave
+                DestroyVelocity()
             end
         end
-    end)
-    if e then
-        print("Hunt vicious error: "..e)
-        main.DestroyVelocity()
     end
+    repeat
+        s, e = pcall(TryHunt)
+        if e then
+            DestroyVelocity()
+            reportError("HuntVicious Error: "..e)
+            wait()
+        end
+    until s or not self.Enabled or self.Paused
 end
 
-function main.CheckForUnfinishedAction()
-    for i, v in pairs(main.NPCFolder:GetChildren()) do
+local function GetLevel(text)
+    local lvlstr = string.match(text, "[%d]+")
+    local lvl = tonumber(lvlstr)
+    return lvl
+end
+
+local function CheckForUnfinishedAction()
+    for i, v in pairs(NPCFolder:GetChildren()) do
         if v.Platform.AlertPos.AlertGui.ImageLabel.ImageTransparency == 0 and v.Name ~= "Gummy Bear" then
             if v:FindFirstChild("Circle") then
-                if (v.Circle.Position - localplayer.Character:WaitForChild("HumanoidRootPart").Position).magnitude > main.ConvertToStuds(2.5) then
-                    main.Teleport(v.Circle.CFrame + Vector3.new(0,10,0), false)
-                end
+                Teleport(v.Circle.CFrame + Vector3.new(0,5,0), false)
                 wait(0.3)
-                main.PressKey("e")
+                PressKey("e")
                 repeat
                     for _, v in pairs(getconnections(game:GetService("Players").LocalPlayer.PlayerGui.ScreenGui.NPC.ButtonOverlay.MouseButton1Click)) do
                         v:Fire()
                     end
                     wait(0.2)
                 until game:GetService("Players").LocalPlayer.PlayerGui.ScreenGui.NPC.Visible == false
-                main.CheckForUnfinishedAction()
+                CheckForUnfinishedAction()
             end
         end
     end
 end
 
-
-function main.AutoQuestFce()
+local farming, FieldSaved, QuestFieldFarming
+local function AutoQuestFce() -- REWRITE
     local questFolder = game:GetService("Players").LocalPlayer.PlayerGui.ScreenGui.Menus.Children.Quests.Content
     if not questFolder:FindFirstChild("Frame") then
-        main2.farming = false
-        main2.FieldToFarmCFrame = main2.FieldSaved
+        farming = false
+        FieldToFarm = FieldSaved
         return false
     end
 
-    if main2.farming then
-        if main2.QuestFieldFarming.Description.Text:find("Complete!") then
-            main2.farming = false
-            main2.FieldToFarmCFrame = main2.FieldSaved
-            print("Farming quest finished: "..main2.QuestFieldFarming.Description.Text)
+    if farming then
+        if QuestFieldFarming.Description.Text:find("Complete!") then
+            farming = false
+            FieldToFarm = FieldSaved
+            print("Farming quest finished: "..QuestFieldFarming.Description.Text)
         end
     end
 
@@ -1384,10 +766,10 @@ function main.AutoQuestFce()
 
     for i, v in pairs(questFolder.Frame:GetDescendants()) do
         if v.Name == "TaskBar" and not string.find(v.Description.Text, "Complete!") then
-            if not main2.farming and v.Description.Text:find("Collect") and (v.Description.Text:find("Pollen") or v.Description.Text:find("Goo")) then
+            if not farming and v.Description.Text:find("Collect") and (v.Description.Text:find("Pollen") or v.Description.Text:find("Goo")) then
                 if v.Description.Text:find("Field") or v.Description.Text:find("Patch") or v.Description.Text:find("Forest") then
                     local str1 = string.gsub(v.Description.Text, ",", "")
-                    local lvl = main.GetLevel(str1)
+                    local lvl = GetLevel(str1)
                     if lvl < theLeast then
                         theLeast = lvl
                         theLeastQuest = v
@@ -1395,21 +777,21 @@ function main.AutoQuestFce()
                 else
                     if v.Description.Text:find("Red") then
                         local str1 = string.gsub(v.Description.Text, ",", "")
-                        local lvl = main.GetLevel(str1)
+                        local lvl = GetLevel(str1)
                         if lvl < theLeast then
                             theLeast = lvl
                             theLeastQuest = v
                         end
                     elseif v.Description.Text:find("Blue") then
                         local str1 = string.gsub(v.Description.Text, ",", "")
-                        local lvl = main.GetLevel(str1)
+                        local lvl = GetLevel(str1)
                         if lvl < theLeast then
                             theLeast = lvl
                             theLeastQuest = v
                         end
                     elseif v.Description.Text:find("White") then
                         local str1 = string.gsub(v.Description.Text, ",", "")
-                        local lvl = main.GetLevel(str1)
+                        local lvl = GetLevel(str1)
                         if lvl < theLeast then
                             theLeast = lvl
                             theLeastQuest = v
@@ -1417,531 +799,179 @@ function main.AutoQuestFce()
                     end
                 end
             elseif v.Description.Text:find("Defeat") then
-                main.KillMob(v.Description.Text)
+                KillMob(v.Description.Text)
             end
         end
     end
 
-    if not main2.farming then
-        for a, b in pairs(main.FieldsByString) do
+    if not farming then
+        for a, b in pairs(Fields) do
             if theLeastQuest.Description.Text:find(a) then
-                main2.FieldSaved = main2.FieldToFarmCFrame
-                main2.FieldToFarmCFrame = b
-                main2.farming = true
-                main2.QuestFieldFarming = theLeastQuest
+                FieldSaved = FieldToFarm
+                FieldToFarm = b
+                farming = true
+                QuestFieldFarming = theLeastQuest
                 print("Farming: "..theLeastQuest.Description.Text)
+            else
+                if theLeastQuest.Description.Text:find("Red") then
+                    FieldSaved = FieldToFarm
+                    FieldToFarm = Fields["Strawberry Field"]
+                    farming = true
+                    QuestFieldFarming = theLeastQuest
+                    print("Farming: "..theLeastQuest.Description.Text)
+                elseif theLeastQuest.Description.Text:find("Blue") then
+                    FieldSaved = FieldToFarm
+                    for i, v in pairs(Fields) do
+                        if v.Name:find("Pine") then
+                            FieldToFarm = v
+                        end
+                    end
+                    farming = true
+                    QuestFieldFarming = theLeastQuest
+                    print("Farming: "..theLeastQuest.Description.Text)
+                elseif theLeastQuest.Description.Text:find("White") then
+                    FieldSaved = FieldToFarm
+                    for i, v in pairs(Fields) do
+                        if v.Name:find("Coconut") then
+                            FieldToFarm = v
+                        end
+                    end
+                    farming = true
+                    QuestFieldFarming = theLeastQuest
+                    print("Farming: "..theLeastQuest.Description.Text)
+                end
             end
         end
     end 
 end
 
-local window2 = library:CreateWindow("Token Collector")
-local folder22 = window2:CreateFolder("Options")
-main.WantedDecals = {}
-
-folder22:Box("Insert decal", "string", function(decal)
-    table.insert(main.WantedDecals, decal)
-end)
-
-folder22:Toggle("Activate", function(state)
-    main.TokenCollector = state
-end)
-
-main.DefaultLength = {}
-
-for i, v in pairs(main.GetDataEvent:InvokeServer().Totals.EggsReceived) do
-    if main.UI[i] ~= nil then
-        main.DefaultLength[i] = main.UI[i].Text
-    end
-end
-
-main.HoneySaved = nil
-
-main.CurrentColourEggs = 0
-main.DEFColourEggs = 0
-main.SaveColourEggs = 0
-local filename = "LukeBSS.json"
-local def = {
-    HoneySaved = 0,
-    SproutsFarmed = 0,
-    ViciousKilled = 0,
-    MondoKilled = 0,
-    ColourEggsNum = 0,
+scriptFunctions.Main.FarmSprout = {
+    ["Enabled"] = false,
+    ["Paused"] = false,
 }
-for i, v in pairs(main.GetDataEvent:InvokeServer().Totals.EggsReceived) do
-    if main.UI[i] ~= nil then
-        def[i] = 0
-    end
-end
-main.ColourEggs = 0
-for i, v in pairs(main.StartValues) do
-    if i == "Diamond" then
-        main.ColourEggs = main.ColourEggs + main.StartValues.Diamond
-    elseif i == "Gold" then
-        main.ColourEggs = main.ColourEggs + main.StartValues.Gold
-    elseif i == "Silver" then
-        main.ColourEggs = main.ColourEggs + main.StartValues.Silver
-    elseif i == "GiftedSilver" then
-        main.ColourEggs = main.ColourEggs + main.StartValues.GiftedSilver
-    elseif i == "GiftedGold" then
-        main.ColourEggs = main.ColourEggs + main.StartValues.GiftedGold
-    end
-end
-main.SavedValues = {}
-if not pcall(function() readfile(filename) end) then writefile(filename, game:GetService("HttpService"):JSONEncode(def)) end 
-main.Settings = game:GetService("HttpService"):JSONDecode(readfile(filename))
-main.HoneySaved = main.Settings.HoneySaved
-main.SproutsFarmed = main.Settings.SproutsFarmed
-main.ViciousKilled = main.Settings.ViciousKilled
-main.MondoKilled = main.Settings.MondoKilled
-main.SaveColourEggs = main.Settings.ColourEggsNum
-
-for i, v in pairs(main.GetDataEvent:InvokeServer().Totals.EggsReceived) do
-    if main.UI[i] ~= nil and main.Settings[i] ~= nil then
-        main.SavedValues[i] = main.Settings[i]
-    else
-        if main.UI[i] ~= nil then
-            main.SavedValues[i] = 0
+function scriptFunctions.Main.FarmSprout:Activate() -- REMAKE
+    while self.Enabled and not self.Paused and sproutsFolder:FindFirstChild("Sprout") and sproutsFolder.Sprout:GetAttribute("Current") and wait() do
+        hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
+        hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
+        GetCollector().ClickEvent:FireServer(CFrame.new())
+        if not checkDistance(FieldToFarm, hrp, 50) then
+            Teleport(FieldToFarm.CFrame + Vector3.new(0,3,0), true)
+        end
+        if Speed then
+            hum.WalkSpeed = CustomSpeed or math.random(70, 80)
+        end
+        if (localplayer.CoreStats.Pollen.Value / localplayer.CoreStats.Capacity.Value) >= 0.99 then
+            ConvertHoney()
         end
     end
-end
-
-setmetatable(main, {
-    __index = function(table, index)
-        print("Tried to get "..tostring(index).." from table main which was nil. Returned 0, metatable 2")
-        main[index] = 0
-        return 0
-    end
-})
-
-function save()
-    main.Settings.HoneySaved = main.HoneyToSave
-    main.Settings.SproutsFarmed = main.SproutsFarmed
-    main.Settings.ViciousKilled = main.ViciousKilled
-    main.Settings.MondoKilled = main.MondoKilled
-    main.Settings.ColourEggsNum = main.SaveColourEggs
-    for i, v in pairs(main.GetDataEvent:InvokeServer().Totals.EggsReceived) do
-        if main.UI[i] ~= nil then
-            main.Settings[i] = v - main.StartValues[i] + main.SavedValues[i]
-        end
-    end
-    writefile(filename,game:GetService("HttpService"):JSONEncode(main.Settings))
-end
-
-spawn(function()
-    while wait(12) and main2.ExecState == getgenv().Exected do
-        save()
-    end
-end)
-spawn(function()
-    while wait(10) and main2.ExecState == getgenv().Exected do
-        main.HoneyToSave = main.GetDataEvent:InvokeServer().Totals.Honey - main.StartHoneyAmount + main.HoneySaved
-        main.UI.HoneyGainedInst.Text = "Honey Gained: "..tostring(Calculate(math.floor(main.HoneyToSave + main.HoneySaved)))
-        main.UI.SproutsFarmedInst.Text = "Sprouts farmed: "..tostring(main.SproutsFarmed)
-        main.UI.ViciousKilledInst.Text = "Vicious killed: "..tostring(main.ViciousKilled)
-        main.UI.MondoKilledInst.Text = "Mondo killed: "..tostring(main.MondoKilled)
-        for i, v in pairs(main.GetDataEvent:InvokeServer().Totals.EggsReceived) do
-            if main.UI[i] ~= nil then
-                main.UI[i].Text = main.DefaultLength[i].." "..tostring(v - main.StartValues[i] + main.SavedValues[i])
-            end
-        end
-        local gaga = main.GetDataEvent:InvokeServer().Totals.EggsReceived
-        local vla = main.CurrentColourEggs
-        for i, v in pairs(main.StartValues) do
-            if i == "Diamond" then
-                main.CurrentColourEggs = main.CurrentColourEggs + gaga.Diamond
-            elseif i == "Gold" then
-                main.CurrentColourEggs = main.CurrentColourEggs + gaga.Gold
-            elseif i == "Silver" then
-                main.CurrentColourEggs = main.CurrentColourEggs + gaga.Silver
-            elseif i == "GiftedSilver" then
-                main.CurrentColourEggs = main.CurrentColourEggs + gaga.GiftedSilver
-            elseif i == "GiftedGold" then
-                main.CurrentColourEggs = main.CurrentColourEggs + gaga.GiftedGold
-            end
-        end
-        main.CurrentColourEggs = main.CurrentColourEggs - vla
-        main.DEFColourEggs = main.CurrentColourEggs - main.ColourEggs
-        main.SaveColourEggs = main.DEFColourEggs + main.SaveColourEggs
-        main.UI.ColourEggs.Text = "Colour Eggs: "..tostring(main.DEFColourEggs)
-    end
-    main.MyScreenGui:Destroy()
-end)
-
-main.ParticlesToCollect = {"Crosshair"}
-main.Counter = 0 
-spawn(function()
-    while wait() and main2.ExecState == getgenv().Exected do
-        if main2.CollectTokens == true then
-            local success, error = pcall(function()
-                local insideField = true
-                local tpPart
-                if main.puffshrooming then
-                    tpPart = main.DistanceNeededPart
-                else
-                    tpPart = main2.FieldToFarmCFrame
-                end
-                if not main.puffshrooming and not main.KeepTokensActive and (localplayer.Character:WaitForChild("HumanoidRootPart").Position - tpPart.Position).magnitude > main.ConvertToStuds(15) then
-                    insideField = false
-                end
-                if workspace.Particles:FindFirstChild("Crosshair") then
-                    if (main.Counter % 2) ~= 0 then
-                        for i, v in pairs(workspace.Particles:GetChildren()) do
-                            if v.Name == "Crosshair" then
-                                v.Name = "Current"
-                                main.Collect(v)
-                                repeat wait() until not workspace.Particles:FindFirstChild("Current")
-                                wait(0.1)
-                            end
-                        end
-                    else
-                        wait(0.8)
-                        for i, v in pairs(workspace.Particles:GetChildren()) do
-                            if v.Name == "Crosshair" then
-                                main.Collect(v)
-                                v.Name = "Activated"
-                                repeat wait() until not main2.MoveToActive
-                            end
-                        end
-                    end
-                    main.Counter += 1
-                end
-                for c, d in pairs(workspace.Collectibles:GetChildren()) do
-                    if d:FindFirstChild("FrontDecal") and not d:GetAttribute("Farmed") and d.FrontDecal.Texture == "rbxassetid://1629547638" then
-                        if insideField then
-                            if (tpPart.Position - d.Position).magnitude < main.DistanceNeeded then
-                                if not main2.MoveToActive then
-                                    main.Collect(d)
-                                end
-                            end
-                        else 
-                            if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - d.Position).magnitude < main.ConvertToStuds(10) then
-                                if not main2.MoveToActive then
-                                    main.Collect(d)
-                                end
-                            end
-                            break
-                        end
-                    end
-                end
-                for c, d in pairs(workspace.Collectibles:GetChildren()) do
-                    if d:FindFirstChild("FrontDecal") and d.FrontDecal.Texture ~= "rbxassetid://1472135114" and not d:GetAttribute("Farmed") then
-                        if insideField then
-                            if (tpPart.Position - d.Position).magnitude < main.DistanceNeeded then
-                                if not main2.MoveToActive then
-                                    main.Collect(d)
-                                end
-                            end
-                        else 
-                            if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - d.Position).magnitude < main.ConvertToStuds(8) then
-                                if not main2.MoveToActive then
-                                    main.Collect(d)
-                                end
-                            end
-                            break
-                        end
-                    end
-                end
-        end)
-    
-            if error then
-                print("Collect token fce failed: "..tostring(error))
-            end
-        elseif main2.CollectTokens == "paused" then
-            main2.CollectTokensPaused = true
-            repeat wait() until main2.CollectTokens == true
-            main2.CollectTokensPaused = false
-        end
-    end
-end)
-
-function main.FarmSprout()
-    while main["sproutsFolder"]:FindFirstChild("Sprout") and main["sproutsFolder"]:FindFirstChild("Sprout"):GetAttribute("Current") do
-        if main2.CollectorEnabled == true then
-            main.CheckForRareToken()
-        end
-
-        if main2.FarmSprouts == true then
-            main2["pollenTool"].ClickEvent:FireServer(CFrame.new())
-            if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - main2.FieldToFarmCFrame.Position).magnitude > main.ConvertToStuds(15) then
-                main.Tween(main2.FieldToFarmCFrame, true)
-            end
-            if main2.Speed then
-                if main2.CustomSpeed then
-                    localplayer.Character:WaitForChild("Humanoid").WalkSpeed = main2.CustomSpeed   
-                else
-                    localplayer.Character:WaitForChild("Humanoid").WalkSpeed = math.random(70, 80)
-                end
-            end
-            if (localplayer.CoreStats.Pollen.Value / localplayer.CoreStats.Capacity.Value) >= 0.99 then
-                main.ConvertHoney()    
-            end
-        else
-            return
-        end
-        wait()
-    end
-    main.PauseCollectTokens()
     local startTime = os.clock()
     local endTime = startTime + 40
+    scriptFunctions.Main.CollectTokens.Event = true
     repeat
-        local success, error = pcall(function()
-            localplayer.Character:WaitForChild("Humanoid").WalkSpeed = math.random(80, 90)
-            for i, v in pairs(main.RareCollectTokensTable) do
-                for c, d in pairs(workspace.Collectibles:GetChildren()) do
-                    if d:FindFirstChild("FrontDecal") and not d:GetAttribute("Farmed") and tostring(d.FrontDecal.Texture) == v then
-                        if (main2.FieldToFarmCFrame.Position - d.Position).magnitude < main.ConvertToStuds(15) then
-                            if main2.MoveToActive then
-                                repeat wait() until not main2.MoveToActive
-                            end
-                            main.Collect(d, true)
-                            break
-                        end
-                    end
-                end
-            end
-        end)
-        if error then
-            print("Failed to collect token: "..tostring(error))
-        end
         wait()
-    until os.clock() >= endTime
-    main.PlayCollectTokens()
-    print("Sprout Farmed.")
-    main.SproutsFarmed = main.SproutsFarmed + 1
-    main.UI.SproutsFarmedInst.Text = "Sprouts farmed: "..tostring(main.SproutsFarmed)
+    until os.clock() >= endTime or not self.Enabled or self.Paused
+    scriptFunctions.Main.CollectTokens.Event = false
 end
 
-function main.GetLevelP(shroom)
-    for i, v in pairs(shroom:GetChildren()) do
-        if v.Name:find("Top") and v:FindFirstChild("Attachment") and v.Attachment.Gui:FindFirstChild("NameRow") then
-            local lvlHolder = v.Attachment.Gui.NameRow.TextLabel
-            local lvlStr = string.match(lvlHolder.Text, "[%d]+")
-            local lvl = tonumber(lvlStr)
-            return lvl
-        end
-    end
-end
+scriptFunctions.Main.HuntMondo = {
+    ["Enabled"] = false,
+    ["Paused"] = false
+}
+function scriptFunctions.Main.HuntMondo:Activate() -- REMAKE
+    local targetVector = Vector3.new(30, 0, 0)
+    local saveField, s, e
 
-function main.GetLevel(text)
-    local lvlstr = string.match(text, "[%d]+")
-    local lvl = tonumber(lvlstr)
-    return lvl
-end
-
-function main.HuntMondo()
-    local s, e = pcall(function()
-        local targetCFrame = main.FieldsCFrame.MountainTopField
-        main.Tween(targetCFrame, false)
-        for i, v in pairs(game:GetService("Workspace").Monsters:GetChildren()) do
+    local function Try()
+        for i, v in pairs(workspace.Monsters:GetChildren()) do
             if v.Name:find("Mondo") then
-                main.CreateVelocity()
+                if not saveField then
+                    saveField = FieldToFarm
+                end
+                FieldToFarm = getField(v)
+                CreateVelocity()
                 repeat
+                    hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
                     for a, b in pairs(workspace.Collectibles:GetChildren()) do
-                        if not b:GetAttribute("Collected") and b:FindFirstChild("FrontDecal") and b.FrontDecal.Texture == "rbxassetid://1629547638" and (b.Position - v.Torso.Position).magnitude >= main.ConvertToStuds(4.5) then
-                            main.DestroyVelocity()
-                            localplayer.Character:WaitForChild("HumanoidRootPart").CFrame = b.CFrame
+                        if not b:GetAttribute("Collected") and b:FindFirstChild("FrontDecal") and b.FrontDecal.Texture == "rbxassetid://1629547638" and (b.Position - v.Torso.Position).magnitude >= ConvertToStuds(4.5) then
+                            DestroyVelocity()
+                            hrp.CFrame = b.CFrame
                             b:SetAttribute("Collected", 1)
                             wait(0.2)
-                            main.CreateVelocity()
+                            CreateVelocity()
                         end
                     end
-                    if not main.CheckVelocity() then
-                        main.CreateVelocity()
+                    if #createdVelocities <= 0 then
+                        CreateVelocity()
                     end
-                    localplayer.Character:WaitForChild("HumanoidRootPart").CFrame = v.Torso.CFrame + Vector3.new(30, 0, 0)
-                    if main2.AutoMondo == false then
-                        break
-                    end
+                    hrp.CFrame = v.Torso.CFrame + targetVector
                     wait()
-                until not game:GetService("Workspace").Monsters:FindFirstChild(v.Name)
-                main.DestroyVelocity()
-                if main2.AutoMondo == true then
-                    print("Mondo chick killed.")
-                    main.MondoKilled = main.MondoKilled + 1
-                end
-                main.Teleport(targetCFrame, false)
-                if main2.AutoMondo == true then
-                    main.PauseCollectTokens()
+                until not game:GetService("Workspace").Monsters:FindFirstChild(v.Name) or not self.Enabled or self.Paused
+                DestroyVelocity()
+                Teleport(FieldToFarm.CFrame + Vector3.new(0,3,0), false)
+                if self.Enabled and not self.Paused then
+                    scriptFunctions.Main.CollectTokens.Event = true
                     local startTime = os.clock()
                     local endTime = startTime + 58
                     repeat 
-                        if main2.AutoMondo == false then
-                            break
-                        end
-                        local success, error = pcall(function()
-                            localplayer.Character:WaitForChild("Humanoid").WalkSpeed = math.random(80, 90)
-                            for oi, ov in pairs(main.RareCollectTokensTable) do
-                                for oc, od in pairs(workspace.Collectibles:GetChildren()) do
-                                    if od:FindFirstChild("FrontDecal") and not od:GetAttribute("Farmed") and (tostring(od.FrontDecal.Texture) == ov or tostring(od.FrontDecal.Texture) == "4520739302") then
-                                        if (targetCFrame.Position - od.Position).magnitude < main.ConvertToStuds(15) then
-                                            if not main2.MoveToActive then
-                                                main.Collect(od, true)
-                                            end
-                                        end
-                                    end
-                                end
-                            end
-                        end)
-                        if error then
-                            print("Failed to collect token: "..tostring(error))
-                        end
                         wait()
-                    until os.clock() >= endTime
-                    main.PlayCollectTokens()
-                    print("Mondo chick hunt finished.")
+                    until os.clock() >= endTime or not self.Enabled or self.Paused
+                    FieldToFarm = saveField
+                    DestroyVelocity()
+                    scriptFunctions.Main.CollectTokens.Event = false
                 end
             end
         end
-    end)
-    if e then
-        print("Hunt mondo error: "..e)
-        main.DestroyVelocity()
-        main.HuntMondo()
     end
+    repeat
+        s, e = pcall(Try)
+        if e then
+            FieldToFarm = saveField
+            DestroyVelocity()
+            reportError("HuntMondo Error: "..e)
+            wait()
+        end
+    until s or not self.Enabled or self.Paused
 end
-main.FieldDistance = main.ConvertToStuds(15)
-main.DistanceNeeded = main.FieldDistance
-main.MushroomsRarities = {"Mythic", "Legendary", "Epic"}
-main.puffshrooming = false
-main.KeepTokensActive = false
 
-main.Announce("VERSION "..main.Version, "Updates in console - press f9")
+Announce("VERSION "..Version, "Updates in console - press f9")
 
-while wait() and main2.ExecState == getgenv().Exected do
+scriptFunctions.Main.Autofarm = {
+    ["Enabled"] = false,
+    ["Paused"] = false
+}
 
-        if main2.CollectorEnabled == true then
-            main.CheckForRareToken()    
+while wait() and ExecState == getgenv().Executed do -- CHECK
+        if Speed then
+            hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
+            hum.WalkSpeed = CustomSpeed or math.random(70, 80)
         end
 
-        if main2.Speed then
-            if main2.CustomSpeed then
-                localplayer.Character:WaitForChild("Humanoid").WalkSpeed = main2.CustomSpeed   
-            else
-                localplayer.Character:WaitForChild("Humanoid").WalkSpeed = math.random(70, 80)
-            end
-        end
-
-        if main2.FarmSprouts == true then
-            for i, v in pairs(main["sproutsFolder"]:GetChildren()) do
+        if scriptFunctions.Main.FarmSprout.Enabled then
+            for i, v in pairs(sproutsFolder:GetChildren()) do
                 if v.Name == "Sprout" and v.Transparency ~= 1 then
-                    main2.FarmSproutSaveField = main2.FieldToFarmCFrame
-                    main2.FieldToFarmCFrame = v.CFrame + Vector3.new(0,3,0)
+                    local fieldSave = FieldToFarm
+                    FieldToFarm = getField(v)
                     v:SetAttribute("Current", 1)
-                    wait()
-                    local success, error = pcall(function()
-                        main.FarmSprout()
-                        main2.FieldToFarmCFrame = main2.FarmSproutSaveField
-                    end)
-                    if error then
-                        print("Farm sprout fce failed: "..tostring(error))
-                        main2.FieldToFarmCFrame = main2.FarmSproutSaveField
-                    end
+                    local s, e
+                    repeat
+                        s, e = pcall(scriptFunctions.Main.FarmSprout:Activate())
+                        if not s and e then
+                            reportError("FarmSprout Error: "..e)
+                            wait()
+                        end
+                    until s or not scriptFunctions.Main.FarmSprout.Enabled or scriptFunctions.Main.FarmSprout.Paused
+                    FieldToFarm = fieldSave
                 end
             end
         end
 
-        if main2.farmPuffshrooms then
-            if #workspace.Happenings.Puffshrooms:GetChildren() >= 1 then
-                while #workspace.Happenings.Puffshrooms:GetChildren() >= 1 and main2.farmPuffshrooms and wait() do
-                    local puffShroom
-                    main.puffshrooming = true
-                    local found = false
-                    for a, b in pairs(main.MushroomsRarities) do
-                        for c, d in pairs(workspace.Happenings.Puffshrooms:GetChildren()) do
-                            if d.Name:find(b) then
-                                puffShroom = d
-                                found = true
-                                print("Farming "..b.." puffshroom!!!")
-                                break
-                            end
-                        end
-                        if found == true then
-                            break
-                        end
-                    end
-                    main2.BiggestLvlMushroom = false
-                    if not found then
-                        for o, p in pairs(workspace.Happenings.Puffshrooms:GetChildren()) do
-                            if main.GetLevelP(p) >= 10 then
-                                found = true
-                                puffShroom = p
-                                break
-                            end
-                        end
-                    end
-                    if not found then
-                        local highestLVL = 0
-                        for o, p in pairs(workspace.Happenings.Puffshrooms:GetChildren()) do
-                            if p.Name:find("Rare") then
-                                found = true
-                                puffShroom = p
-                                break
-                            end
-                        end
-                    end
-                    if not found then
-                        local highestLVL = 0
-                        for o, p in pairs(workspace.Happenings.Puffshrooms:GetChildren()) do
-                            if main.GetLevelP(p) > highestLVL then
-                                local lvl = main.GetLevelP(p)
-                                highestLVL = lvl
-                                main2.BiggestLvlMushroom = p
-                            end
-                        end
-                        puffShroom = main2.BiggestLvlMushroom
-                    end
-                    local puffShroomCFrame
-                    for i, v in pairs(puffShroom:GetChildren()) do
-                        if v.Name:find("Stem") then
-                            puffShroomCFrame = v.CFrame
-                        end
-                    end
-                    main.DistanceNeededPart = puffShroomCFrame
-                    puffShroom.Name = "Current"
-                    while main2.farmPuffshrooms and wait() do
-                        if main2.CollectorEnabled == true then
-                            main.CheckForRareToken()
-                        end
-                        main2["pollenTool"].ClickEvent:FireServer(CFrame.new())
-                        if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - puffShroomCFrame.Position).magnitude > main.ConvertToStuds(7) then
-                            main.Tween(puffShroomCFrame, true)
-                        end
-                        main.DistanceNeeded = main.ConvertToStuds(7)
-                        if main2.Speed then
-                            if main2.CustomSpeed then
-                                localplayer.Character:WaitForChild("Humanoid").WalkSpeed = main2.CustomSpeed   
-                            else
-                                localplayer.Character:WaitForChild("Humanoid").WalkSpeed = math.random(70, 80)
-                            end
-                        end
-                        if (localplayer.CoreStats.Pollen.Value / localplayer.CoreStats.Capacity.Value) >= 0.99 and not main2.NoConvertWhilePuffs then
-                            main.ConvertHoney()    
-                        end
-                        if not workspace.Happenings.Puffshrooms:FindFirstChild("Current") then
-                            local s = os.clock()
-                            local e = s + 6
-                            repeat 
-                                wait()
-                                localplayer.Character:WaitForChild("Humanoid").WalkSpeed = math.random(80, 90)
-                            until os.clock() >= e
-                            break
-                        end
-                    end
-                end
-                main.DistanceNeeded = main.FieldDistance
-                main.DistanceNeededPart = main2.FieldToFarmCFrame
-                main.puffshrooming = false
-            end
-        end
-
-        if main2.HuntWindy then
+       --[[ if HuntWindy then
             local windyFolder = workspace.NPCBees
+            hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
             if windyFolder:FindFirstChild("Windy") then
                 print("Windy Bee Found!")
                 for i, v in pairs(windyFolder:GetChildren()) do
                     if v.Name == "Windy" then
-                        local hrp = localplayer.Character:WaitForChild("HumanoidRootPart")
                         hrp.CFrame = v.CFrame
                         wait(0.8)
                     end
@@ -1953,38 +983,40 @@ while wait() and main2.ExecState == getgenv().Exected do
                         trueWindy = v
                     end
                 end
-                while wait() and main2.HuntWindy and windyFolder:FindFirstChild("Windy") do
-                    main.CreateVelocity()
-                    local function GetWindyLevel()
-                        for i, v in pairs(workspace.Monsters:GetChildren()) do
-                            if v.Name:find("Windy") then
-                                local lvl = main.GetLevel(v.Name)
-                                return lvl
-                            end
+
+                local function GetWindyLevel()
+                    for i, v in pairs(workspace.Monsters:GetChildren()) do
+                        if v.Name:find("Windy") then
+                            local lvl = GetLevel(v.Name)
+                            return lvl
                         end
                     end
+                end
+                while wait() and HuntWindy and windyFolder:FindFirstChild("Windy") do
+                    CreateVelocity()
                     local lastlvl = GetWindyLevel()
                     local criticalTime = os.clock() + 20
                     repeat
+                        hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
                         local breakY = false
                         for a, b in pairs(workspace.Collectibles:GetChildren()) do
                             if not b:GetAttribute("Collected") and b:FindFirstChild("FrontDecal") and b.FrontDecal.Texture == "rbxassetid://1629547638" then
-                                main.DestroyVelocity()
-                                localplayer.Character:WaitForChild("HumanoidRootPart").CFrame = b.CFrame
+                                DestroyVelocity()
+                                hrp.CFrame = b.CFrame
                                 b:SetAttribute("Collected", 1)
                                 wait(0.2)
-                                main.CreateVelocity()
+                                CreateVelocity()
                             end
                         end
-                        if not main.CheckVelocity() then
-                            main.CreateVelocity()
+                        if #createdVelocities <= 0 then
+                            CreateVelocity()
                         end
                         if not windyFolder:FindFirstChild("Windy") or os.clock() > criticalTime then
                             break
                         end
                         localplayer.Character:WaitForChild("HumanoidRootPart").CFrame = trueWindy.CFrame + Vector3.new(0,22,0)
                         wait()
-                        if main2.HuntWindy == false then
+                        if not HuntWindy then
                             break
                         end
                         local newlvl = GetWindyLevel()
@@ -1992,85 +1024,85 @@ while wait() and main2.ExecState == getgenv().Exected do
                             breakY = true
                         end
                     until breakY
-                    main.DestroyVelocity()
+                    DestroyVelocity()
                     local sTime = os.clock()
                     local eTime = sTime + 10
                     repeat
-                        main.KeepTokensActive = true
-                        localplayer.Character:WaitForChild("Humanoid").WalkSpeed = math.random(80, 90)
+                        hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
+                        KeepTokensActive = true
+                        hum.WalkSpeed = math.random(80, 90)
                         wait()
                     until os.clock() >= eTime
-                    main.KeepTokensActive = false
+                    KeepTokensActive = false
                 end
             end
+        end--]]
+
+        if scriptFunctions.Main.HuntVicious.Enabled then
+            scriptFunctions.Main.HuntVicious:Activate()
         end
 
-        if main2.AutoVicious == true then
-            main.AutoViciousFce()
-        end
-
-        if main2.AutoMondo == true then
+        if scriptFunctions.Main.HuntMondo.Enabled then
             for i, v in pairs(game:GetService("Workspace").Monsters:GetChildren()) do
                 if v.Name:find("Mondo") then
-                    main.HuntMondo()
+                    scriptFunctions.Main.HuntMondo:Activate()
                 end
             end
         end
-
-        if main2.AutoQuest == true then
-            local success, error = pcall(function()
-                main.CheckForUnfinishedAction()
+        if AutoQuest == true then
+            local s, e = pcall(function()
+                CheckForUnfinishedAction()
                 wait()
-                local wdwd = main.AutoQuestFce()
+                local wdwd = AutoQuestFce()
                 if wdwd == false then
-                    main.Announce("Auto-Quest Error", "Open Quest Tab!!! " ..tostring(error))
+                    Announce("Auto-Quest Error", "Open Quest Tab!!! " ..tostring(error))
                 end
             end)
-            if error then
-                main.Announce("Auto-Quest Error", "Error: " ..tostring(error))
+            if e then
+                Announce("Auto-Quest Error", "Error: " ..tostring(error))
                 wait(5)
             end
-        end
+        end 
 
-        if main2.DodgeMobs then
-            main.DodgeMobsfce()
-        end
-        local skip = false
-        if main2.ActivateToys then
+        --[[local skip = false
+        if ActivateToys then
+            hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
+            local newVec = Vector3.new(0,3,0)
             local toysFolder = workspace.Toys
-            for i, v in pairs(main.GetDataEvent:InvokeServer().ToyTimes) do
+            for i, v in pairs(GetDataEvent:InvokeServer().ToyTimes) do
                 local toy = toysFolder:FindFirstChild(i)
                 if toy and not toy:GetAttribute("Wrong") and toy:FindFirstChild("Cooldown") and not toy.Name:find("Memory") and not toy.Name:find("Converter") and not toy.Name:find("Amulet") and not toy.Name:find("Ant") and not toy.Name:find("Royal") and not toy.Name:find("Snowbear") then
                     local lastTime = v
                     local nextTime = v + toy.Cooldown.Value
                     if os.time() > nextTime and toy:FindFirstChild("Platform"):FindFirstChild("Circle") then
-                        localplayer.Character:WaitForChild("HumanoidRootPart").CFrame = toy.Platform.Circle.CFrame + Vector3.new(0,3,0)
+                        hrp.CFrame = toy.Platform.Circle.CFrame + newVec
                         wait(0.3)
                         local guiColor = localplayer.PlayerGui.ScreenGui.ActivateButton.BackgroundColor3
                         if guiColor == Color3.fromRGB(201,39,28) then
                             toy:SetAttribute("Wrong", 1)
                         end
-                        main.PressKey("e")
+                        PressKey("e")
                         wait(1)
                         skip = true
                     end
                 end
             end
-        end
-        if not skip then
-            if main2.Autofarm == true then
-                local yes, no = pcall(function()
-                    main2["pollenTool"].ClickEvent:FireServer(CFrame.new())
-                    if (localplayer.Character:WaitForChild("HumanoidRootPart").Position - main2.FieldToFarmCFrame.Position).magnitude > main.ConvertToStuds(15) then
-                        main.Tween(main2.FieldToFarmCFrame, true)
+        end--]]
+        --if not skip then
+            hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
+            if scriptFunctions.Main.Autofarm.Enabled and not scriptFunctions.Main.Autofarm.Paused then
+                local s, e = pcall(function()
+                    GetCollector().ClickEvent:FireServer(CFrame.new())
+                    if not checkDistance(FieldToFarm, hrp, 50) then
+                        Teleport(FieldToFarm.CFrame + Vector3.new(0,3,0), true)
+                    end
+                    if (localplayer.CoreStats.Pollen.Value / localplayer.CoreStats.Capacity.Value) >= 0.99 then
+                        ConvertHoney()
                     end
                 end)
-                if no then
-                    print(no)
-                end
-                if (localplayer.CoreStats.Pollen.Value / localplayer.CoreStats.Capacity.Value) >= 0.99 then
-                    main.ConvertHoney()
+                if e then
+                    reportError("Autofarm Error: "..e)
                 end
             end
-        end
+       -- end
 end
