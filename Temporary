@@ -666,7 +666,9 @@ function scriptFunctions.Main.HuntVicious:Activate()
     local function TryHunt()
         for i, v in pairs(game:GetService("Workspace").Particles:GetChildren()) do
             if v.Name:find("Vicious") then
-                FieldToFarm = getField(v)
+                if not fieldSave then
+                    FieldToFarm = getField(v)
+                end
                 hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
                 hrp.CFrame = v.CFrame + Vector3.new(0,10,0)
                 wait(2)
@@ -697,16 +699,17 @@ function scriptFunctions.Main.HuntVicious:Activate()
         end
     end
 
-    fieldSave = FieldToFarm
     repeat
         s, e = pcall(TryHunt)
         if e then
+            if fieldSave then
+                FieldToFarm = fieldSave
+            end
             DestroyVelocity()
             reportError("HuntVicious Error: "..e)
             wait()
         end
     until s or not self.Enabled or self.Paused
-    FieldToFarm = fieldSave
 end
 
 local function GetLevel(text)
@@ -1133,13 +1136,14 @@ function scriptFunctions.Main.HuntMondo:Activate() -- REMAKE
     repeat
         s, e = pcall(Try)
         if e then
-            FieldToFarm = saveField
+            if saveField then
+                FieldToFarm = saveField
+            end
             DestroyVelocity()
             reportError("HuntMondo Error: "..e)
             wait()
         end
     until s or not self.Enabled or self.Paused
-    FieldToFarm = saveField
     scriptFunctions.Main.CollectTokens.Event = false
 end
 
