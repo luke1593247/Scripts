@@ -11,7 +11,7 @@ local scriptFunctions = {
 local playerData = {}
 
 
-local Version = "PRE-RELEASE - 0.0.1"
+local Version = "PRE-RELEASE - 0.0.2"
 warn("----------------------------------------------------------")
 print("Script Version "..Version)
 warn("-----------------------------------------------------------")
@@ -400,7 +400,7 @@ repeat wait() until FieldChosen
 FieldToFarm = FieldChosen
 temp = nil
 
-local Speed, AutoQuest, HuntWindy, AutoMondo, ActivateToys, CustomSpeed, SpinMythics
+local Speed, ActivateToys, CustomSpeed
 
 folder1:Toggle("Autofarm", function(state)
     scriptFunctions.Main.Autofarm.Enabled = state
@@ -477,19 +477,18 @@ function scriptFunctions.Main.CollectTokens:Function()
         for i, v in pairs(tokensTable) do
             if not v:GetAttribute("Farmed") and v:FindFirstChild("FrontDecal") and v.FrontDecal.Texture == "rbxassetid://1629547638" and checkDistance(FieldToFarm, v, 50) then
                 Collect(v, self.Speed or Speed)
+                table.remove(tokensTable, i)
             end
             if not self.Event then
                 if not v:GetAttribute("Farmed") and v:FindFirstChild("FrontDecal") and checkDistance(FieldToFarm, v, 30) then
                     Collect(v, self.Speed or Speed)
-                else
-                    table.remove(tokensTable, i)
                 end
+                table.remove(tokensTable, i)
             else
                 if not v:GetAttribute("Farmed") and v:FindFirstChild("FrontDecal") and table.find(RareTokensDecals, v.FrontDecal.Texture) and checkDistance(FieldToFarm, v, 50) then
                     Collect(v, true)
-                else
-                    table.remove(tokensTable, i)
                 end
+                table.remove(tokensTable, i)
             end
             if not self.Active or self.Paused then
                 return
@@ -516,17 +515,17 @@ folder1:Toggle("Farm Sprouts", function(state)
     scriptFunctions.Main.FarmSprout.Enabled = state
 end)
 
---[[folder1:Toggle("Auto Quest", function(state)
-    AutoQuest = state
-end)--]]
+folder1:Toggle("Auto Quest (Alpha)", function(state)
+    scriptFunctions.Main.AutoQuest.Enabled = state
+end)
 
 folder1:Toggle("Hunt Vicious Bee", function(state)
     scriptFunctions.Main.HuntVicious.Enabled = state
 end)
 
---[[folder1:Toggle("Hunt Windy Bee (Alpha)", function(state)
-    HuntWindy = state
-end)--]]
+folder1:Toggle("Hunt Windy Bee (Alpha)", function(state)
+    scriptFunctions.Main.HuntWindy.Enabled = state
+end)
 
 folder1:Toggle("Hunt Mondo Chick", function(state)
     scriptFunctions.Main.HuntMondo.Enabled = state
@@ -628,83 +627,6 @@ end
 
 local NPCFolder = workspace.NPCs
 
-local killMobsData = {}
-
-local function KillMob(textos) -- REWRITE
-    local s, e = pcall(function()
-        for b, c in pairs(MonsterSpawners) do
-            if textos:find(tostring(b)) then
-                if type(c) == "table" then
-                    for d, e in pairs(c) do
-                        for osu, ozu in pairs(game:GetService("ReplicatedStorage").MonsterTypes:GetChildren()) do
-                            if string.find(ozu.Name, b) then
-                                killMobsData.LastKilledTime = GetDataEvent:InvokeServer().MonsterTimes[e.Name]
-                                killMobsData.MonsterSpawnTime = killMobsData.LastKilledTime + require(ozu).Stats.RespawnCooldown
-                            end
-                        end
-                        if killMobsData.MonsterSpawnTime < os.time() then
-                                for ab, cd in pairs(SpawnerFieldTable) do
-                                    local spawnerField
-                                    for abcd, efgh in pairs(Fields) do
-                                        if string.find(string.lower(abcd), string.lower(cd)) then
-                                            spawnerField = efgh
-                                        end
-                                    end
-
-                                    if e.Name == ab then
-                                        Tween(spawnerField.CFrame, true)
-                                        hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
-                                        repeat
-                                            if Speed then
-                                                hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
-                                                hum.WalkSpeed = CustomSpeed or math.random(70, 80)
-                                            end
-                                            wait()
-                                        until killMobsData.LastKilledTime ~= GetDataEvent:InvokeServer().MonsterTimes[e.Name]
-                                        wait(5)
-                                    end
-                                end
-                        end 
-                    end      
-                else
-                    for osu, ozu in pairs(game:GetService("ReplicatedStorage").MonsterTypes:GetChildren()) do
-                        if string.find(ozu.Name, b) then
-                            killMobsData.LastKilledTime = GetDataEvent:InvokeServer().MonsterTimes[c.Name]
-                            killMobsData.MonsterSpawnTime = killMobsData.LastKilledTime + require(ozu).Stats.RespawnCooldown
-                        end
-                    end
-                    if killMobsData.MonsterSpawnTime < os.time() then
-                            for ab, cd in pairs(SpawnerFieldTable) do
-                                local spawnerField
-                                for abcd, efgh in pairs(Fields) do
-                                    if string.find(string.lower(abcd), string.lower(cd)) then
-                                        spawnerField = efgh
-                                    end
-                                end
-                                if c.Name == ab then
-                                    Tween(spawnerField.CFrame, true)
-                                    hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
-                                    repeat
-                                        if Speed then
-                                            hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
-                                            hum.WalkSpeed = CustomSpeed or math.random(70, 80)
-                                        end
-                                        wait()
-                                    until GetDataEvent:InvokeServer().MonsterTimes[c.Name] ~= killMobsData.LastKilledTime
-                                    wait(5)
-                                end
-                            end
-                    end       
-                end
-            end
-        end
-    end)
-    if e then
-        reportError("KillMob Error: "..e)
-        wait()
-    end
-end
-
 scriptFunctions.Main.HuntVicious = {
     ["Enabled"] = false,
     ["Paused"] = false
@@ -726,6 +648,18 @@ function scriptFunctions.Main.HuntVicious:Activate()
                 CreateVelocity()
                 repeat
                     hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
+
+                    for a, b in pairs(workspace.Collectibles:GetChildren()) do
+                        if not b:GetAttribute("Collected") and b:FindFirstChild("FrontDecal") and b.FrontDecal.Texture == "rbxassetid://1629547638" and (b.Position - v.Torso.Position).magnitude >= ConvertToStuds(4.5) then
+                            DestroyVelocity()
+                            wait()
+                            hrp.CFrame = b.CFrame
+                            b:SetAttribute("Collected", 1)
+                            wait(0.2)
+                            CreateVelocity()
+                        end
+                    end
+
                     if #createdVelocities == 0 then
                         CreateVelocity()
                     end
@@ -772,105 +706,202 @@ local function CheckForUnfinishedAction()
     end
 end
 
-local farming, FieldSaved, QuestFieldFarming
-local function AutoQuestFce() -- REWRITE
-    local questFolder = game:GetService("Players").LocalPlayer.PlayerGui.ScreenGui.Menus.Children.Quests.Content
-    if not questFolder:FindFirstChild("Frame") then
-        farming = false
-        FieldToFarm = FieldSaved
-        return false
-    end
+local killMobsData = {}
+local function KillMob(text) -- REWRITE
+    local function Try()
+        for b, c in pairs(MonsterSpawners) do
+            if text:find(tostring(b)) then
+                if type(c) == "table" then
+                    for d, e in pairs(c) do
+                        for osu, ozu in pairs(game:GetService("ReplicatedStorage").MonsterTypes:GetChildren()) do
+                            if string.find(ozu.Name, b) then
+                                killMobsData.LastKilledTime = GetDataEvent:InvokeServer().MonsterTimes[e.Name]
+                                killMobsData.MonsterSpawnTime = killMobsData.LastKilledTime + require(ozu).Stats.RespawnCooldown
+                            end
+                        end
+                        if killMobsData.MonsterSpawnTime < os.time() then
+                                for ab, cd in pairs(SpawnerFieldTable) do
+                                    local spawnerField
+                                    for abcd, efgh in pairs(Fields) do
+                                        if string.find(string.lower(abcd), string.lower(cd)) then
+                                            spawnerField = efgh
+                                        end
+                                    end
 
-    if farming then
-        if QuestFieldFarming.Description.Text:find("Complete!") then
-            farming = false
-            FieldToFarm = FieldSaved
-            print("Farming quest finished: "..QuestFieldFarming.Description.Text)
-        end
-    end
-
-    local theLeast = 100000000000000000000000000000000000
-    local theLeastQuest
-
-    for i, v in pairs(questFolder.Frame:GetDescendants()) do
-        if v.Name == "TaskBar" and not string.find(v.Description.Text, "Complete!") then
-            if not farming and v.Description.Text:find("Collect") and (v.Description.Text:find("Pollen") or v.Description.Text:find("Goo")) then
-                if v.Description.Text:find("Field") or v.Description.Text:find("Patch") or v.Description.Text:find("Forest") then
-                    local str1 = string.gsub(v.Description.Text, ",", "")
-                    local lvl = GetLevel(str1)
-                    if lvl < theLeast then
-                        theLeast = lvl
-                        theLeastQuest = v
-                    end
+                                    if e.Name == ab then
+                                        Teleport(spawnerField.CFrame, true)
+                                        hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
+                                        repeat
+                                            if Speed then
+                                                hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
+                                                hum.WalkSpeed = CustomSpeed or math.random(70, 80)
+                                            end
+                                            wait()
+                                        until killMobsData.LastKilledTime ~= GetDataEvent:InvokeServer().MonsterTimes[e.Name]
+                                        wait(5)
+                                    end
+                                end
+                        end 
+                    end      
                 else
-                    if v.Description.Text:find("Red") then
-                        local str1 = string.gsub(v.Description.Text, ",", "")
-                        local lvl = GetLevel(str1)
-                        if lvl < theLeast then
-                            theLeast = lvl
-                            theLeastQuest = v
-                        end
-                    elseif v.Description.Text:find("Blue") then
-                        local str1 = string.gsub(v.Description.Text, ",", "")
-                        local lvl = GetLevel(str1)
-                        if lvl < theLeast then
-                            theLeast = lvl
-                            theLeastQuest = v
-                        end
-                    elseif v.Description.Text:find("White") then
-                        local str1 = string.gsub(v.Description.Text, ",", "")
-                        local lvl = GetLevel(str1)
-                        if lvl < theLeast then
-                            theLeast = lvl
-                            theLeastQuest = v
+                    for osu, ozu in pairs(game:GetService("ReplicatedStorage").MonsterTypes:GetChildren()) do
+                        if string.find(ozu.Name, b) then
+                            killMobsData.LastKilledTime = GetDataEvent:InvokeServer().MonsterTimes[c.Name]
+                            killMobsData.MonsterSpawnTime = killMobsData.LastKilledTime + require(ozu).Stats.RespawnCooldown
                         end
                     end
+                    if killMobsData.MonsterSpawnTime < os.time() then
+                            for ab, cd in pairs(SpawnerFieldTable) do
+                                local spawnerField
+                                for abcd, efgh in pairs(Fields) do
+                                    if string.find(string.lower(abcd), string.lower(cd)) then
+                                        spawnerField = efgh
+                                    end
+                                end
+                                if c.Name == ab then
+                                    Teleport(spawnerField.CFrame, true)
+                                    hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
+                                    repeat
+                                        if Speed then
+                                            hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
+                                            hum.WalkSpeed = CustomSpeed or math.random(70, 80)
+                                        end
+                                        wait()
+                                    until GetDataEvent:InvokeServer().MonsterTimes[c.Name] ~= killMobsData.LastKilledTime
+                                    wait(5)
+                                end
+                            end
+                    end       
                 end
-            elseif v.Description.Text:find("Defeat") then
-                KillMob(v.Description.Text)
             end
         end
     end
+    
+    local s, e = pcall(Try)
+    if not s and e then
+        reportError("KillMob Error: "..e)
+        wait()
+    end
+end
 
-    if not farming then
-        for a, b in pairs(Fields) do
-            if theLeastQuest.Description.Text:find(a) then
-                FieldSaved = FieldToFarm
-                FieldToFarm = b
-                farming = true
-                QuestFieldFarming = theLeastQuest
-                print("Farming: "..theLeastQuest.Description.Text)
-            else
+scriptFunctions.Main.AutoQuest = {
+    ["Enabled"] = false,
+    ["Paused"] = false,
+    ["QuestFarming"] = false,
+    ["FieldSaved"] = false
+}
+function scriptFunctions.Main.AutoQuest:Activate()
+    local questFolder = localplayer.PlayerGui.ScreenGui.Menus.Children.Quests.Content
+    local s, e
+
+    local function Try()
+        CheckForUnfinishedAction()
+        if questFolder:FindFirstChild("Frame") then
+            local theLeast = math.huge
+            local theLeastQuest
+
+            if self.QuestFarming then
+                if self.QuestFarming.Description.Text:find("Complete!") then
+                    self.QuestFarming = false
+                    FieldToFarm = self.FieldSaved
+                    scriptFunctions.Main.Autofarm.AdaptField = true    
+                end
+            end
+
+            for i, v in pairs(questFolder.Frame:GetDescendants()) do
+                if v.Name == "TaskBar" and not string.find(v.Description.Text, "Complete!") then
+                    if not self.QuestFarming and v.Description.Text:find("Collect") and (v.Description.Text:find("Pollen") or v.Description.Text:find("Goo")) then
+                        if v.Description.Text:find("Field") or v.Description.Text:find("Patch") or v.Description.Text:find("Forest") then
+                            local str1 = string.gsub(v.Description.Text, ",", "")
+                            local lvl = GetLevel(str1)
+                            if lvl < theLeast then
+                                theLeast = lvl
+                                theLeastQuest = v
+                            end
+                        else
+                            if v.Description.Text:find("Red") then
+                                local str1 = string.gsub(v.Description.Text, ",", "")
+                                local lvl = GetLevel(str1)
+                                if lvl < theLeast then
+                                    theLeast = lvl
+                                    theLeastQuest = v
+                                end
+                            elseif v.Description.Text:find("Blue") then
+                                local str1 = string.gsub(v.Description.Text, ",", "")
+                                local lvl = GetLevel(str1)
+                                if lvl < theLeast then
+                                    theLeast = lvl
+                                    theLeastQuest = v
+                                end
+                            elseif v.Description.Text:find("White") then
+                                local str1 = string.gsub(v.Description.Text, ",", "")
+                                local lvl = GetLevel(str1)
+                                if lvl < theLeast then
+                                    theLeast = lvl
+                                    theLeastQuest = v
+                                end
+                            end
+                        end
+                    elseif v.Description.Text:find("Defeat") then
+                        scriptFunctions.Main.CollectTokens.Paused = true
+                        KillMob(v.Description.Text)
+                        scriptFunctions.Main.CollectTokens.Paused = false
+                    end
+                end
+            end
+
+            if not self.QuestFarming then
+                for a, b in pairs(Fields) do
+                    if theLeastQuest.Description.Text:find(a) then
+                        self.FieldSaved = FieldToFarm
+                        FieldToFarm = b
+                        self.QuestFarming = theLeastQuest
+                        scriptFunctions.Main.Autofarm.AdaptField = false
+                        return
+                    end
+                end
+
                 if theLeastQuest.Description.Text:find("Red") then
-                    FieldSaved = FieldToFarm
-                    FieldToFarm = Fields["Strawberry Field"]
-                    farming = true
-                    QuestFieldFarming = theLeastQuest
-                    print("Farming: "..theLeastQuest.Description.Text)
+                    self.FieldSaved = FieldToFarm
+                    FieldToFarm = Fields["Pepper Patch"]
+                    self.QuestFarming = theLeastQuest
+                    scriptFunctions.Main.Autofarm.AdaptField = false
                 elseif theLeastQuest.Description.Text:find("Blue") then
-                    FieldSaved = FieldToFarm
+                    self.FieldSaved = FieldToFarm
                     for i, v in pairs(Fields) do
-                        if v.Name:find("Pine") then
+                        if v.Name:find("Pine Tree") then
                             FieldToFarm = v
                         end
                     end
-                    farming = true
-                    QuestFieldFarming = theLeastQuest
-                    print("Farming: "..theLeastQuest.Description.Text)
+                    self.QuestFarming = theLeastQuest
+                    scriptFunctions.Main.Autofarm.AdaptField = false
                 elseif theLeastQuest.Description.Text:find("White") then
-                    FieldSaved = FieldToFarm
+                    self.FieldSaved = FieldToFarm
                     for i, v in pairs(Fields) do
                         if v.Name:find("Coconut") then
                             FieldToFarm = v
                         end
                     end
-                    farming = true
-                    QuestFieldFarming = theLeastQuest
-                    print("Farming: "..theLeastQuest.Description.Text)
+                    scriptFunctions.Main.Autofarm.AdaptField = false
+                    self.QuestFarming = theLeastQuest
                 end
+            end 
+        else
+            if self.QuestFarming then
+                self.QuestFarming = false
+                FieldToFarm = self.FieldSaved
+                scriptFunctions.Main.Autofarm.AdaptField = true
             end
+            Announce("WARNING", "Open Quest Tab!")
+            wait(5)
         end
-    end 
+    end
+
+    s, e = pcall(Try)
+
+    if not s and e then
+        reportError("AutoQuest Error: "..e)
+    end
 end
 
 scriptFunctions.Main.FarmSprout = {
@@ -916,10 +947,105 @@ function scriptFunctions.Main.FarmSprout:Activate() -- REMAKE
                     wait()
                 end
             until s or not scriptFunctions.Main.FarmSprout.Enabled or scriptFunctions.Main.FarmSprout.Paused
+            scriptFunctions.Main.CollectTokens.Event = false
             FieldToFarm = fieldSave
         end
     end
 end
+
+scriptFunctions.Main.HuntWindy = {
+    ["Enabled"] = false,
+    ["Paused"] = false
+}
+function scriptFunctions.Main.HuntWindy:Activate()
+    local windyFolder, upVector = workspace.NPCBees, Vector3.new(0,22,0)
+    local s, e
+
+    local function GetWindyLevel()
+        for i, v in pairs(workspace.Monsters:GetChildren()) do
+            if v.Name:find("Windy") then
+                local lvl = GetLevel(v.Name)
+                return lvl
+            end
+        end
+    end
+
+    local function Try()
+        hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
+        if windyFolder:FindFirstChild("Windy") then
+            for i, v in pairs(windyFolder:GetChildren()) do
+                if v.Name == "Windy" then
+                    hrp.CFrame = v.CFrame
+                    wait(0.8)
+                end
+            end
+            wait(3)
+            local trueWindy
+            for i, v in pairs(windyFolder:GetChildren()) do
+                if v.Name == "Windy" and v:FindFirstChild("Sound") then
+                    trueWindy = v
+                end
+            end
+
+            while self.Enabled and not self.Paused and windyFolder:FindFirstChild("Windy") and wait() do
+                local newField
+                repeat 
+                    newField = getField(trueWindy)
+                    wait()
+                until not self.Enabled or self.Paused or newField
+
+                CreateVelocity()
+                local lastlvl = GetWindyLevel()
+                scriptFunctions.Main.CollectTokens.Paused = true
+                repeat
+                    hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
+
+                    for a, b in pairs(workspace.Collectibles:GetChildren()) do
+                        if not b:GetAttribute("Collected") and b:FindFirstChild("FrontDecal") and b.FrontDecal.Texture == "rbxassetid://1629547638" then
+                            DestroyVelocity()
+                            hrp.CFrame = b.CFrame
+                            b:SetAttribute("Collected", 1)
+                            wait(0.2)
+                            CreateVelocity()
+                        end
+                    end
+                    
+                    if #createdVelocities == 0 then
+                        CreateVelocity()
+                    end
+
+                    localplayer.Character:WaitForChild("HumanoidRootPart").CFrame = trueWindy.CFrame + upVector
+                    wait()
+
+                    local currentLevel = GetWindyLevel()
+
+                until currentLevel and currentLevel > lastlvl or not self.Enabled or self.Paused
+                DestroyVelocity()
+                scriptFunctions.Main.CollectTokens.Paused = false
+                wait(10)
+                repeat
+                    newField = getField(trueWindy)
+                    wait()
+                until not self.Enabled or self.Paused or newField
+            end
+        end
+    end
+ 
+    if windyFolder:FindFirstChild("Windy") then
+        local fieldSave = FieldToFarm
+        repeat
+            s, e = pcall(Try)
+            if not s and e then
+                DestroyVelocity()
+                reportError("HuntWindy Error: "..e)
+                wait()
+            end
+        until s or not self.Enabled or self.Paused
+        scriptFunctions.Main.CollectTokens.Paused = false
+        FieldToFarm = fieldSave
+    end
+end
+
 
 scriptFunctions.Main.HuntMondo = {
     ["Enabled"] = false,
@@ -942,6 +1068,7 @@ function scriptFunctions.Main.HuntMondo:Activate() -- REMAKE
                     for a, b in pairs(workspace.Collectibles:GetChildren()) do
                         if not b:GetAttribute("Collected") and b:FindFirstChild("FrontDecal") and b.FrontDecal.Texture == "rbxassetid://1629547638" and (b.Position - v.Torso.Position).magnitude >= ConvertToStuds(4.5) then
                             DestroyVelocity()
+                            wait()
                             hrp.CFrame = b.CFrame
                             b:SetAttribute("Collected", 1)
                             wait(0.2)
@@ -979,6 +1106,8 @@ function scriptFunctions.Main.HuntMondo:Activate() -- REMAKE
             wait()
         end
     until s or not self.Enabled or self.Paused
+    FieldToFarm = saveField
+    scriptFunctions.Main.CollectTokens.Event = false
 end
 
 Announce("VERSION "..Version, "Updates in console - press f9")
@@ -999,78 +1128,9 @@ while wait() and ExecState == getgenv().Executed do -- CHECK
             scriptFunctions.Main.FarmSprout:Activate()
         end
 
-       --[[ if HuntWindy then
-            local windyFolder = workspace.NPCBees
-            hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
-            if windyFolder:FindFirstChild("Windy") then
-                print("Windy Bee Found!")
-                for i, v in pairs(windyFolder:GetChildren()) do
-                    if v.Name == "Windy" then
-                        hrp.CFrame = v.CFrame
-                        wait(0.8)
-                    end
-                end
-                wait(3)
-                local trueWindy
-                for i, v in pairs(windyFolder:GetChildren()) do
-                    if v.Name == "Windy" and v:FindFirstChild("Sound") then
-                        trueWindy = v
-                    end
-                end
-
-                local function GetWindyLevel()
-                    for i, v in pairs(workspace.Monsters:GetChildren()) do
-                        if v.Name:find("Windy") then
-                            local lvl = GetLevel(v.Name)
-                            return lvl
-                        end
-                    end
-                end
-                while wait() and HuntWindy and windyFolder:FindFirstChild("Windy") do
-                    CreateVelocity()
-                    local lastlvl = GetWindyLevel()
-                    local criticalTime = os.clock() + 20
-                    repeat
-                        hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
-                        local breakY = false
-                        for a, b in pairs(workspace.Collectibles:GetChildren()) do
-                            if not b:GetAttribute("Collected") and b:FindFirstChild("FrontDecal") and b.FrontDecal.Texture == "rbxassetid://1629547638" then
-                                DestroyVelocity()
-                                hrp.CFrame = b.CFrame
-                                b:SetAttribute("Collected", 1)
-                                wait(0.2)
-                                CreateVelocity()
-                            end
-                        end
-                        if #createdVelocities <= 0 then
-                            CreateVelocity()
-                        end
-                        if not windyFolder:FindFirstChild("Windy") or os.clock() > criticalTime then
-                            break
-                        end
-                        localplayer.Character:WaitForChild("HumanoidRootPart").CFrame = trueWindy.CFrame + Vector3.new(0,22,0)
-                        wait()
-                        if not HuntWindy then
-                            break
-                        end
-                        local newlvl = GetWindyLevel()
-                        if newlvl and newlvl > lastlvl then
-                            breakY = true
-                        end
-                    until breakY
-                    DestroyVelocity()
-                    local sTime = os.clock()
-                    local eTime = sTime + 10
-                    repeat
-                        hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
-                        KeepTokensActive = true
-                        hum.WalkSpeed = math.random(80, 90)
-                        wait()
-                    until os.clock() >= eTime
-                    KeepTokensActive = false
-                end
-            end
-        end--]]
+        if scriptFunctions.Main.HuntWindy.Enabled then
+            scriptFunctions.Main.HuntWindy:Activate()
+        end
 
         if scriptFunctions.Main.HuntVicious.Enabled then
             scriptFunctions.Main.HuntVicious:Activate()
@@ -1084,19 +1144,8 @@ while wait() and ExecState == getgenv().Executed do -- CHECK
             end
         end
 
-        if AutoQuest == true then
-            local s, e = pcall(function()
-                CheckForUnfinishedAction()
-                wait()
-                local wdwd = AutoQuestFce()
-                if wdwd == false then
-                    Announce("Auto-Quest Error", "Open Quest Tab!!! " ..tostring(error))
-                end
-            end)
-            if e then
-                Announce("Auto-Quest Error", "Error: " ..tostring(error))
-                wait(5)
-            end
+        if scriptFunctions.Main.AutoQuest.Enabled then
+            scriptFunctions.Main.AutoQuest:Activate()
         end 
 
         --[[local skip = false
