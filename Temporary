@@ -677,7 +677,7 @@ function scriptFunctions.Main.HuntVicious:Activate()
                     hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
 
                     for a, b in pairs(workspace.Collectibles:GetChildren()) do
-                        if not b:GetAttribute("Collected") and b:FindFirstChild("FrontDecal") and b.FrontDecal.Texture == "rbxassetid://1629547638" and (b.Position - v.Torso.Position).magnitude >= ConvertToStuds(4.5) then
+                        if not b:GetAttribute("Collected") and b:FindFirstChild("FrontDecal") and b.FrontDecal.Texture == "rbxassetid://1629547638" and (b.Position - v.Position).magnitude >= ConvertToStuds(4.5) then
                             DestroyVelocity()
                             wait()
                             hrp.CFrame = b.CFrame
