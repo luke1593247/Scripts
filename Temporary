@@ -11,7 +11,7 @@ local scriptFunctions = {
 local playerData = {}
 
 
-local Version = "PRE-RELEASE - 0.0.2"
+local Version = "PRE-RELEASE - 0.0.3"
 warn("----------------------------------------------------------")
 print("Script Version "..Version)
 warn("-----------------------------------------------------------")
@@ -415,6 +415,7 @@ scriptFunctions.Main.CollectTokens = {
 function scriptFunctions.Main.CollectTokens:Function()
     local tokensTable = {}
     local connection, s ,e
+    local counter = 0
 
     local function Check(token)
         for i, v in pairs(tokensTable) do
@@ -425,7 +426,7 @@ function scriptFunctions.Main.CollectTokens:Function()
         return false
     end
 
-    local function Collect(Token, Fast)
+    local function Collect(Token, Fast, check)
         local finished = false
         hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
         if Fast then
@@ -448,7 +449,7 @@ function scriptFunctions.Main.CollectTokens:Function()
             if Fast then
                 hum.WalkSpeed = 95
             end
-            if not Check(Token) then
+            if check and not Check(Token) then
                 return
             end
             wait()
@@ -473,20 +474,47 @@ function scriptFunctions.Main.CollectTokens:Function()
                 table.remove(tokensTable, i)
             end
         end
+
         hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
+         
+        if not self.Event then
+            if workspace.Particles:FindFirstChild("Crosshair") then
+                if (counter % 2) == 0 then
+                    for i, v in pairs(workspace.Particles:GetChildren()) do
+                        if v.Name == "Crosshair" then
+                            v.Name = "Current"
+                            Collect(v, true)
+                            repeat wait() until not workspace.Particles:FindFirstChild("Current")
+                            wait(0.1)
+                        end
+                    end
+                else
+                    wait(0.8)
+                    for i, v in pairs(workspace.Particles:GetChildren()) do
+                        if v.Name == "Crosshair" then
+                            hrp.CFrame = v.CFrame
+                            v.Name = "Activated"
+                            wait(0.1)
+                        end
+                    end
+                end
+                counter += 1
+            end
+        end
+
         for i, v in pairs(tokensTable) do
             if not v:GetAttribute("Farmed") and v:FindFirstChild("FrontDecal") and v.FrontDecal.Texture == "rbxassetid://1629547638" and checkDistance(FieldToFarm, v, 50) then
-                Collect(v, self.Speed or Speed)
+                Collect(v, self.Speed or Speed, true)
                 table.remove(tokensTable, i)
             end
             if not self.Event then
                 if not v:GetAttribute("Farmed") and v:FindFirstChild("FrontDecal") and checkDistance(FieldToFarm, v, 30) then
-                    Collect(v, self.Speed or Speed)
+                    Collect(v, self.Speed or Speed, true)
                 end
                 table.remove(tokensTable, i)
             else
                 if not v:GetAttribute("Farmed") and v:FindFirstChild("FrontDecal") and table.find(RareTokensDecals, v.FrontDecal.Texture) and checkDistance(FieldToFarm, v, 50) then
-                    Collect(v, true)
+                    Collect(v, true, true)
                 end
                 table.remove(tokensTable, i)
             end
@@ -659,7 +687,7 @@ function scriptFunctions.Main.HuntVicious:Activate()
                             CreateVelocity()
                         end
                     end
-
+                    
                     if #createdVelocities == 0 then
                         CreateVelocity()
                     end
@@ -679,6 +707,7 @@ function scriptFunctions.Main.HuntVicious:Activate()
             wait()
         end
     until s or not self.Enabled or self.Paused
+    FieldToFarm = fieldSave
 end
 
 local function GetLevel(text)
@@ -802,6 +831,7 @@ function scriptFunctions.Main.AutoQuest:Activate()
 
             if self.QuestFarming then
                 if self.QuestFarming.Description.Text:find("Complete!") then
+                    print("Farming quest finished: "..self.QuestFarming.Description.Text)
                     self.QuestFarming = false
                     FieldToFarm = self.FieldSaved
                     scriptFunctions.Main.Autofarm.AdaptField = true    
@@ -857,6 +887,7 @@ function scriptFunctions.Main.AutoQuest:Activate()
                         FieldToFarm = b
                         self.QuestFarming = theLeastQuest
                         scriptFunctions.Main.Autofarm.AdaptField = false
+                        print("Farming: "..theLeastQuest.Description.Text)
                         return
                     end
                 end
@@ -866,6 +897,7 @@ function scriptFunctions.Main.AutoQuest:Activate()
                     FieldToFarm = Fields["Pepper Patch"]
                     self.QuestFarming = theLeastQuest
                     scriptFunctions.Main.Autofarm.AdaptField = false
+                    print("Farming: "..theLeastQuest.Description.Text)
                 elseif theLeastQuest.Description.Text:find("Blue") then
                     self.FieldSaved = FieldToFarm
                     for i, v in pairs(Fields) do
@@ -875,6 +907,7 @@ function scriptFunctions.Main.AutoQuest:Activate()
                     end
                     self.QuestFarming = theLeastQuest
                     scriptFunctions.Main.Autofarm.AdaptField = false
+                    print("Farming: "..theLeastQuest.Description.Text)
                 elseif theLeastQuest.Description.Text:find("White") then
                     self.FieldSaved = FieldToFarm
                     for i, v in pairs(Fields) do
@@ -884,6 +917,7 @@ function scriptFunctions.Main.AutoQuest:Activate()
                     end
                     scriptFunctions.Main.Autofarm.AdaptField = false
                     self.QuestFarming = theLeastQuest
+                    print("Farming: "..theLeastQuest.Description.Text)
                 end
             end 
         else
