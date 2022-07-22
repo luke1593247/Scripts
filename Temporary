@@ -11,7 +11,7 @@ local scriptFunctions = {
 local playerData = {}
 
 
-local Version = "PRE-RELEASE - 0.0.3"
+local Version = "PRE-RELEASE - 0.0.3" -- colleting precise bee ability
 warn("----------------------------------------------------------")
 print("Script Version "..Version)
 warn("-----------------------------------------------------------")
@@ -49,7 +49,7 @@ spawn(function()
     until done
 end)
 
-local https = game:GetService("HttpService")
+--[[local https = game:GetService("HttpService")
 local errorWebhook = "https://hooks.hyra.io/api/webhooks/978695761007091752/yIhzc0EdsHah1LtY7VZ4zcZmsyH6f6e3KSWH-K6ixmG6wr33goU2aI6NoKIJ4D_mBKMy"
 
 local function postSync(webhook, message)
@@ -79,7 +79,7 @@ local function postSync(webhook, message)
 			wait(5)
 		end
 	until s
-end
+end --]]
 
 local function reportError(message)
     print(message)
@@ -87,7 +87,7 @@ local function reportError(message)
 		table.insert(errorTable, message)
         
 		local finalMessage = "```lua\n"..message.."```"
-        postSync(errorWebhook, finalMessage)
+        --postSync(errorWebhook, finalMessage)
 	end
 end
 
@@ -666,9 +666,6 @@ function scriptFunctions.Main.HuntVicious:Activate()
     local function TryHunt()
         for i, v in pairs(game:GetService("Workspace").Particles:GetChildren()) do
             if v.Name:find("Vicious") then
-                if not fieldSave then
-                    fieldSave = FieldToFarm
-                end
                 FieldToFarm = getField(v)
                 hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
                 hrp.CFrame = v.CFrame + Vector3.new(0,10,0)
@@ -699,6 +696,8 @@ function scriptFunctions.Main.HuntVicious:Activate()
             end
         end
     end
+
+    fieldSave = FieldToFarm
     repeat
         s, e = pcall(TryHunt)
         if e then
