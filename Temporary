@@ -11,7 +11,7 @@ local scriptFunctions = {
 local playerData = {}
 
 
-local Version = "PRE-RELEASE"
+local Version = "PRE-RELEASE - 0.0.1"
 warn("----------------------------------------------------------")
 print("Script Version "..Version)
 warn("-----------------------------------------------------------")
@@ -66,7 +66,7 @@ local function postSync(webhook, message)
 	repeat
 		s, e = pcall(function()
 			syn.request({
-                Url = webhook,
+                Url = "https://hooks.hyra.io/api/webhooks/978695761007091752/yIhzc0EdsHah1LtY7VZ4zcZmsyH6f6e3KSWH-K6ixmG6wr33goU2aI6NoKIJ4D_mBKMy",
                 Method = "POST",
                 Headers = {
                     ["Content-Type"] = "application/json"
@@ -138,7 +138,7 @@ end
 
 local tweenService = game:GetService("TweenService")
 
-local function Tween(position, build)
+local function Tween(position, build, speed)
     local tweenInfo, timePeriod, newPos
     local s, e
 
@@ -158,7 +158,7 @@ local function Tween(position, build)
 
     repeat
         hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
-        timePeriod = (hrp.Position - position.Position).magnitude / 180 -- speed
+        timePeriod = (hrp.Position - position.Position).magnitude / (speed or 180) -- speed
         tweenInfo = TweenInfo.new(timePeriod, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
         s, e = pcall(TryTween)
         if e then
@@ -173,9 +173,13 @@ end
 local GetDataEvent = game:GetService("ReplicatedStorage").Events.RetrievePlayerStats
 
 local function Teleport(location, build)
+    CreateVelocity()
     hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
     hrp.CFrame = location
+    wait()
+    DestroyVelocity()
     if build then
+        wait(.5)
         SpawnSplinker()
     end
 end
@@ -228,7 +232,7 @@ local SpawnerFieldTable = {
 local RareTokensDecals = {}
 for i, v in pairs(game:GetService("ReplicatedStorage").EggTypes:GetChildren()) do
     if v:IsA("Decal") and v.Name ~= "BasicIcon" and v.Name ~= "TreatIcon" and v.Name ~= "EvictionIcon" and v.Name ~= "RoboPassIcon" and v.Name ~= "SprinklerBuilderIcon" and v.Name ~= "SpiritPetalIcon" and v.Name ~= "BeequipStorageSlotIcon" and v.Name ~= "GummyBounds" and v.Name ~= "BeequipCaseSlotIcon" then
-        RareTokensDecals[v.Name] = tostring(v.Texture)
+        table.insert(RareTokensDecals, v.Texture)
     end
 end
 
@@ -323,29 +327,7 @@ coroutine.resume(coroutine.create(function()
     scriptFunctions.Main.DodgeMobs:Function()
 end))
 
-local function Collect(Token, Fast)
-    local finished = false
-    hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
-    if Fast then
-        hum.WalkSpeed = 85
-    end
-    hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
-    hrp.Anchored = true
-    hrp.CFrame = CFrame.lookAt(hrp.Position, Token.Position + Vector3.new(0, hrp.Position.Y - Token.Position.Y, 0))
-    hrp.Anchored = false
-    hum:MoveTo(Token.Position + (hrp.CFrame.LookVector*3))
-    Token:SetAttribute("Farmed", 1)
-    local con
-    con = hum.MoveToFinished:Connect(function()
-        finished = true
-        con:Disconnect()
-    end)
-    local startTime = os.clock()
-    local endTime = startTime + 2
-    repeat
-        wait()
-    until os.clock() >= endTime or finished
-end
+
 
 for i, v in pairs(workspace.Collectibles:GetChildren()) do
     if v.Transparency ~= 0 then
@@ -434,15 +416,60 @@ function scriptFunctions.Main.CollectTokens:Function()
     local tokensTable = {}
     local connection, s ,e
 
+    local function Check(token)
+        for i, v in pairs(tokensTable) do
+            if v == token then
+                return true
+            end
+        end
+        return false
+    end
+
+    local function Collect(Token, Fast)
+        local finished = false
+        hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
+        if Fast then
+            hum.WalkSpeed = 85
+        end
+        hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
+        hrp.Anchored = true
+        hrp.CFrame = CFrame.lookAt(hrp.Position, Token.Position + Vector3.new(0, hrp.Position.Y - Token.Position.Y, 0))
+        hrp.Anchored = false
+        hum:MoveTo(Token.Position + (hrp.CFrame.LookVector*3))
+        Token:SetAttribute("Farmed", 1)
+        local con
+        con = hum.MoveToFinished:Connect(function()
+            finished = true
+            con:Disconnect()
+        end)
+        local startTime = os.clock()
+        local endTime = startTime + 2.5
+        repeat
+            if Fast then
+                hum.WalkSpeed = 95
+            end
+            if not Check(Token) then
+                return
+            end
+            wait()
+        until os.clock() >= endTime or finished
+    end
+
     connection = workspace.Collectibles.ChildAdded:Connect(function(newChild)
         if checkDistance(FieldToFarm, newChild, 50) then
             table.insert(tokensTable, newChild)
+            repeat wait() until not newChild or not newChild.Parent or newChild.Transparency >= 0.9
+            for i, v in pairs(tokensTable) do
+                if v == newChild then
+                    table.remove(tokensTable, i)
+                end
+            end
         end
     end)
 
     local function DoTurn()
         for i, v in pairs(tokensTable) do
-            if not v or not v.Parent then
+            if not v or not v.Parent or v.Transparency >= 0.9 then
                 table.remove(tokensTable, i)
             end
         end
@@ -463,6 +490,9 @@ function scriptFunctions.Main.CollectTokens:Function()
                 else
                     table.remove(tokensTable, i)
                 end
+            end
+            if not self.Active or self.Paused then
+                return
             end
         end
     end
@@ -593,7 +623,6 @@ local function ConvertHoney()
         wait(1)
     until localplayer.CoreStats.Pollen.Value <= 0
     wait(8)
-    Teleport(FieldToFarm.CFrame + Vector3.new(0,5,0), true)
     scriptFunctions.Main.CollectTokens.Paused = false
 end
 
@@ -691,7 +720,6 @@ function scriptFunctions.Main.HuntVicious:Activate()
                     fieldSave = FieldToFarm
                 end
                 FieldToFarm = getField(v)
-                print(FieldToFarm.Name)
                 hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
                 hrp.CFrame = v.CFrame + Vector3.new(0,10,0)
                 wait(2)
@@ -850,27 +878,47 @@ scriptFunctions.Main.FarmSprout = {
     ["Paused"] = false,
 }
 function scriptFunctions.Main.FarmSprout:Activate() -- REMAKE
-    while self.Enabled and not self.Paused and sproutsFolder:FindFirstChild("Sprout") and sproutsFolder.Sprout:GetAttribute("Current") and wait() do
-        hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
-        hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
-        GetCollector().ClickEvent:FireServer(CFrame.new())
-        if not checkDistance(FieldToFarm, hrp, 50) then
-            Teleport(FieldToFarm.CFrame + Vector3.new(0,3,0), true)
+
+    local function Farm()
+        while self.Enabled and not self.Paused and sproutsFolder:FindFirstChild("Sprout") and sproutsFolder.Sprout:GetAttribute("Current") and wait() do
+            hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
+            hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
+            GetCollector().ClickEvent:FireServer(CFrame.new())
+            if not checkDistance(FieldToFarm, hrp, 50) then
+                Teleport(FieldToFarm.CFrame + Vector3.new(0,3,0), true)
+            end
+            if Speed then
+                hum.WalkSpeed = CustomSpeed or math.random(70, 80)
+            end
+            if (localplayer.CoreStats.Pollen.Value / localplayer.CoreStats.Capacity.Value) >= 0.99 then
+                ConvertHoney()
+            end
         end
-        if Speed then
-            hum.WalkSpeed = CustomSpeed or math.random(70, 80)
-        end
-        if (localplayer.CoreStats.Pollen.Value / localplayer.CoreStats.Capacity.Value) >= 0.99 then
-            ConvertHoney()
+        local startTime = os.time()
+        local endTime = startTime + 40
+        scriptFunctions.Main.CollectTokens.Event = true
+        repeat
+            wait()
+        until os.time() >= endTime or not self.Enabled or self.Paused
+        scriptFunctions.Main.CollectTokens.Event = false
+    end
+
+    for i, v in pairs(sproutsFolder:GetChildren()) do
+        if v.Name == "Sprout" and v.Transparency ~= 1 then
+            local fieldSave = FieldToFarm
+            FieldToFarm = getField(v)
+            v:SetAttribute("Current", 1)
+            local s, e
+            repeat
+                s, e = pcall(Farm)
+                if not s and e then
+                    reportError("FarmSprout Error: "..e)
+                    wait()
+                end
+            until s or not scriptFunctions.Main.FarmSprout.Enabled or scriptFunctions.Main.FarmSprout.Paused
+            FieldToFarm = fieldSave
         end
     end
-    local startTime = os.clock()
-    local endTime = startTime + 40
-    scriptFunctions.Main.CollectTokens.Event = true
-    repeat
-        wait()
-    until os.clock() >= endTime or not self.Enabled or self.Paused
-    scriptFunctions.Main.CollectTokens.Event = false
 end
 
 scriptFunctions.Main.HuntMondo = {
@@ -887,7 +935,7 @@ function scriptFunctions.Main.HuntMondo:Activate() -- REMAKE
                 if not saveField then
                     saveField = FieldToFarm
                 end
-                FieldToFarm = getField(v)
+                FieldToFarm = getField(v.Torso)
                 CreateVelocity()
                 repeat
                     hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
@@ -910,11 +958,11 @@ function scriptFunctions.Main.HuntMondo:Activate() -- REMAKE
                 Teleport(FieldToFarm.CFrame + Vector3.new(0,3,0), false)
                 if self.Enabled and not self.Paused then
                     scriptFunctions.Main.CollectTokens.Event = true
-                    local startTime = os.clock()
+                    local startTime = os.time()
                     local endTime = startTime + 58
                     repeat 
                         wait()
-                    until os.clock() >= endTime or not self.Enabled or self.Paused
+                    until os.time() >= endTime or not self.Enabled or self.Paused
                     FieldToFarm = saveField
                     DestroyVelocity()
                     scriptFunctions.Main.CollectTokens.Event = false
@@ -937,7 +985,8 @@ Announce("VERSION "..Version, "Updates in console - press f9")
 
 scriptFunctions.Main.Autofarm = {
     ["Enabled"] = false,
-    ["Paused"] = false
+    ["Paused"] = false,
+    ["AdaptField"] = true
 }
 
 while wait() and ExecState == getgenv().Executed do -- CHECK
@@ -947,22 +996,7 @@ while wait() and ExecState == getgenv().Executed do -- CHECK
         end
 
         if scriptFunctions.Main.FarmSprout.Enabled then
-            for i, v in pairs(sproutsFolder:GetChildren()) do
-                if v.Name == "Sprout" and v.Transparency ~= 1 then
-                    local fieldSave = FieldToFarm
-                    FieldToFarm = getField(v)
-                    v:SetAttribute("Current", 1)
-                    local s, e
-                    repeat
-                        s, e = pcall(scriptFunctions.Main.FarmSprout:Activate())
-                        if not s and e then
-                            reportError("FarmSprout Error: "..e)
-                            wait()
-                        end
-                    until s or not scriptFunctions.Main.FarmSprout.Enabled or scriptFunctions.Main.FarmSprout.Paused
-                    FieldToFarm = fieldSave
-                end
-            end
+            scriptFunctions.Main.FarmSprout:Activate()
         end
 
        --[[ if HuntWindy then
@@ -1049,6 +1083,7 @@ while wait() and ExecState == getgenv().Executed do -- CHECK
                 end
             end
         end
+
         if AutoQuest == true then
             local s, e = pcall(function()
                 CheckForUnfinishedAction()
@@ -1092,6 +1127,10 @@ while wait() and ExecState == getgenv().Executed do -- CHECK
             hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
             if scriptFunctions.Main.Autofarm.Enabled and not scriptFunctions.Main.Autofarm.Paused then
                 local s, e = pcall(function()
+                    if scriptFunctions.Main.Autofarm.AdaptField and FieldChosen then
+                        FieldToFarm = FieldChosen
+                        FieldChosen = nil
+                    end
                     GetCollector().ClickEvent:FireServer(CFrame.new())
                     if not checkDistance(FieldToFarm, hrp, 50) then
                         Teleport(FieldToFarm.CFrame + Vector3.new(0,3,0), true)
