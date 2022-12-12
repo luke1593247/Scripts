@@ -524,7 +524,7 @@ folder1:Toggle("Auto Quest (Alpha)", function(state)
     scriptFunctions.Main.AutoQuest.Enabled = state
 end)
 
-folder1:Toggle("Hunt Vicious Bee", function(state)
+folder1:Toggle("Hunt Vicious Bee (Broken)", function(state)
     scriptFunctions.Main.HuntVicious.Enabled = state
 end)
 
