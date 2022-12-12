@@ -11,7 +11,7 @@ local scriptFunctions = {
 local playerData = {}
 
 
-local Version = "PRE-RELEASE - 0.0.3" -- colleting precise bee ability
+local Version = "PRE-RELEASE - 0.0.4" -- colleting precise bee ability
 warn("----------------------------------------------------------")
 print("Script Version "..Version)
 warn("-----------------------------------------------------------")
@@ -31,7 +31,7 @@ end
 
 spawn(function()
     local done = false
-    repeat
+    while not done and wait() do
         for i, v in pairs(workspace.Honeycombs:GetChildren()) do
             if v:FindFirstChild("Owner") and v.Owner.Value == localplayer then
                 playerData.Hive = v
@@ -45,8 +45,7 @@ spawn(function()
             end
             wait()
         end
-        wait(1)
-    until done
+    end
 end)
 
 --[[local https = game:GetService("HttpService")
@@ -110,6 +109,126 @@ local function DestroyVelocity()
             v:Destroy()
             table.remove(createdVelocities, i)
         end
+    end
+end
+
+local sproutsFolder = game:GetService("Workspace").Particles.Folder2
+
+local MonsterSpawners = {
+    Spider = game:GetService("Workspace").MonsterSpawners["Spider Cave"],
+    Rhino = {
+        CloverField = game:GetService("Workspace").MonsterSpawners["Rhino Bush"],
+        BlueflowerField = game:GetService("Workspace").MonsterSpawners["Rhino Cave 1"],
+        BambooField = game:GetService("Workspace").MonsterSpawners["Rhino Cave 3"],
+    };
+    Werewol = game:GetService("Workspace").MonsterSpawners.WerewolfCave,
+    Scorpion = game:GetService("Workspace").MonsterSpawners.RoseBush,
+    Ladybug = {
+        CloverField = game:GetService("Workspace").MonsterSpawners["Ladybug Bush"],
+        MushroomField = game:GetService("Workspace").MonsterSpawners["MushroomBush"],
+        StrawberryField = game:GetService("Workspace").MonsterSpawners["Ladybug Bush 2"],
+    };
+    Mantis = {
+        PineTreeField = game:GetService("Workspace").MonsterSpawners.ForestMantis1,
+        PineappleField = game:GetService("Workspace").MonsterSpawners.PineappleMantis1,
+    };
+}
+
+local Fields = {}
+local FieldsFolder = workspace.FlowerZones
+
+for i, v in pairs(FieldsFolder:GetChildren()) do
+    Fields[v.Name] =  v
+end
+
+local SpawnerFieldTable = {
+    ["Spider Cave"] = "Spider",
+    ["Rhino Bush"] = "Clover",
+    ["Rhino Cave 1"] = "Blueflower",
+    ["Rhino Cave 3"] = "Bamboo",
+    ["WerewolfCave"] = "Cactus",
+    ["RoseBush"] = "Rose",
+    ["Ladubug Bush"] = "Clover",
+    ["MushroomBush"] = "Mushroom",
+    ["Ladybug Bush 2"] = "Strawberry",
+    ["ForestMantis1"] = "Tree",
+    ["PineappleMantis1"] = "Pineapple",
+}
+
+local RareTokensDecals = {}
+for i, v in pairs(game:GetService("ReplicatedStorage").EggTypes:GetChildren()) do
+    if v:IsA("Decal") and v.Name ~= "BasicIcon" and v.Name ~= "TreatIcon" and v.Name ~= "EvictionIcon" and v.Name ~= "RoboPassIcon" and v.Name ~= "SprinklerBuilderIcon" and v.Name ~= "SpiritPetalIcon" and v.Name ~= "BeequipStorageSlotIcon" and v.Name ~= "GummyBounds" and v.Name ~= "BeequipCaseSlotIcon" then
+        table.insert(RareTokensDecals, v.Texture)
+    end
+end
+
+local function GetCollector()
+    return localplayer.Character:FindFirstChildOfClass("Tool") or localplayer.Backpack:FindFirstChildOfClass("Tool")
+end
+
+local function checkDistance(regionPart, part, sizeY)
+    local pos, size = regionPart.Position, regionPart.Size
+    local minX, maxX, minZ, maxZ, minY, maxY = pos.X - size.X / 2, pos.X + size.X / 2, pos.Z - size.Z / 2, pos.Z + size.Z / 2, pos.Y - (sizeY/3 or size.Y/2), pos.Y + (sizeY/2 or size.Y/2)
+    pos, size = part.Position, part.Size
+    return (pos.X < maxX and pos.X > minX and pos.Z < maxZ and pos.Z > minZ and pos.Y < maxY and pos.Y > minY)
+end
+
+local function getField(part)
+    local s, e
+    local function Try()
+        for i, v in pairs(Fields) do
+            if checkDistance(v, part, 50) then
+                return v
+            end
+        end
+        return nil
+    end
+    repeat
+        s, e = pcall(Try)
+        if not s and e then
+            reportError("GetField Error: "..e)
+            wait()
+        end
+    until s
+    return e
+end
+
+
+local FieldChosen, FieldToFarm
+local temp = {}
+for i, v in pairs(Fields) do
+    table.insert(temp, i)
+end
+folder1:Dropdown("Choose field", temp, true, function(option)
+    FieldChosen = Fields[option]
+    Announce("Autofarm", "New Target Field: "..FieldChosen.Name)
+end)
+
+print("Please choose target field")
+Announce("WARNING", "Please choose target field")
+
+local tempNum = 0 
+while ExecState == getgenv().Executed and not FieldChosen and wait() do
+    tempNum += 1
+    if tempNum == 200 then
+        tempNum = 0
+        Announce("WARNING", "Please choose target field")
+    end
+end
+
+local VS = game:GetService("VirtualUser")
+local function PressKey(key)
+    VS:CaptureController()
+    VS:TypeKey(key)
+end
+localplayer.Idled:Connect(function()
+    VS:CaptureController()
+    VS:ClickButton2(Vector2.new())
+end)
+
+for i, v in pairs(workspace.Collectibles:GetChildren()) do
+    if v.Transparency ~= 0 then
+        v:Destroy()
     end
 end
 
@@ -188,60 +307,12 @@ for i, v in pairs(workspace.FieldDecos:GetChildren()) do
     v:Destroy()
 end
 
-local MonsterSpawners = {
-    Spider = game:GetService("Workspace").MonsterSpawners["Spider Cave"],
-    Rhino = {
-        CloverField = game:GetService("Workspace").MonsterSpawners["Rhino Bush"],
-        BlueflowerField = game:GetService("Workspace").MonsterSpawners["Rhino Cave 1"],
-        BambooField = game:GetService("Workspace").MonsterSpawners["Rhino Cave 3"],
-    };
-    Werewol = game:GetService("Workspace").MonsterSpawners.WerewolfCave,
-    Scorpion = game:GetService("Workspace").MonsterSpawners.RoseBush,
-    Ladybug = {
-        CloverField = game:GetService("Workspace").MonsterSpawners["Ladybug Bush"],
-        MushroomField = game:GetService("Workspace").MonsterSpawners["MushroomBush"],
-        StrawberryField = game:GetService("Workspace").MonsterSpawners["Ladybug Bush 2"],
-    };
-    Mantis = {
-        PineTreeField = game:GetService("Workspace").MonsterSpawners.ForestMantis1,
-        PineappleField = game:GetService("Workspace").MonsterSpawners.PineappleMantis1,
-    };
-}
-
-local Fields = {}
-local FieldsFolder = workspace.FlowerZones
-
-for i, v in pairs(FieldsFolder:GetChildren()) do
-    Fields[v.Name] =  v
-end
-
-local SpawnerFieldTable = {
-    ["Spider Cave"] = "Spider",
-    ["Rhino Bush"] = "Clover",
-    ["Rhino Cave 1"] = "Blueflower",
-    ["Rhino Cave 3"] = "Bamboo",
-    ["WerewolfCave"] = "Cactus",
-    ["RoseBush"] = "Rose",
-    ["Ladubug Bush"] = "Clover",
-    ["MushroomBush"] = "Mushroom",
-    ["Ladybug Bush 2"] = "Strawberry",
-    ["ForestMantis1"] = "Tree",
-    ["PineappleMantis1"] = "Pineapple",
-}
-
-local RareTokensDecals = {}
-for i, v in pairs(game:GetService("ReplicatedStorage").EggTypes:GetChildren()) do
-    if v:IsA("Decal") and v.Name ~= "BasicIcon" and v.Name ~= "TreatIcon" and v.Name ~= "EvictionIcon" and v.Name ~= "RoboPassIcon" and v.Name ~= "SprinklerBuilderIcon" and v.Name ~= "SpiritPetalIcon" and v.Name ~= "BeequipStorageSlotIcon" and v.Name ~= "GummyBounds" and v.Name ~= "BeequipCaseSlotIcon" then
-        table.insert(RareTokensDecals, v.Texture)
-    end
-end
-
 scriptFunctions.Main.DodgeMobs = {
     ["Active"] = false,
-    ["Paused"] = false
+    ["Paused"] = false,
 }
 
-function scriptFunctions.Main.DodgeMobs:Function() -- REWRITE
+function scriptFunctions.Main.DodgeMobs:Function()
     local s, e
     local biggestRadius, shortestDelay, nearest, shortestMag, PartB
     local reverse = false
@@ -249,67 +320,38 @@ function scriptFunctions.Main.DodgeMobs:Function() -- REWRITE
 
     local function Dodge()
         hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
+        local tempMag
 
-        for i, v in pairs(game:GetService("Workspace").Monsters:GetChildren()) do
-            if hrp and v.PrimaryPart and (hrp.Position - v.PrimaryPart.Position).magnitude <= ConvertToStuds(15) and not v.Name:find("Mondo") and not v.Name:find("Vicious") and not v.Name:find("Snail") and not v.Name:find("King") and not v.Name:find("Coconut") and not v.Name:find("Windy") then
+        for i, v in pairs(workspace.Monsters:GetChildren()) do
+            if hrp and v.PrimaryPart and v.LookAt.Value and (hrp.Position - v.PrimaryPart.Position).magnitude <= ConvertToStuds(15) and not v.Name:find("Mondo") and not v.Name:find("Vicious") and not v.Name:find("Snail") and not v.Name:find("King") and not v.Name:find("Coconut") and not v.Name:find("Windy") then
                 PartB = v.PrimaryPart
-                if not biggestRadius then
+                if not biggestRadius or biggestRadius < (v:FindFirstChild("Config") or v:WaitForChild("Config")).AttackRadius.Value then
                     biggestRadius = (v:FindFirstChild("Config") or v:WaitForChild("Config")).AttackRadius.Value
-                elseif biggestRadius < (v:FindFirstChild("Config") or v:WaitForChild("Config")).AttackRadius.Value then
-                    biggestRadius = v.Config.AttackRadius.Value
                 end
-                if not shortestDelay then
+                if not shortestDelay or shortestDelay > (v:FindFirstChild("Config") or v:WaitForChild("Config")).AttackDelay.Value then
                     shortestDelay = (v:FindFirstChild("Config") or v:WaitForChild("Config")).AttackDelay.Value
-                elseif shortestDelay > (v:FindFirstChild("Config") or v:WaitForChild("Config")).AttackDelay.Value then
-                    shortestDelay = v.Config.AttackDelay.Value
                 end
-                if not shortestMag then
-                    shortestMag = (PartB.Position - hrp.Position).magnitude
-                    nearest = v
-                elseif shortestMag > (PartB.Position - hrp.Position).magnitude then
-                    shortestMag = (PartB.Position - hrp.Position).magnitude
+                tempMag = (PartB.Position - hrp.Position).magnitude
+                if not shortestMag or shortestMag > tempMag then
+                    shortestMag = tempMag
                     nearest = v
                 end
-
-                if nearest then
-                    PartB = nearest.PrimaryPart
-                end
-
-                if shortestMag and shortestMag < 50 and PartB then
-                    if (hrp.Position - PartB.Position).magnitude <= ConvertToStuds(15) then
-                        CreateVelocity()
-                        repeat
-                            local tm = os.clock()
-                            local deadlyTime = false
-                            repeat
-                                wait()
-                                for ib, vb in pairs(game:GetService("Workspace").Monsters:GetChildren()) do
-                                    if vb.LookAt.Value ~= nil then
-                                        deadlyTime = true
-                                    end
-                                end
-                            until deadlyTime == true or not game:GetService("Workspace").Monsters:FindFirstChild(nearest.Name)
-                            wait(shortestDelay-0.25-(os.clock() - tm))
-                            if not game:GetService("Workspace").Monsters:FindFirstChild(nearest.Name) then
-                                break
-                            end
-                            hrp.CFrame += upVec
-                            wait(1.8)
-                            if not game:GetService("Workspace").Monsters:FindFirstChild(nearest.Name) then
-                                break
-                            end
-                            if reverse then
-                                hrp.CFrame = PartB.CFrame + (PartB.CFrame.LookVector*(biggestRadius + 2.5))
-                            else
-                                hrp.CFrame = PartB.CFrame - (PartB.CFrame.LookVector*(biggestRadius + 2.5))
-                            end
-                            hrp.CFrame = CFrame.lookAt(hrp.Position, PartB.Position + Vector3.new(0, localplayer.Character:WaitForChild("HumanoidRootPart").Position.Y - PartB.Position.Y, 0))
-                        until not workspace.Monsters:FindFirstChild(nearest.Name) or not self.Active or self.Paused
-                        DestroyVelocity()
-                        wait()
-                    end
-                end
+                wait()
             end
+        end
+        
+        if nearest then
+            PartB = nearest.PrimaryPart
+            CreateVelocity()
+            hrp.CFrame += upVec
+            wait(1.8)
+            if reverse then
+                hrp.CFrame = PartB.CFrame + (PartB.CFrame.LookVector*(biggestRadius + 2.5))
+            else
+                hrp.CFrame = PartB.CFrame - (PartB.CFrame.LookVector*(biggestRadius + 2.5))
+            end
+            -- hrp.CFrame = CFrame.lookAt(hrp.Position, PartB.Position + Vector3.new(0, localplayer.Character:WaitForChild("HumanoidRootPart").Position.Y - PartB.Position.Y, 0))
+            DestroyVelocity()
         end
     end
 
@@ -328,77 +370,8 @@ coroutine.resume(coroutine.create(function()
 end))
 
 
-
-for i, v in pairs(workspace.Collectibles:GetChildren()) do
-    if v.Transparency ~= 0 then
-        v:Destroy()
-    end
-end
-
-local sproutsFolder = game:GetService("Workspace").Particles.Folder2
-local VS = game:GetService("VirtualUser")
-
-local function PressKey(key)
-    VS:CaptureController()
-    VS:TypeKey(key)
-end
-
-localplayer.Idled:Connect(function()
-    VS:CaptureController()
-    VS:ClickButton2(Vector2.new())
-end)
-
-local function GetCollector()
-    return localplayer.Character:FindFirstChildOfClass("Tool") or localplayer.Backpack:FindFirstChildOfClass("Tool")
-end
-
-local function checkDistance(regionPart, part, sizeY)
-    local pos, size = regionPart.Position, regionPart.Size
-    local minX, maxX, minZ, maxZ, minY, maxY = pos.X - size.X / 2, pos.X + size.X / 2, pos.Z - size.Z / 2, pos.Z + size.Z / 2, pos.Y - (sizeY/3 or size.Y/2), pos.Y + (sizeY/2 or size.Y/2)
-    pos, size = part.Position, part.Size
-    return (pos.X < maxX and pos.X > minX and pos.Z < maxZ and pos.Z > minZ and pos.Y < maxY and pos.Y > minY)
-end
-
-local function getField(part)
-    local pos, size, s, e
-    local minX, maxX, minZ, maxZ, minY, maxY
-
-    local function Try()
-        for i, v in pairs(Fields) do
-            if checkDistance(v, part, 50) then
-                return v
-            end
-        end
-        return nil
-    end
-
-    repeat
-        s, e = pcall(Try)
-        if not s and e then
-            reportError("GetField Error: "..e)
-            wait()
-        end
-    until s
-    return e
-end
-
-
-local FieldChosen, FieldToFarm
-local temp = {}
-for i, v in pairs(Fields) do
-    table.insert(temp, i)
-end
-folder1:Dropdown("Choose field", temp, true, function(option)
-    FieldChosen = Fields[option]
-    Announce("Autofarm", "New Target Field: "..FieldChosen.Name)
-end)
-
-print("Please choose target field")
-Announce("WARNING", "Please choose target field")
-repeat wait() until FieldChosen
-
 FieldToFarm = FieldChosen
-temp = nil
+temp, tempNum = nil, nil
 
 local Speed, ActivateToys, CustomSpeed
 
@@ -410,7 +383,8 @@ scriptFunctions.Main.CollectTokens = {
     ["Active"] = false,
     ["Paused"] = false,
     ["Speed"] = false,
-    ["Event"] = false
+    ["Event"] = false,
+    ["Free"] = false,
 }
 function scriptFunctions.Main.CollectTokens:Function()
     local tokensTable = {}
@@ -430,7 +404,7 @@ function scriptFunctions.Main.CollectTokens:Function()
         local finished = false
         hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
         if Fast then
-            hum.WalkSpeed = 85
+            hum.WalkSpeed = 95
         end
         hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
         hrp.Anchored = true
@@ -442,42 +416,40 @@ function scriptFunctions.Main.CollectTokens:Function()
         con = hum.MoveToFinished:Connect(function()
             finished = true
             con:Disconnect()
+            con = nil
         end)
         local startTime = os.clock()
         local endTime = startTime + 2.5
-        repeat
+        while wait() and os.clock() <= endTime and not finished do 
             if Fast then
                 hum.WalkSpeed = 95
             end
             if check and not Check(Token) then
-                return
+                break
             end
-            wait()
-        until os.clock() >= endTime or finished
+        end
+        if con then con:Disconnect() end
     end
 
     connection = workspace.Collectibles.ChildAdded:Connect(function(newChild)
-        if checkDistance(FieldToFarm, newChild, 50) then
-            table.insert(tokensTable, newChild)
-            repeat wait() until not newChild or not newChild.Parent or newChild.Transparency >= 0.9
-            for i, v in pairs(tokensTable) do
-                if v == newChild then
-                    table.remove(tokensTable, i)
+        if newChild["Position"] and newChild["CFrame"] and newChild.Parent then
+            if self.Free or (not self.Free and checkDistance(FieldToFarm, newChild, 50)) then
+                local currentField = FieldToFarm
+                table.insert(tokensTable, newChild)
+                repeat wait() until not currentField == FieldToFarm or not newChild or not newChild.Parent or newChild.Transparency >= 0.9
+                for i, v in pairs(tokensTable) do
+                    if v == newChild then
+                        table.remove(tokensTable, i)
+                    end
                 end
             end
         end
     end)
 
     local function DoTurn()
-        for i, v in pairs(tokensTable) do
-            if not v or not v.Parent or v.Transparency >= 0.9 then
-                table.remove(tokensTable, i)
-            end
-        end
-
         hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
-         
-        if not self.Event then
+
+        if not self.Event and not self.Free then
             if workspace.Particles:FindFirstChild("Crosshair") then
                 if (counter % 2) == 0 then
                     for i, v in pairs(workspace.Particles:GetChildren()) do
@@ -503,17 +475,20 @@ function scriptFunctions.Main.CollectTokens:Function()
         end
 
         for i, v in pairs(tokensTable) do
-            if not v:GetAttribute("Farmed") and v:FindFirstChild("FrontDecal") and v.FrontDecal.Texture == "rbxassetid://1629547638" and checkDistance(FieldToFarm, v, 50) then
+            if not v:GetAttribute("Farmed") and v:FindFirstChild("FrontDecal") and v.FrontDecal.Texture == "rbxassetid://1629547638" then
                 Collect(v, self.Speed or Speed, true)
                 table.remove(tokensTable, i)
             end
+        end
+        
+        for i, v in pairs(tokensTable) do
             if not self.Event then
-                if not v:GetAttribute("Farmed") and v:FindFirstChild("FrontDecal") and checkDistance(FieldToFarm, v, 30) then
+                if not v:GetAttribute("Farmed") and v:FindFirstChild("FrontDecal") then
                     Collect(v, self.Speed or Speed, true)
                 end
                 table.remove(tokensTable, i)
             else
-                if not v:GetAttribute("Farmed") and v:FindFirstChild("FrontDecal") and table.find(RareTokensDecals, v.FrontDecal.Texture) and checkDistance(FieldToFarm, v, 50) then
+                if not v:GetAttribute("Farmed") and v:FindFirstChild("FrontDecal") and table.find(RareTokensDecals, v.FrontDecal.Texture) then
                     Collect(v, true, true)
                 end
                 table.remove(tokensTable, i)
@@ -521,6 +496,7 @@ function scriptFunctions.Main.CollectTokens:Function()
             if not self.Active or self.Paused then
                 return
             end
+            break
         end
     end
 
@@ -530,10 +506,11 @@ function scriptFunctions.Main.CollectTokens:Function()
             if e then print("Collect tokens error: "..e) end
         end
     end
+    connection:Disconnect()
 end
 coroutine.resume(coroutine.create(function()
     scriptFunctions.Main.CollectTokens:Function()
-end))
+end)) -- ENDED HERE
 
 folder1:Toggle("Auto-Collect Tokens", function(state)
     scriptFunctions.Main.CollectTokens.Active = state
