@@ -11,7 +11,7 @@ local scriptFunctions = {
 local playerData = {}
 
 
-local Version = "PRE-RELEASE - 0.0.4" -- colleting precise bee ability
+local Version = "PRE-RELEASE - 0.0.5" -- colleting precise bee ability
 warn("----------------------------------------------------------")
 print("Script Version "..Version)
 warn("-----------------------------------------------------------")
@@ -323,7 +323,7 @@ function scriptFunctions.Main.DodgeMobs:Function()
         local tempMag
 
         for i, v in pairs(workspace.Monsters:GetChildren()) do
-            if hrp and v.PrimaryPart and v.LookAt.Value and (hrp.Position - v.PrimaryPart.Position).magnitude <= ConvertToStuds(15) and not v.Name:find("Mondo") and not v.Name:find("Vicious") and not v.Name:find("Snail") and not v.Name:find("King") and not v.Name:find("Coconut") and not v.Name:find("Windy") then
+            if hrp and v.PrimaryPart and v:FindFirstChild("LookAt") and v.LookAt.Value and (hrp.Position - v.PrimaryPart.Position).magnitude <= ConvertToStuds(15) and not v.Name:find("Mondo") and not v.Name:find("Vicious") and not v.Name:find("Snail") and not v.Name:find("King") and not v.Name:find("Coconut") and not v.Name:find("Windy") then
                 PartB = v.PrimaryPart
                 if not biggestRadius or biggestRadius < (v:FindFirstChild("Config") or v:WaitForChild("Config")).AttackRadius.Value then
                     biggestRadius = (v:FindFirstChild("Config") or v:WaitForChild("Config")).AttackRadius.Value
@@ -350,8 +350,8 @@ function scriptFunctions.Main.DodgeMobs:Function()
             else
                 hrp.CFrame = PartB.CFrame - (PartB.CFrame.LookVector*(biggestRadius + 2.5))
             end
-            -- hrp.CFrame = CFrame.lookAt(hrp.Position, PartB.Position + Vector3.new(0, localplayer.Character:WaitForChild("HumanoidRootPart").Position.Y - PartB.Position.Y, 0))
             DestroyVelocity()
+            biggestRadius, shortestDelay, nearest, shortestMag, PartB = nil, nil, nil, nil, nil
         end
     end
 
@@ -386,7 +386,7 @@ scriptFunctions.Main.CollectTokens = {
     ["Event"] = false,
     ["Free"] = false,
 }
-function scriptFunctions.Main.CollectTokens:Function()
+function scriptFunctions.Main.CollectTokens:Function() -- MALFUNCTIONS
     local tokensTable = {}
     local connection, s ,e
     local counter = 0
@@ -400,7 +400,7 @@ function scriptFunctions.Main.CollectTokens:Function()
         return false
     end
 
-    local function Collect(Token, Fast, check)
+    local function Collect(Token, Fast)
         local finished = false
         hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
         if Fast then
@@ -420,12 +420,9 @@ function scriptFunctions.Main.CollectTokens:Function()
         end)
         local startTime = os.clock()
         local endTime = startTime + 2.5
-        while wait() and os.clock() <= endTime and not finished do 
+        while wait() and not self.Paused and self.Active and Check(Token) and os.clock() <= endTime and not finished do 
             if Fast then
                 hum.WalkSpeed = 95
-            end
-            if check and not Check(Token) then
-                break
             end
         end
         if con then con:Disconnect() end
@@ -434,9 +431,11 @@ function scriptFunctions.Main.CollectTokens:Function()
     connection = workspace.Collectibles.ChildAdded:Connect(function(newChild)
         if newChild["Position"] and newChild["CFrame"] and newChild.Parent then
             if self.Free or (not self.Free and checkDistance(FieldToFarm, newChild, 50)) then
+                local freeOrigin = self.Free
                 local currentField = FieldToFarm
                 table.insert(tokensTable, newChild)
-                repeat wait() until not currentField == FieldToFarm or not newChild or not newChild.Parent or newChild.Transparency >= 0.9
+
+                repeat wait() until not currentField == FieldToFarm or not newChild or not newChild.Parent or newChild.Transparency >= 0.9 or not freeOrigin == self.Free or self.Paused
                 for i, v in pairs(tokensTable) do
                     if v == newChild then
                         table.remove(tokensTable, i)
@@ -449,7 +448,7 @@ function scriptFunctions.Main.CollectTokens:Function()
     local function DoTurn()
         hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
 
-        if not self.Event and not self.Free then
+        if not self.Event and not self.Free and not self.Paused then
             if workspace.Particles:FindFirstChild("Crosshair") then
                 if (counter % 2) == 0 then
                     for i, v in pairs(workspace.Particles:GetChildren()) do
@@ -476,20 +475,20 @@ function scriptFunctions.Main.CollectTokens:Function()
 
         for i, v in pairs(tokensTable) do
             if not v:GetAttribute("Farmed") and v:FindFirstChild("FrontDecal") and v.FrontDecal.Texture == "rbxassetid://1629547638" then
-                Collect(v, self.Speed or Speed, true)
+                Collect(v, self.Speed or Speed)
                 table.remove(tokensTable, i)
             end
         end
-        
+            
         for i, v in pairs(tokensTable) do
             if not self.Event then
                 if not v:GetAttribute("Farmed") and v:FindFirstChild("FrontDecal") then
-                    Collect(v, self.Speed or Speed, true)
+                    Collect(v, self.Speed or Speed)
                 end
                 table.remove(tokensTable, i)
             else
                 if not v:GetAttribute("Farmed") and v:FindFirstChild("FrontDecal") and table.find(RareTokensDecals, v.FrontDecal.Texture) then
-                    Collect(v, true, true)
+                    Collect(v, true)
                 end
                 table.remove(tokensTable, i)
             end
@@ -502,15 +501,17 @@ function scriptFunctions.Main.CollectTokens:Function()
 
     while wait() and ExecState == getgenv().Executed do
         if self.Active and not self.Paused then
+            self.Free = not scriptFunctions.Main.Autofarm.Enabled
             s, e = pcall(DoTurn)
             if e then print("Collect tokens error: "..e) end
         end
     end
+    self.Active = false
     connection:Disconnect()
 end
 coroutine.resume(coroutine.create(function()
     scriptFunctions.Main.CollectTokens:Function()
-end)) -- ENDED HERE
+end))
 
 folder1:Toggle("Auto-Collect Tokens", function(state)
     scriptFunctions.Main.CollectTokens.Active = state
@@ -524,7 +525,7 @@ folder1:Toggle("Auto Quest (Alpha)", function(state)
     scriptFunctions.Main.AutoQuest.Enabled = state
 end)
 
-folder1:Toggle("Hunt Vicious Bee (Broken)", function(state)
+folder1:Toggle("Hunt Vicious Bee", function(state)
     scriptFunctions.Main.HuntVicious.Enabled = state
 end)
 
@@ -536,9 +537,9 @@ folder1:Toggle("Hunt Mondo Chick", function(state)
     scriptFunctions.Main.HuntMondo.Enabled = state
 end)
 
---[[folder1:Toggle("Dodge mobs", function(state)
+folder1:Toggle("Dodge mobs", function(state)
     scriptFunctions.Main.DodgeMobs.Active = state
-end)--]]
+end)
 
 --[[folder1:Toggle("Activate Toys", function(state)
     ActivateToys = state
@@ -638,19 +639,17 @@ scriptFunctions.Main.HuntVicious = {
 }
 
 function scriptFunctions.Main.HuntVicious:Activate()
-    local s, e, fieldSave
+    local s, e
     local upVector = Vector3.new(0,20,0)
+
     local function TryHunt()
         for i, v in pairs(game:GetService("Workspace").Particles:GetChildren()) do
             if v.Name:find("Vicious") then
-                if not fieldSave then
-                    FieldToFarm = getField(v)
-                end
                 hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
                 hrp.CFrame = v.CFrame + Vector3.new(0,10,0)
                 wait(2)
                 CreateVelocity()
-                repeat
+                while wait() and ExecState == getgenv().Executed and workspace.Particles:FindFirstChild("Vicious") and self.Enabled and not self.Paused do
                     hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
 
                     for a, b in pairs(workspace.Collectibles:GetChildren()) do
@@ -668,9 +667,7 @@ function scriptFunctions.Main.HuntVicious:Activate()
                         CreateVelocity()
                     end
                    hrp.CFrame = v.CFrame + (v.CFrame.rightVector*10) + upVector
-                    wait()
-                until not workspace.Particles:FindFirstChild("Vicious") or not self.Enabled or self.Paused
-                FieldToFarm = fieldSave
+                end
                 DestroyVelocity()
             end
         end
@@ -678,15 +675,12 @@ function scriptFunctions.Main.HuntVicious:Activate()
 
     repeat
         s, e = pcall(TryHunt)
-        if e then
-            if fieldSave then
-                FieldToFarm = fieldSave
-            end
+        if not s and e then
             DestroyVelocity()
             reportError("HuntVicious Error: "..e)
             wait()
         end
-    until s or not self.Enabled or self.Paused
+    until s or not self.Enabled or self.Paused or not ExecState == getgenv().Executed
 end
 
 local function GetLevel(text)
@@ -922,9 +916,8 @@ scriptFunctions.Main.FarmSprout = {
     ["Paused"] = false,
 }
 function scriptFunctions.Main.FarmSprout:Activate() -- REMAKE
-
     local function Farm()
-        while self.Enabled and not self.Paused and sproutsFolder:FindFirstChild("Sprout") and sproutsFolder.Sprout:GetAttribute("Current") and wait() do
+        while wait() and ExecState == getgenv().Executed and self.Enabled and not self.Paused and sproutsFolder:FindFirstChild("Sprout") and sproutsFolder.Sprout:GetAttribute("Current") do
             hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
             hum = localplayer.Character:FindFirstChild("Humanoid") or localplayer.Character:WaitForChild("Humanoid")
             GetCollector().ClickEvent:FireServer(CFrame.new())
@@ -949,7 +942,7 @@ function scriptFunctions.Main.FarmSprout:Activate() -- REMAKE
 
     for i, v in pairs(sproutsFolder:GetChildren()) do
         if v.Name == "Sprout" and v.Transparency ~= 1 then
-            local fieldSave = FieldToFarm
+            local fieldSaved = FieldToFarm
             FieldToFarm = getField(v)
             v:SetAttribute("Current", 1)
             local s, e
@@ -959,12 +952,12 @@ function scriptFunctions.Main.FarmSprout:Activate() -- REMAKE
                     reportError("FarmSprout Error: "..e)
                     wait()
                 end
-            until s or not scriptFunctions.Main.FarmSprout.Enabled or scriptFunctions.Main.FarmSprout.Paused
+            until s or not self.Enabled or self.Paused or not ExecState == getgenv().Executed
+            FieldToFarm = fieldSaved
             scriptFunctions.Main.CollectTokens.Event = false
-            FieldToFarm = fieldSave
         end
     end
-end
+end -- ENDED HERE
 
 scriptFunctions.Main.HuntWindy = {
     ["Enabled"] = false,
