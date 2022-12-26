@@ -634,14 +634,14 @@ function scriptFunctions.Main.HuntVicious:Activate()
 	local function TryHunt()
 		hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
 
-		while scriptFunctions.Main.HuntVicious.Enabled and not scriptFunctions.Main.HuntVicious.Paused do
+		while wait() and scriptFunctions.Main.HuntVicious.Enabled and not scriptFunctions.Main.HuntVicious.Paused do
 			local viciousParticle = workspace.Particles:FindFirstChild("Vicious")
 			if viciousParticle then
 				hrp.CFrame = viciousParticle.CFrame + Vector3.new(0, 10, 0)
 				wait(2)
 				CreateVelocity()
 
-				while viciousParticle and scriptFunctions.Main.HuntVicious.Enabled and not scriptFunctions.Main.HuntVicious.Paused do
+				while wait() and viciousParticle and scriptFunctions.Main.HuntVicious.Enabled and not scriptFunctions.Main.HuntVicious.Paused do
 					hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
 					for _, collectible in pairs(workspace.Collectibles:GetChildren()) do
 						if not collectible:GetAttribute("Collected") and collectible:FindFirstChild("FrontDecal") and collectible.FrontDecal.Texture == "rbxassetid://1629547638" and (collectible.Position - viciousParticle.Position).magnitude >= ConvertToStuds(4.5) then
