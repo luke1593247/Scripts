@@ -411,22 +411,16 @@ function scriptFunctions.Main.CollectTokens:Function()
 				local particles = workspace.Particles:GetChildren()
 				local obj
 
-				if (counter % 2) == 0 then
-					for i = 1, #particles, 1 do
-						obj = particles[i]
-						if obj.Name == "Crosshair" then
+				for i = 1, #particles, 1 do
+					obj = particles[i]
+					if obj.Name == "Crosshair" and checkDistance(FieldToFarm or FieldFarming, obj, 50) then
+						if (counter % 2) == 0 then
 							obj.Name = "Current"
 							Collect(obj, true)
 							repeat wait() until not workspace.Particles:FindFirstChild("Current")
 							wait(0.5)
 							break
-						end
-					end
-				else
-					wait(0.2)
-					for i = 1, #particles, 1 do
-						obj = particles[i]
-						if obj.Name == "Crosshair" then
+						else
 							obj.Name = "Activated"
 							Teleport(obj.CFrame)
 							wait(0.5)
