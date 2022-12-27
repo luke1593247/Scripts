@@ -418,12 +418,12 @@ function scriptFunctions.Main.CollectTokens:Function()
 							obj.Name = "Current"
 							Collect(obj, true)
 							repeat wait() until not workspace.Particles:FindFirstChild("Current")
-							wait(0.5)
+							wait(0.1)
 							break
 						else
 							obj.Name = "Activated"
 							Teleport(obj.CFrame)
-							wait(0.5)
+							wait(0.1)
 						end
 					end
 				end
@@ -520,9 +520,9 @@ folder1:Toggle("Dodge mobs", function(state)
 	scriptFunctions.Main.DodgeMobs.Active = state
 end)
 
---[[folder1:Toggle("Activate Toys", function(state)
+folder1:Toggle("Activate Toys", function(state)
     ActivateToys = state
-end)--]]
+end)
 
 folder1:Toggle("Speed", function(state)
 	Speed = state
@@ -613,8 +613,8 @@ local function ConvertHoney()
 	HiveCommandEvent:FireServer("ToggleHoneyMaking")
 	while wait() and pollen.Value > 0 do
 		hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
-		if (hrp.Position - targetPos.Position).Magnitude > 2 then
-			return ConvertHoney()
+		if (hrp.Position - targetPos.Position).Magnitude > 8 then
+			ConvertHoney()
 		end
 	end
 	wait(8)
@@ -634,34 +634,32 @@ function scriptFunctions.Main.HuntVicious:Activate()
 	local function TryHunt()
 		hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
 
-		while wait() and scriptFunctions.Main.HuntVicious.Enabled and not scriptFunctions.Main.HuntVicious.Paused do
-			local viciousParticle = workspace.Particles:FindFirstChild("Vicious")
-			if viciousParticle then
-				hrp.CFrame = viciousParticle.CFrame + Vector3.new(0, 10, 0)
-				wait(2)
-				CreateVelocity()
+		local viciousParticle = workspace.Particles:FindFirstChild("Vicious")
+		if viciousParticle then
+			hrp.CFrame = viciousParticle.CFrame + Vector3.new(0, 10, 0)
+			wait(2)
+			CreateVelocity()
 
-				while wait() and viciousParticle and scriptFunctions.Main.HuntVicious.Enabled and not scriptFunctions.Main.HuntVicious.Paused do
-					hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
-					for _, collectible in pairs(workspace.Collectibles:GetChildren()) do
-						if not collectible:GetAttribute("Collected") and collectible:FindFirstChild("FrontDecal") and collectible.FrontDecal.Texture == "rbxassetid://1629547638" and (collectible.Position - viciousParticle.Position).magnitude >= ConvertToStuds(4.5) then
-							DestroyVelocity()
-							wait()
-							Teleport(collectible.CFrame, false)
-							collectible:SetAttribute("Collected", 1)
-							wait(0.2)
-							CreateVelocity()
-						end
-					end
-
-					if #createdVelocities == 0 then
+			while wait() and viciousParticle and scriptFunctions.Main.HuntVicious.Enabled and not scriptFunctions.Main.HuntVicious.Paused do
+				hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
+				for _, collectible in pairs(workspace.Collectibles:GetChildren()) do
+					if not collectible:GetAttribute("Collected") and collectible:FindFirstChild("FrontDecal") and collectible.FrontDecal.Texture == "rbxassetid://1629547638" and (collectible.Position - viciousParticle.Position).magnitude >= ConvertToStuds(4.5) then
+						DestroyVelocity()
+						wait()
+						Teleport(collectible.CFrame, false)
+						collectible:SetAttribute("Collected", 1)
+						wait(0.2)
 						CreateVelocity()
 					end
-					hrp.CFrame = viciousParticle.CFrame + (viciousParticle.CFrame.rightVector * 10) + upVector
-					viciousParticle = workspace.Particles:FindFirstChild("Vicious")
 				end
-				DestroyVelocity()
+
+				if #createdVelocities == 0 then
+					CreateVelocity()
+				end
+				hrp.CFrame = viciousParticle.CFrame + (viciousParticle.CFrame.rightVector * 10) + upVector
+				viciousParticle = workspace.Particles:FindFirstChild("Vicious")
 			end
+			DestroyVelocity()
 		end
 	end
 
@@ -671,6 +669,8 @@ function scriptFunctions.Main.HuntVicious:Activate()
 			DestroyVelocity()
 			reportError("HuntVicious Error: " .. error)
 			wait()
+		else
+			break
 		end
 	end
 end
@@ -1118,6 +1118,28 @@ while wait() and ExecState == getgenv().Executed do
 	if scriptFunctions.Main.AutoQuest.Enabled then
 		scriptFunctions.Main.AutoQuest:Activate()
 	end 
+
+	if ActivateToys then
+		hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
+		local newVec = Vector3.new(0,3,0)
+		local toysFolder = workspace.Toys
+		for i, v in pairs(GetDataEvent:InvokeServer().ToyTimes) do
+			local toy = toysFolder:FindFirstChild(i)
+			if toy and not toy:GetAttribute("Wrong") and toy:FindFirstChild("Cooldown") and not toy.Name:find("Memory") and not toy.Name:find("Converter") and not toy.Name:find("Amulet") and not toy.Name:find("Ant") and not toy.Name:find("Royal") and not toy.Name:find("Snowbear") then
+				local nextTime = v + toy.Cooldown.Value
+				if os.time() > nextTime and toy:FindFirstChild("Platform"):FindFirstChild("Circle") then
+					Teleport(toy.Platform.Circle.CFrame + newVec)
+					wait(0.3)
+					local guiColor = localplayer.PlayerGui.ScreenGui.ActivateButton.BackgroundColor3
+					if guiColor == Color3.fromRGB(201,39,28) then
+						toy:SetAttribute("Wrong", 1)
+					end
+					PressKey("e")
+					wait(1)
+				end
+			end
+		end
+	end
 
 	hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
 	if scriptFunctions.Main.Autofarm.Enabled and not scriptFunctions.Main.Autofarm.Paused then
