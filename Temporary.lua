@@ -164,7 +164,7 @@ end
 
 local function getField(part)
 	for i = 1, #Fields, 1 do
-		if checkDistance(Fields[i], part, 50) then
+		if checkDistance(Fields[i], part, 75) then
 			return Fields[i]
 		end
 	end
@@ -375,7 +375,7 @@ function scriptFunctions.Main.CollectTokens:Function()
 		hum:ChangeState("Idle")
 	end
 
-	connection = workspace.Collectibles.ChildAdded:Connect(function(newChild)
+	local function newToken(newChild)
 		if not (newChild["Position"] and newChild["CFrame"] and newChild.Parent) then
 			return
 		end
@@ -401,8 +401,10 @@ function scriptFunctions.Main.CollectTokens:Function()
 				wait()
 			end
 		end
-	end)
+	end
 
+	connection = workspace.Collectibles.ChildAdded:Connect(newToken)
+	
 	local function DoTurn()
 		hrp = localplayer.Character:FindFirstChild("HumanoidRootPart") or localplayer.Character:WaitForChild("HumanoidRootPart")
 
@@ -445,6 +447,7 @@ function scriptFunctions.Main.CollectTokens:Function()
 				if frontDecal and frontDecal.Texture == "rbxassetid://1629547638" then
 					Collect(v, self.Speed or Speed)
 					table.remove(tokensTable, i)
+					break
 				end
 
 				if not self.Active or self.Paused then
@@ -466,9 +469,11 @@ function scriptFunctions.Main.CollectTokens:Function()
 				if not self.Event and frontDecal then
 					Collect(v, self.Speed or Speed)
 					table.remove(tokensTable, i)
+					break
 				elseif self.Event and frontDecal and table.find(RareTokensDecals, frontDecal.Texture) then
 					Collect(v, true)
 					table.remove(tokensTable, i)
+					break
 				end
 
 				if not self.Active or self.Paused then
@@ -991,7 +996,7 @@ function scriptFunctions.Main.HuntWindy:Activate()
 
 					currentLevel = GetWindyLevel()
 
-				until currentLevel and currentLevel > lastlvl or not self.Enabled or self.Paused or not getField(trueWindy)
+				until currentLevel and currentLevel > lastlvl or not self.Enabled or self.Paused or not getField(trueWindy) or not windyFolder:FindFirstChild("Windy")
 
 				DestroyVelocity()
 				scriptFunctions.Main.CollectTokens.Paused = false
@@ -1005,7 +1010,7 @@ function scriptFunctions.Main.HuntWindy:Activate()
 				repeat
 					newField = getField(trueWindy)
 					wait()
-				until not self.Enabled or self.Paused or newField
+				until not self.Enabled or self.Paused or newField or not windyFolder:FindFirstChild("Windy")
 				newField = false
 			end
 		end
@@ -1020,7 +1025,7 @@ function scriptFunctions.Main.HuntWindy:Activate()
 				reportError("HuntWindy Error: "..e)
 				wait()
 			end
-		until s or not self.Enabled or self.Paused
+		until s or not self.Enabled or self.Paused or not windyFolder:FindFirstChild("Windy")
 		scriptFunctions.Main.CollectTokens.Paused = false
 		FieldToFarm = fieldSave
 	end
