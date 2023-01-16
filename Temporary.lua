@@ -177,6 +177,8 @@ scriptFunctions.Main.Autofarm = {
 	["FieldChosen"] = nil
 }
 
+local GetDataEvent = game:GetService("ReplicatedStorage").Events.RetrievePlayerStats
+
 
 folder1:Dropdown("Choose field", Fields, true, function(option)
 	scriptFunctions.Main.Autofarm.FieldChosen = FieldsFolder[option]
@@ -195,323 +197,342 @@ while ExecState == getgenv().Executed and not scriptFunctions.Main.Autofarm.Fiel
 	end
 end
 
-local UI = {
-	["Settings"] = {},
-	["Markers"] = {}
-}
-
-UI.Settings.MyScreenGui = Instance.new("ScreenGui")
-UI.Settings.MyFrame = Instance.new("Frame")
-local Name = Instance.new("Frame")
-local TextLabel = Instance.new("TextLabel")
-local Scrollingframe = Instance.new("ScrollingFrame")
-
-function UI.Settings:Setup(frame, text)
-	local newFrame = Instance.new("TextLabel")
-
-	newFrame.Parent = Scrollingframe
-	newFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	newFrame.BackgroundTransparency = 1.000
-	newFrame.BorderSizePixel = 0
-	newFrame.ClipsDescendants = true
-	newFrame.Position = UDim2.new(0.055555556, 0, 0, 0)
-	newFrame.Size = UDim2.new(0, 197, 0, 25)
-	newFrame.Font = Enum.Font.Gotham
-	newFrame.Text = text
-	newFrame.TextColor3 = Color3.fromRGB(255, 255, 255)
-	newFrame.TextSize = 15.000
-	newFrame.TextWrapped = true
-	newFrame.TextXAlignment = Enum.TextXAlignment.Left
-	newFrame.TextYAlignment = Enum.TextYAlignment.Bottom
-
-	UI.Markers[frame] = newFrame
-end
-
-local UIListLayout = Instance.new("UIListLayout")
-UI.Settings.MyScreenGui.Name = "MyScreenGui"
-UI.Settings.MyScreenGui.Parent = game.CoreGui
-UI.Settings.MyScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-UI.Settings.MyFrame.Parent = UI.Settings.MyScreenGui
-UI.Settings.MyFrame.BackgroundColor3 = Color3.fromRGB(74, 74, 74)
-UI.Settings.MyFrame.BorderSizePixel = 0
-UI.Settings.MyFrame.Position = UDim2.new(0.552, 0, 0.049, 0)
-UI.Settings.MyFrame.Size = UDim2.new(0, 216, 0, 563)
-Name.Name = "Name"
-Name.Parent = UI.Settings.MyFrame
-Name.BackgroundColor3 = Color3.fromRGB(44, 44, 44)
-Name.BorderSizePixel = 0
-Name.Size = UDim2.new(0, 216, 0, 44)
-TextLabel.Parent = Name
-TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-TextLabel.BackgroundTransparency = 1.000
-TextLabel.ClipsDescendants = true
-TextLabel.Size = UDim2.new(0, 216, 0, 44)
-TextLabel.Font = Enum.Font.FredokaOne
-TextLabel.Text = "Script achievements"
-TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-TextLabel.TextSize = 20.000
-Scrollingframe.Name = "Scrolling frame"
-Scrollingframe.Parent = UI.Settings.MyFrame
-Scrollingframe.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Scrollingframe.BackgroundTransparency = 1.000
-Scrollingframe.BorderSizePixel = 0
-Scrollingframe.Position = UDim2.new(0, 0, 0.0781527534, 0)
-Scrollingframe.Selectable = false
-Scrollingframe.Size = UDim2.new(0, 216, 0, 519)
-Scrollingframe.CanvasPosition = Vector2.new(0, 0)
-
-UIListLayout.Parent = Scrollingframe
-UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-UIListLayout.Padding = UDim.new(0, 4)
-
-UI.Settings:Setup("HoneyGainedInst", "Honey gained:")
-UI.Settings:Setup("SproutsFarmedInst", "Sprouts farmed:")
-UI.Settings:Setup("PuffFarmedInst", "Puffshrooms farmed:")
-UI.Settings:Setup("ViciousKilledInst", "Vicious killed:")
-UI.Settings:Setup("MondoKilledInst", "Mondo's killed:")
-UI.Settings:Setup("WindyKilledInst", "Windy bees killed:")
-UI.Settings:Setup("TextLabel_8", "-----Tokens Recieved-----")
-UI.Settings:Setup("Mythic", "Mythic Eggs:")
-UI.Settings:Setup("Star", "Star Eggs:")
-UI.Settings:Setup("StarTreat", "Star treats:")
-UI.Settings:Setup("ColourEggs", "Colour Eggs:")
-UI.Settings:Setup("SuperSmoothie", "Super Smoothies:")
-UI.Settings:Setup("PurplePotion", "Purple potions:")
-UI.Settings:Setup("StarJelly", "Star Jellies:")
-UI.Settings:Setup("MagicBean", "Magic beans:")
-UI.Settings:Setup("Micro-Converter", "Micro Converters:")
-UI.Settings:Setup("TropicalDrink", "Tropical drinks:")
-UI.Settings:Setup("Neonberry", "Neonberries:")
-UI.Settings:Setup("Bitterberry", "Bitterberries:")
-UI.Settings:Setup("CloudVial", "Cloud vials:")
-UI.Settings:Setup("MarshmellowBee", "Marshmellow bees:")
-UI.Settings:Setup("FieldDice", "Field dices:")
-UI.Settings:Setup("Glitter", "Glitters:")
-UI.Settings:Setup("Enzymes", "Enzymes:")
-UI.Settings:Setup("Oil", "Oils:")
-UI.Settings:Setup("Glue", "Glues:")
-UI.Settings:Setup("RedExtract", "Red Extracts:")
-UI.Settings:Setup("BlueExtract", "Blue Extracts:")
-UI.Settings:Setup("Mooncharm", "Mooncharms:")
-UI.Settings:Setup("Ticket", "Tickets:")
-UI.Settings:Setup("Coconut", "Coconuts:")
-UI.Settings:Setup("RoyalJelly", "Royal Jellies:")
-UI.Settings:Setup("Gumdrops", "Gumdrops:")
-UI.Settings:Setup("Strawberry", "Strawberries:")
-UI.Settings:Setup("Pineapple", "Pineapples:")
-UI.Settings:Setup("TextLabel_37", "")
-UI.Settings:Setup("Sunflowerseed", "Sunflower Seeds:")
-UI.Settings:Setup("Blueberry", "Blueberries:")
-
-UI.Settings.MyScreenGui.Enabled = false
-
--------------------- not mine --------------------
-local UIS = game:GetService('UserInputService')
-local frame = UI.Settings.MyFrame
-local dragToggle = nil
-local dragSpeed = 0.25
-local dragStart = nil
-local startPos = nil
-
-local function updateInput(input)
- local delta = input.Position - dragStart
- local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
-  startPos.Y.Scale, startPos.Y.Offset + delta.Y)
- game:GetService('TweenService'):Create(frame, TweenInfo.new(dragSpeed), {Position = position}):Play()
-end
-
-frame.InputBegan:Connect(function(input)
- if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then 
-  dragToggle = true
-  dragStart = input.Position
-  startPos = frame.Position
-  input.Changed:Connect(function()
-   if input.UserInputState == Enum.UserInputState.End then
-    dragToggle = false
-   end
-  end)
- end
-end)
-
-UIS.InputChanged:Connect(function(input)
- if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-  if dragToggle then
-   updateInput(input)
-  end
- end
-end)
-
-local numbers = {{"k"}, {"Mil"}, {"Bil"}, {"Tril"}, {"Quad"}, {"Quint"}, {"Sext"}, {"Sept"}, {"Oct"}, {"Non"}, {"Dec"}, {"Und"}, {"Duo"}, {"Tred"}, {"Quat"}, {"Quind"}, {"Sexdecillion"}, {"Septen-decillion"}, {"Octodecillion"}, {"Novemdecillion"}, {"Vigintillion"}}
-local last = 1000
-for i, v in pairs(numbers) do
-    table.insert(v, 1, last)
-    last = last*1000
-end
-
-local function Calculate(number)
-    local word = {1, ""}
-    for i, v in pairs(numbers) do
-        if number >= v[1] then
-            word = v
-        end
-    end
-    if string.sub((number/word[1]), 3, 3) ~= "." then
-        return string.sub((number/word[1]), 1, 3) .. word[2]
-    else
-        return string.sub((number/word[1]), 1, 2) .. word[2]
-    end
-end
------------------------------------------------------------------
-
-local GetDataEvent = game:GetService("ReplicatedStorage").Events.RetrievePlayerStats
 
 local main = {}
-main.StartValues = {}
+local function initiateScriptMonitoring()
 
-main.StartHoneyAmount = GetDataEvent:InvokeServer().Totals.Honey
+	local UI = {
+		["Settings"] = {},
+		["Markers"] = {}
+	}
 
-for i, v in pairs(GetDataEvent:InvokeServer().Totals.EggsReceived) do
-    main.StartValues[i] = v
-end
+	UI.Settings.MyScreenGui = Instance.new("ScreenGui")
+	UI.Settings.MyFrame = Instance.new("Frame")
+	local Name = Instance.new("Frame")
+	local TextLabel = Instance.new("TextLabel")
+	local Scrollingframe = Instance.new("ScrollingFrame")
 
-setmetatable(main.StartValues, {
-    __index = function(table, index)
-        print("Tried to get "..tostring(index).." from table main.StartValues which was nil. Returned 0, metatable 1")
-        return 0
-    end
-})
+	function UI.Settings:Setup(frame, text)
+		local newFrame = Instance.new("TextLabel")
 
-main.DefaultLength = {}
+		newFrame.Parent = Scrollingframe
+		newFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		newFrame.BackgroundTransparency = 1.000
+		newFrame.BorderSizePixel = 0
+		newFrame.ClipsDescendants = true
+		newFrame.Position = UDim2.new(0.055555556, 0, 0, 0)
+		newFrame.Size = UDim2.new(0, 197, 0, 25)
+		newFrame.Font = Enum.Font.Gotham
+		newFrame.Text = text
+		newFrame.TextColor3 = Color3.fromRGB(255, 255, 255)
+		newFrame.TextSize = 15.000
+		newFrame.TextWrapped = true
+		newFrame.TextXAlignment = Enum.TextXAlignment.Left
+		newFrame.TextYAlignment = Enum.TextYAlignment.Bottom
 
-for i, v in pairs(GetDataEvent:InvokeServer().Totals.EggsReceived) do
-    if UI.Markers[i] then
-        main.DefaultLength[i] = UI.Markers[i].Text
-    end
-end
+		UI.Markers[frame] = newFrame
+	end
 
-main.HoneySaved = nil
+	local UIListLayout = Instance.new("UIListLayout")
+	UI.Settings.MyScreenGui.Name = "MyScreenGui"
+	UI.Settings.MyScreenGui.Parent = game.CoreGui
+	UI.Settings.MyScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+	UI.Settings.MyFrame.Parent = UI.Settings.MyScreenGui
+	UI.Settings.MyFrame.BackgroundColor3 = Color3.fromRGB(74, 74, 74)
+	UI.Settings.MyFrame.BorderSizePixel = 0
+	UI.Settings.MyFrame.Position = UDim2.new(0.552, 0, 0.049, 0)
+	UI.Settings.MyFrame.Size = UDim2.new(0, 216, 0, 563)
+	Name.Name = "Name"
+	Name.Parent = UI.Settings.MyFrame
+	Name.BackgroundColor3 = Color3.fromRGB(44, 44, 44)
+	Name.BorderSizePixel = 0
+	Name.Size = UDim2.new(0, 216, 0, 44)
+	TextLabel.Parent = Name
+	TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TextLabel.BackgroundTransparency = 1.000
+	TextLabel.ClipsDescendants = true
+	TextLabel.Size = UDim2.new(0, 216, 0, 44)
+	TextLabel.Font = Enum.Font.FredokaOne
+	TextLabel.Text = "Script achievements"
+	TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	TextLabel.TextSize = 20.000
+	Scrollingframe.Name = "Scrolling frame"
+	Scrollingframe.Parent = UI.Settings.MyFrame
+	Scrollingframe.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Scrollingframe.BackgroundTransparency = 1.000
+	Scrollingframe.BorderSizePixel = 0
+	Scrollingframe.Position = UDim2.new(0, 0, 0.0781527534, 0)
+	Scrollingframe.Selectable = false
+	Scrollingframe.Size = UDim2.new(0, 216, 0, 519)
+	Scrollingframe.CanvasPosition = Vector2.new(0, 0)
 
-main.CurrentColourEggs = 0
-main.DEFColourEggs = 0
-main.SaveColourEggs = 0
-local filename = "LukeBSS.json"
-local def = {
-    HoneySaved = 0,
-    SproutsFarmed = 0,
-	PuffFarmed = 0,
-    ViciousKilled = 0,
-    MondoKilled = 0,
-	WindyKilled = 0,
-    ColourEggsNum = 0,
-}
-for i, v in pairs(GetDataEvent:InvokeServer().Totals.EggsReceived) do
-    if UI.Markers[i] then
-        def[i] = 0
-    end
-end
-main.ColourEggs = 0
-for i, v in pairs(main.StartValues) do
-    if i == "Diamond" then
-        main.ColourEggs = main.ColourEggs + main.StartValues.Diamond
-    elseif i == "Gold" then
-        main.ColourEggs = main.ColourEggs + main.StartValues.Gold
-    elseif i == "Silver" then
-        main.ColourEggs = main.ColourEggs + main.StartValues.Silver
-    elseif i == "GiftedSilver" then
-        main.ColourEggs = main.ColourEggs + main.StartValues.GiftedSilver
-    elseif i == "GiftedGold" then
-        main.ColourEggs = main.ColourEggs + main.StartValues.GiftedGold
-    end
-end
-main.SavedValues = {}
-if not pcall(function() readfile(filename) end) then writefile(filename, game:GetService("HttpService"):JSONEncode(def)) end
-main.Settings = game:GetService("HttpService"):JSONDecode(readfile(filename))
-main.HoneySaved = main.Settings.HoneySaved
-main.SproutsFarmed = main.Settings.SproutsFarmed
-main.PuffFarmed = main.Settings.PuffFarmed
-main.ViciousKilled = main.Settings.ViciousKilled
-main.MondoKilled = main.Settings.MondoKilled
-main.WindyKilled = main.Settings.WindyKilled
-main.SaveColourEggs = main.Settings.ColourEggsNum
+	UIListLayout.Parent = Scrollingframe
+	UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	UIListLayout.Padding = UDim.new(0, 4)
 
-for i, v in pairs(GetDataEvent:InvokeServer().Totals.EggsReceived) do
-    if UI.Markers[i] and main.Settings[i] then
-        main.SavedValues[i] = main.Settings[i]
-    else
-        if UI.Markers[i] then
-            main.SavedValues[i] = 0
-        end
-    end
-end
+	UI.Settings:Setup("HoneyGainedInst", "Honey gained:")
+	UI.Settings:Setup("SproutsFarmedInst", "Sprouts farmed:")
+	UI.Settings:Setup("PuffFarmedInst", "Puffshrooms farmed:")
+	UI.Settings:Setup("ViciousKilledInst", "Vicious killed:")
+	UI.Settings:Setup("MondoKilledInst", "Mondo's killed:")
+	UI.Settings:Setup("WindyKilledInst", "Windy bees killed:")
+	UI.Settings:Setup("TextLabel_8", "-----Tokens Recieved-----")
+	UI.Settings:Setup("Mythic", "Mythic Eggs:")
+	UI.Settings:Setup("Star", "Star Eggs:")
+	UI.Settings:Setup("StarTreat", "Star treats:")
+	UI.Settings:Setup("ColourEggs", "Colour Eggs:")
+	UI.Settings:Setup("SuperSmoothie", "Super Smoothies:")
+	UI.Settings:Setup("PurplePotion", "Purple potions:")
+	UI.Settings:Setup("StarJelly", "Star Jellies:")
+	UI.Settings:Setup("MagicBean", "Magic beans:")
+	UI.Settings:Setup("Micro-Converter", "Micro Converters:")
+	UI.Settings:Setup("TropicalDrink", "Tropical drinks:")
+	UI.Settings:Setup("Neonberry", "Neonberries:")
+	UI.Settings:Setup("Bitterberry", "Bitterberries:")
+	UI.Settings:Setup("CloudVial", "Cloud vials:")
+	UI.Settings:Setup("MarshmellowBee", "Marshmellow bees:")
+	UI.Settings:Setup("FieldDice", "Field dices:")
+	UI.Settings:Setup("Glitter", "Glitters:")
+	UI.Settings:Setup("Enzymes", "Enzymes:")
+	UI.Settings:Setup("Oil", "Oils:")
+	UI.Settings:Setup("Glue", "Glues:")
+	UI.Settings:Setup("RedExtract", "Red Extracts:")
+	UI.Settings:Setup("BlueExtract", "Blue Extracts:")
+	UI.Settings:Setup("Mooncharm", "Mooncharms:")
+	UI.Settings:Setup("Ticket", "Tickets:")
+	UI.Settings:Setup("Coconut", "Coconuts:")
+	UI.Settings:Setup("RoyalJelly", "Royal Jellies:")
+	UI.Settings:Setup("Gumdrops", "Gumdrops:")
+	UI.Settings:Setup("Strawberry", "Strawberries:")
+	UI.Settings:Setup("Pineapple", "Pineapples:")
+	UI.Settings:Setup("TextLabel_37", "")
+	UI.Settings:Setup("Sunflowerseed", "Sunflower Seeds:")
+	UI.Settings:Setup("Blueberry", "Blueberries:")
 
-setmetatable(main, {
-    __index = function(table, index)
-        print("Tried to get "..tostring(index).." from table main which was nil. Returned 0, metatable 2")
-        main[index] = 0
-        return 0
-    end
-})
+	UI.Settings.MyScreenGui.Enabled = false
 
-function save()
-    main.Settings.HoneySaved = main.HoneyToSave
-    main.Settings.SproutsFarmed = main.SproutsFarmed
-	main.Settings.PuffFarmed = main.PuffFarmed
-    main.Settings.ViciousKilled = main.ViciousKilled
-    main.Settings.MondoKilled = main.MondoKilled
-	main.Settings.WindyKilled = main.WindyKilled
-    main.Settings.ColourEggsNum = main.SaveColourEggs
-    for i, v in pairs(GetDataEvent:InvokeServer().Totals.EggsReceived) do
-        if UI.Markers[i] then
-            main.Settings[i] = v - main.StartValues[i] + main.SavedValues[i]
-        end
-    end
-    writefile(filename,game:GetService("HttpService"):JSONEncode(main.Settings))
+	-------------------- not mine --------------------
+	local UIS = game:GetService('UserInputService')
+	local frame = UI.Settings.MyFrame
+	local dragToggle = nil
+	local dragSpeed = 0.25
+	local dragStart = nil
+	local startPos = nil
+
+	local function updateInput(input)
+	local delta = input.Position - dragStart
+	local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+	startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	game:GetService('TweenService'):Create(frame, TweenInfo.new(dragSpeed), {Position = position}):Play()
+	end
+
+	frame.InputBegan:Connect(function(input)
+	if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then 
+	dragToggle = true
+	dragStart = input.Position
+	startPos = frame.Position
+	input.Changed:Connect(function()
+	if input.UserInputState == Enum.UserInputState.End then
+		dragToggle = false
+	end
+	end)
+	end
+	end)
+
+	UIS.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+	if dragToggle then
+	updateInput(input)
+	end
+	end
+	end)
+
+	local numbers = {{"k"}, {"Mil"}, {"Bil"}, {"Tril"}, {"Quad"}, {"Quint"}, {"Sext"}, {"Sept"}, {"Oct"}, {"Non"}, {"Dec"}, {"Und"}, {"Duo"}, {"Tred"}, {"Quat"}, {"Quind"}, {"Sexdecillion"}, {"Septen-decillion"}, {"Octodecillion"}, {"Novemdecillion"}, {"Vigintillion"}}
+	local last = 1000
+	for i, v in pairs(numbers) do
+		table.insert(v, 1, last)
+		last = last*1000
+	end
+
+	local function Calculate(number)
+		local word = {1, ""}
+		for i, v in pairs(numbers) do
+			if number >= v[1] then
+				word = v
+			end
+		end
+		if string.sub((number/word[1]), 3, 3) ~= "." then
+			return string.sub((number/word[1]), 1, 3) .. word[2]
+		else
+			return string.sub((number/word[1]), 1, 2) .. word[2]
+		end
+	end
+	-----------------------------------------------------------------
+	main.StartValues = {}
+
+	main.StartHoneyAmount = GetDataEvent:InvokeServer().Totals.Honey
+
+	for i, v in pairs(GetDataEvent:InvokeServer().Totals.EggsReceived) do
+		main.StartValues[i] = v
+	end
+
+	setmetatable(main.StartValues, {
+		__index = function(table, index)
+			print("Tried to get "..tostring(index).." from table main.StartValues which was nil. Returned 0, metatable 1")
+			return 0
+		end
+	})
+
+	main.DefaultLength = {}
+
+	for i, v in pairs(GetDataEvent:InvokeServer().Totals.EggsReceived) do
+		if UI.Markers[i] then
+			main.DefaultLength[i] = UI.Markers[i].Text
+		end
+	end
+
+	main.HoneySaved = nil
+
+	main.CurrentColourEggs = 0
+	main.DEFColourEggs = 0
+	main.SaveColourEggs = 0
+	local filename = "LukeBSS.json"
+	local def = {
+		HoneySaved = 0,
+		SproutsFarmed = 0,
+		PuffFarmed = 0,
+		ViciousKilled = 0,
+		MondoKilled = 0,
+		WindyKilled = 0,
+		ColourEggsNum = 0,
+	}
+	for i, v in pairs(GetDataEvent:InvokeServer().Totals.EggsReceived) do
+		if UI.Markers[i] then
+			def[i] = 0
+		end
+	end
+	main.ColourEggs = 0
+	for i, v in pairs(main.StartValues) do
+		if i == "Diamond" then
+			main.ColourEggs = main.ColourEggs + main.StartValues.Diamond
+		elseif i == "Gold" then
+			main.ColourEggs = main.ColourEggs + main.StartValues.Gold
+		elseif i == "Silver" then
+			main.ColourEggs = main.ColourEggs + main.StartValues.Silver
+		elseif i == "GiftedSilver" then
+			main.ColourEggs = main.ColourEggs + main.StartValues.GiftedSilver
+		elseif i == "GiftedGold" then
+			main.ColourEggs = main.ColourEggs + main.StartValues.GiftedGold
+		end
+	end
+	main.SavedValues = {}
+	if not pcall(function() readfile(filename) end) then writefile(filename, game:GetService("HttpService"):JSONEncode(def)) end
+	main.Settings = game:GetService("HttpService"):JSONDecode(readfile(filename))
+	main.HoneySaved = main.Settings.HoneySaved
+	main.SproutsFarmed = main.Settings.SproutsFarmed
+	main.PuffFarmed = main.Settings.PuffFarmed
+	main.ViciousKilled = main.Settings.ViciousKilled
+	main.MondoKilled = main.Settings.MondoKilled
+	main.WindyKilled = main.Settings.WindyKilled
+	main.SaveColourEggs = main.Settings.ColourEggsNum
+
+	for i, v in pairs(GetDataEvent:InvokeServer().Totals.EggsReceived) do
+		if UI.Markers[i] and main.Settings[i] then
+			main.SavedValues[i] = main.Settings[i]
+		else
+			if UI.Markers[i] then
+				main.SavedValues[i] = 0
+			end
+		end
+	end
+
+	setmetatable(main, {
+		__index = function(table, index)
+			print("Tried to get "..tostring(index).." from table main which was nil. Returned 0, metatable 2")
+			main[index] = 0
+			return 0
+		end
+	})
+
+	local function save()
+		main.Settings.HoneySaved = main.HoneyToSave
+		main.Settings.SproutsFarmed = main.SproutsFarmed
+		main.Settings.PuffFarmed = main.PuffFarmed
+		main.Settings.ViciousKilled = main.ViciousKilled
+		main.Settings.MondoKilled = main.MondoKilled
+		main.Settings.WindyKilled = main.WindyKilled
+		main.Settings.ColourEggsNum = main.SaveColourEggs
+		for i, v in pairs(GetDataEvent:InvokeServer().Totals.EggsReceived) do
+			if UI.Markers[i] then
+				main.Settings[i] = v - main.StartValues[i] + main.SavedValues[i]
+			end
+		end
+		writefile(filename,game:GetService("HttpService"):JSONEncode(main.Settings))
+	end
+
+	folder1:Toggle("Script achievements", function(state)
+		UI.Settings.MyScreenGui.Enabled = state
+	end)
+
+		while wait(1) and ExecState == getgenv().Executed do
+			main.HoneyToSave = GetDataEvent:InvokeServer().Totals.Honey - main.StartHoneyAmount + main.HoneySaved
+			UI.Markers.HoneyGainedInst.Text = "Honey Gained: "..tostring(Calculate(math.floor(main.HoneyToSave + main.HoneySaved)))
+			UI.Markers.SproutsFarmedInst.Text = "Sprouts farmed: "..tostring(main.SproutsFarmed)
+			UI.Markers.PuffFarmedInst.Text = "Puffshrooms farmed: "..tostring(main.PuffFarmed)
+			UI.Markers.ViciousKilledInst.Text = "Vicious killed: "..tostring(main.ViciousKilled)
+			UI.Markers.MondoKilledInst.Text = "Mondo killed: "..tostring(main.MondoKilled)
+			UI.Markers.WindyKilledInst.Text = "Windy bees killed: "..tostring(main.WindyKilled)
+
+			for i, v in pairs(GetDataEvent:InvokeServer().Totals.EggsReceived) do
+				if UI.Markers[i] then
+					print(UI.Markers[i].Text)
+					UI.Markers[i].Text = main.DefaultLength[i].." "..tostring(v - main.StartValues[i] + main.SavedValues[i])
+				end
+			end
+			local gaga = GetDataEvent:InvokeServer().Totals.EggsReceived
+			local vla = main.CurrentColourEggs
+			for i, v in pairs(main.StartValues) do
+				if i == "Diamond" then
+					main.CurrentColourEggs = main.CurrentColourEggs + gaga.Diamond
+				elseif i == "Gold" then
+					main.CurrentColourEggs = main.CurrentColourEggs + gaga.Gold
+				elseif i == "Silver" then
+					main.CurrentColourEggs = main.CurrentColourEggs + gaga.Silver
+				elseif i == "GiftedSilver" then
+					main.CurrentColourEggs = main.CurrentColourEggs + gaga.GiftedSilver
+				elseif i == "GiftedGold" then
+					main.CurrentColourEggs = main.CurrentColourEggs + gaga.GiftedGold
+				end
+			end
+			main.CurrentColourEggs = main.CurrentColourEggs - vla
+			main.DEFColourEggs = main.CurrentColourEggs - main.ColourEggs
+			main.SaveColourEggs = main.DEFColourEggs + main.SaveColourEggs
+			UI.Markers.ColourEggs.Text = "Colour Eggs: "..tostring(main.DEFColourEggs)
+			save()
+		end
+		UI.Settings.MyScreenGui:Destroy()
+		UI.Settings.MyFrame:Destroy()
 end
 
 spawn(function()
-    while wait(1) and ExecState == getgenv().Executed do
-        main.HoneyToSave = GetDataEvent:InvokeServer().Totals.Honey - main.StartHoneyAmount + main.HoneySaved
-        UI.Markers.HoneyGainedInst.Text = "Honey Gained: "..tostring(Calculate(math.floor(main.HoneyToSave + main.HoneySaved)))
-        UI.Markers.SproutsFarmedInst.Text = "Sprouts farmed: "..tostring(main.SproutsFarmed)
-		UI.Markers.PuffFarmedInst.Text = "Puffshrooms farmed: "..tostring(main.PuffFarmed)
-    	UI.Markers.ViciousKilledInst.Text = "Vicious killed: "..tostring(main.ViciousKilled)
-        UI.Markers.MondoKilledInst.Text = "Mondo killed: "..tostring(main.MondoKilled)
-		UI.Markers.WindyKilledInst.Text = "Windy bees killed: "..tostring(main.WindyKilled)
+	local s, e
+	local count = 0
 
-        for i, v in pairs(GetDataEvent:InvokeServer().Totals.EggsReceived) do
-            if UI.Markers[i] then
-				print(UI.Markers[i].Text)
-                UI.Markers[i].Text = main.DefaultLength[i].." "..tostring(v - main.StartValues[i] + main.SavedValues[i])
+	while ExecState == getgenv().Executed do
+		s, e = pcall(initiateScriptMonitoring)
+		if not s and e then
+			reportError("Script monitoring failure: "..e)
+			count += 1
+			if count >= 10 then
+				Announce("FAILURE", "Script achievement monitoring failed to start, this can be caused by your executor.")
+				break
 			end
-        end
-        local gaga = GetDataEvent:InvokeServer().Totals.EggsReceived
-        local vla = main.CurrentColourEggs
-        for i, v in pairs(main.StartValues) do
-            if i == "Diamond" then
-                main.CurrentColourEggs = main.CurrentColourEggs + gaga.Diamond
-            elseif i == "Gold" then
-                main.CurrentColourEggs = main.CurrentColourEggs + gaga.Gold
-            elseif i == "Silver" then
-                main.CurrentColourEggs = main.CurrentColourEggs + gaga.Silver
-            elseif i == "GiftedSilver" then
-                main.CurrentColourEggs = main.CurrentColourEggs + gaga.GiftedSilver
-            elseif i == "GiftedGold" then
-                main.CurrentColourEggs = main.CurrentColourEggs + gaga.GiftedGold
-            end
-        end
-        main.CurrentColourEggs = main.CurrentColourEggs - vla
-        main.DEFColourEggs = main.CurrentColourEggs - main.ColourEggs
-        main.SaveColourEggs = main.DEFColourEggs + main.SaveColourEggs
-        UI.Markers.ColourEggs.Text = "Colour Eggs: "..tostring(main.DEFColourEggs)
-		save()
-    end
-	UI.Settings.MyScreenGui:Destroy()
-	UI.Settings.MyFrame:Destroy()
-end)
-
-folder1:Toggle("Script achievements", function(state)
-    UI.Settings.MyScreenGui.Enabled = state
+			wait(1)
+		else
+			break
+		end
+	end
 end)
 
 local VS = game:GetService("VirtualUser")
@@ -1197,7 +1218,9 @@ function scriptFunctions.Main.PuffshroomFarm:Function()
 					scriptFunctions.Main.CollectTokens.Event = true
 					wait(6)
 					scriptFunctions.Main.CollectTokens.Event = false
-					main.PuffFarmed += 1
+					if main.PuffFarmed then
+						main.PuffFarmed += 1
+					end
 					break
 				end
 
@@ -1386,7 +1409,9 @@ function scriptFunctions.Main.FarmSprout:Activate()
 				wait()
 			end
 			scriptFunctions.Main.CollectTokens.Event = false
-			main.SproutsFarmed += 1
+			if main.SproutsFarmed then
+				main.SproutsFarmed += 1
+			end
 		end
 	end
 
@@ -1492,7 +1517,7 @@ function scriptFunctions.Main.HuntWindy:Activate()
 				newField = false
 			end
 
-			if not windyFolder:FindFirstChild("Windy") then
+			if not windyFolder:FindFirstChild("Windy") and main.WindyKilled then
 				main.WindyKilled += 1
 			end
 		end
